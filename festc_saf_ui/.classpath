@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="lib" path="lib/forms-1.0.5.jar"/>
+	<classpathentry kind="lib" path="lib/jh-2.0_02.jar"/>
+	<classpathentry kind="lib" path="lib/jh.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/l2fprod-common-all.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/rs_flexdock-0.4.0.jar"/>
+	<classpathentry kind="lib" path="lib/TableLayout.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/wizard-0.1.12.jar"/>
+	<classpathentry exported="true" kind="lib" path="saf.core.ui.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
