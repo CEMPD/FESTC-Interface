@@ -262,7 +262,7 @@ public class ManFileModPanel extends UtilFieldsPanel implements PlotEventListene
 		else
 			contFile = scenDir + "/share_data/EPICCONT.DAT"; 
 		
-		paramFile = baseDir + "/common_data/EPIC_model/" + type + "/PARM.DAT";
+		paramFile = baseDir + "/common_data/EPIC_model/" + type + "/PARM0509.DAT";
 		fileFile = baseDir + "/common_data/EPIC_model/" + type + "/EPICFILE.DAT";
 		if  (type.equalsIgnoreCase("spinup")) {
 			irrFile = scenDir + "/" + selCrop + "/" + type + "/manage/EPICRUNFILEIRR.DAT";
