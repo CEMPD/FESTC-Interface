@@ -269,7 +269,7 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		sb.append("setenv    SHARE_DIR $SCEN_DIR/share_data" + ls);
 		 
 		sb.append("" + ls);
-		sb.append("set    EXEC_DIR = " + baseDir + "/model/current/spinup" + ls);
+		sb.append("set    EXEC_DIR = " + baseDir + "/model/current" + ls);
 		sb.append("" + ls);
 
 
@@ -310,7 +310,7 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		sb.append("      foreach out ( \"NCM\" \"NCS\" \"DFA\" \"OUT\" \"SOL\" \"TNA\" \"TNS\" )" + ls); 
 		sb.append("        if ( ! -e $WORK_DIR/$out  ) mkdir -p $WORK_DIR/$out" + ls); 
 		sb.append("      end " + ls);
-		sb.append("      time $EXEC_DIR/EPICsu.exe " + ls);
+		sb.append("      time $EXEC_DIR/EPIC0509su.exe " + ls);
 		sb.append("      if ( $status == 0 ) then " + ls);
 		sb.append("         echo  ==== Finished EPIC spinup run of CROP: $CROP_NAME, rainf $cropN" + ls);
 		sb.append("      else " + ls);

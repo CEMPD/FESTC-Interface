@@ -297,7 +297,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		sb.append("setenv    WEAT_DIR  $COMM_DIR/statWeath" + ls);
 		
 		sb.append("" + ls);
-		sb.append("set    EXEC_DIR = " + baseDir + "/model/current/app" + ls);
+		sb.append("set    EXEC_DIR = " + baseDir + "/model/current" + ls);
 		sb.append("" + ls);
 
 		return sb.toString();
@@ -339,7 +339,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		sb.append("      foreach out ( \"NCM\" \"NCS\" \"DFA\" \"OUT\" \"SOL\" \"TNA\" \"TNS\" )" + ls); 
 		sb.append("        if ( ! -e $WORK_DIR/$out  ) mkdir -p $WORK_DIR/$out" + ls); 
 		sb.append("      end " + ls);
-		sb.append("      time $EXEC_DIR/EPICapp.exe " + ls);
+		sb.append("      time $EXEC_DIR/EPIC0509app.exe " + ls);
 		sb.append("      if ( $status == 0 ) then " + ls);
 		sb.append("         echo  ==== Finished EPIC app run of CROP: $CROP_NAME, rainf $cropN" + ls);
 		sb.append("      else " + ls);
