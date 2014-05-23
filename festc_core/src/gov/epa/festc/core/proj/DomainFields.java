@@ -5,14 +5,23 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "gov.epa.festc.core.proj.DomainFields")
 public class DomainFields extends PageFields {
 
-	private String year;
+	private String simYear;
+	private String nlcdYear;
 
-	public String getYear() {
-		return year;
+	public String getSimYear() {
+		return simYear;
+	}
+	
+	public String getNlcdYear() {
+		return nlcdYear;
 	}
 
-	public void setYear(String year) {
-		this.year = year;
+	public void setSimYear(String year) {
+		this.simYear = year;
+	}
+	
+	public void setNlcdYear(String year) {
+		this.nlcdYear = year;
 	}
 
 	@Override

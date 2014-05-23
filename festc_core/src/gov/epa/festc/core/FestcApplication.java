@@ -369,7 +369,8 @@ public class FestcApplication implements ListSelectionListener,
 			domain.setYcellSize(panel.getySize());
 			domain.setXmin(panel.getXmin());
 			domain.setYmin(panel.getYmin());
-			domain.setYear(panel.getSimuYear());
+			domain.setSimYear(panel.getSimuYear());
+			domain.setNlcdYear(panel.getNlcdYear());
 			domain.setScenarioDir(epicHome + "/scenarios/" + newScenario);	 
 			project.setName(newScenario);		 	
 			
@@ -413,7 +414,8 @@ public class FestcApplication implements ListSelectionListener,
 			domain.setXmin(fields.getXmin());
 			domain.setYmin(fields.getYmin());
 			domain.setScenarioDir(epicHome + "/scenarios/" + newScenName);
-			domain.setYear(panel.getSimuYear());		 
+			domain.setSimYear(panel.getSimuYear());		
+			domain.setNlcdYear(domain.getNlcdYear());
 			project.setName(newScenName);
 			
 			projFile = new File(epicHome + "/scenarios/scenariosInfo/", newScenName);

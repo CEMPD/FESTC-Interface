@@ -116,14 +116,21 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		JPanel yearPanel = new JPanel( );
 		yearBox = new JComboBox(Constants.FERTYEARS);
 		yearBox.setSelectedIndex(1);
-		yearBox.setEditable(true);
+//		yearBox.addActionListener(new AbstractAction() {
+//			String sahome = Constants.getProperty(Constants.SA_HOME, msg);
+//			String nlcdY = (String) yearBox.getSelectedItem();
+//			System.out.print()
+//			@Override		
+//			public void actionPerformed(ActionEvent e) {
+//				inputDir.setText(sahome.trim() + "/nlcd_modis_files_" + nlcdY + ".txt");
+//			};
+//		});
+
 		yearPanel.add(yearBox);
 		
-		String sahome = Constants.getProperty(Constants.SA_HOME, msg);	
 		JPanel inputDirPanel = new JPanel();
 		inputDir = new JTextField(40);
 		inputDir.setToolTipText("I.E. ../data/nlcd_modis_files_2006.txt");
-		inputDir.setText(sahome.trim() + "/nlcd_modis_files_2006.txt");
 		inputDirBrowser = new JButton(BrowseAction.browseAction(this, app.getCurrentDir(), "input file", inputDir));
 		inputDirPanel.add(inputDir);
 		inputDirPanel.add(inputDirBrowser);	
@@ -366,10 +373,11 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		proj4proj.setText(domain.getProj());
 		gridName.setText(domain.getGridName());
 		scenarioDir.setText(domain.getScenarioDir());
-		//yearBox.setSelectedItem(1);
+		String nlcdY = domain.getNlcdYear();
+		yearBox.setSelectedItem(nlcdY);
 		String sahome = Constants.getProperty(Constants.SA_HOME, msg);	
-		inputDir.setText(sahome.trim() + "/data/nlcd_modis_files_2006.txt");
-		//inputDir.setText("");
+		inputDir.setText(sahome.trim() + "/data/nlcd_modis_files_" + nlcdY + ".txt");
+		
 		runMessages.setText("");
 		if ( fields == null ) {
 			fields = new Beld4DataGenFields();

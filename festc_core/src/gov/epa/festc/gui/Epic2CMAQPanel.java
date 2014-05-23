@@ -358,8 +358,8 @@ public class Epic2CMAQPanel extends UtilFieldsPanel implements PlotEventListener
 		runMessages.setText("");
 		fields.setOutfileprefix("");
 		try {
-			startDate.setValue(NumberFormat.getNumberInstance().parse(domain.getYear().trim()+ "0101"));
-			endDate.setValue(NumberFormat.getNumberInstance().parse(domain.getYear().trim()+ "1231"));	
+			startDate.setValue(NumberFormat.getNumberInstance().parse(domain.getSimYear().trim()+ "0101"));
+			endDate.setValue(NumberFormat.getNumberInstance().parse(domain.getSimYear().trim()+ "1231"));	
 		} catch (ParseException e) {
 			startDate.setValue(0);
 			endDate.setValue(0);

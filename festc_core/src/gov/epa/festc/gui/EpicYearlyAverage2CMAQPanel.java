@@ -103,9 +103,11 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
 		
 		JPanel panel = new JPanel(new SpringLayout());
 		SpringLayoutGenerator layout = new SpringLayoutGenerator();
+		
+		JPanel scenPanel = new JPanel();
+		scenPanel.add(scenarioDir);
  
 		layout.addLabelWidgetPair("Grid Description:", getGridDescPanel(false), panel);
-		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDir, panel);
 		layout.addLabelWidgetPair("BELD4 NetCDF File: ", beld4DirPanel, panel);
 		layout.addLabelWidgetPair("   ", new JLabel("   "), panel);
 		layout.addLabelWidgetPair(indent + "Output Type:", spinupPanel, panel);
@@ -183,8 +185,8 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
 			throw new Exception("Please select scenario dir first!");
 		
 		File beld4F = new File(this.beld4Dir.getText());
-		if (beld4F == null || beld4F.isDirectory() ) 
-			throw new Exception("Beld4 file is not specified!");	
+		if (beld4F == null || beld4F.isDirectory() || ! beld4F.exists()) 
+			throw new Exception("Beld4 file is not existing!");	
 		
 		validateGrids();
 		 
@@ -338,12 +340,12 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
 				String year = beld4fields.getNLCDyear().trim();
 				String beld4file = scenDir + "/share_data/beld4_" + gridName + "_" + year +".nc";
 				//System.out.println(beld4file);
-				File f = new File(beld4file);
-				if(f.exists()){
+//				File f = new File(beld4file);
+//				if(f.exists()){
 					this.beld4Dir.setText(beld4file);
-				}
-				else 
-					this.beld4Dir.setText(scenDir);
+//				}
+//				else 
+//					this.beld4Dir.setText(scenDir);
 			}
 			else 
 				this.beld4Dir.setText( fields.getBeld4ncf());
@@ -374,7 +376,7 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
 		
 		String scenDir = domain.getScenarioDir().trim();
 		String  gName = domain.getGridName().trim();
-		String year = domain.getYear().trim();
+		String nlcdY = domain.getNlcdYear().trim();
 		scenarioDir.setText(scenDir);	
 		rows.setValue(domain.getRows());
 		cols.setValue(domain.getCols());
@@ -385,13 +387,13 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
 		proj4proj.setText(domain.getProj());
 		gridName.setText(domain.getGridName());
 		
-		String beld4file = scenDir + "/share_data/beld4_" + gName + "_" + year +".nc";
-		File f = new File(beld4file);
-		if(f.exists()){
+		String beld4file = scenDir + "/share_data/beld4_" + gName + "_" + nlcdY +".nc";
+//		File f = new File(beld4file);
+//		if(f.exists()){
 			this.beld4Dir.setText(beld4file);
-		}			
-		else 
-			this.beld4Dir.setText(scenDir);
+//		}			
+//		else 
+//			this.beld4Dir.setText(scenDir);
 		
 		runMessages.setText("");
 		if ( fields == null ) {

@@ -273,7 +273,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		sb.append("# Written by: Fortran by Benson, Script by IE. 2012" + ls);
 		sb.append("# Modified by: IE " + ls); 
 		sb.append("#" + ls);
-		sb.append("# Program: EPICsu.exe" + ls);
+		sb.append("# Program: EPIC0509su.exe" + ls);
 		sb.append("#         Needed environment variables included in the script file to run." + ls);        
 		sb.append("# " + ls);
 		sb.append("#***************************************************************************************" + ls + ls);
@@ -361,7 +361,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		sb.append("      foreach out ( \"NCM\" \"NCS\" \"DFA\" \"OUT\" \"SOL\" \"TNA\" \"TNS\" )" + ls); 
 		sb.append("        if ( ! -e $WORK_DIR/$out  ) mkdir -p $WORK_DIR/$out" + ls); 
 		sb.append("      end" + ls); 
-		sb.append("      time $EXEC_DIR/EPICapp.exe" + ls); 
+		sb.append("      time $EXEC_DIR/EPIC0509app.exe" + ls); 
 		sb.append("      if ( $status == 0 ) then " + ls);
 		sb.append("         echo  ==== Finished EPIC app run of CROP: $CROP_NAME, irr $cropN" + ls);
 		sb.append("      else " + ls);
@@ -401,7 +401,6 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 	public void saveProjectRequested() {
 		if ( scenarioDir != null ) fields.setScenarioDir(scenarioDir.getText());
 		if ( simYear != null ) fields.setSimYear(simYear.getText());
-		//if ( finishedCrops != null ) fields.setFinishedCrops(finishedCrops);
 		if ( runMessages != null ) fields.setMessage(runMessages.getText());		
 	}
 
@@ -409,7 +408,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 	public void newProjectCreated() {
 		DomainFields domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		scenarioDir.setText(domain.getScenarioDir());	
-		simYear.setText(domain.getYear());
+		simYear.setText(domain.getSimYear());
 		runMessages.setText("");
 		if ( fields == null ) {
 			fields = new EpicAppFields();

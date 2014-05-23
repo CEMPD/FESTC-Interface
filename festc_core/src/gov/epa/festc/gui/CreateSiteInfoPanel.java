@@ -97,11 +97,14 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 		minAcreas = new JTextField(20);
 		minAcreas.setToolTipText("Default value is 40.0");
 		minAcrePanel.add(minAcreas);
-
+		
+		JPanel scenPanel = new JPanel();
+        scenPanel.add(scenarioDir);
+		
 		layout.addLabelWidgetPair("Grid Description: ", getGridDescPanel(false), panel);
-		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDir, panel);
+		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenPanel, panel);
 		layout.addLabelWidgetPair("BELD4 NetCDF File: ", beld4DirPanel, panel);
-		layout.addLabelWidgetPair("Minimum Crop Acres : ", minAcrePanel, panel);
+		layout.addLabelWidgetPair("Minimum Crop Acres: ", minAcrePanel, panel);
 
 		layout.makeCompactGrid(panel, 4, 2, // number of rows and cols
 				10, 10, // initial X and Y
@@ -152,8 +155,8 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 		if (scenarioDir == null || scenarioDir.isEmpty()) 
 			throw new Exception("Scenario dir is empty!");		 
 		
-		if (beld4F == null || beld4F.isDirectory() ) 
-			throw new Exception("Beld4 file is not specified!");	 
+		if (beld4F == null || beld4F.isDirectory() ||  ! beld4F.exists()) 
+			throw new Exception("Beld4 file is not existing!");	 
 		
 		String minAcres = minAcreas.getText();
 		if (minAcres == null || minAcres.isEmpty()) 
@@ -345,14 +348,14 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 
 		String scenDir = domain.getScenarioDir().trim();
 		String  gName = domain.getGridName().trim();
-		String year = domain.getYear().trim();
-		String beld4file = scenDir + "/share_data/beld4_" + gName + "_" + year +".nc";
-		File f = new File(beld4file);
-		if(f.exists()){
+		String nlcdY = domain.getNlcdYear().trim();
+		String beld4file = scenDir + "/share_data/beld4_" + gName + "_" + nlcdY +".nc";
+		//File f = new File(beld4file);
+		//if(f.exists()){
 			this.beld4Dir.setText(beld4file);
-		}			
-		else 
-			this.beld4Dir.setText(scenDir);
+//		}			
+//		else 
+//			this.beld4Dir.setText(scenDir);
 		runMessages.setText("");
 		minAcreas.setText("40.0");
 		if ( fields == null ) {
@@ -374,12 +377,12 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 				String year = beld4fields.getNLCDyear().trim();
 				String beld4file = scenDir + "/share_data/beld4_" + gridName + "_" + year +".nc";
 				//System.out.println(beld4file);
-				File f = new File(beld4file);
-				if(f.exists()){
+//				File f = new File(beld4file);
+//				if(f.exists()){
 					this.beld4Dir.setText(beld4file);
-				}
-				else 
-					this.beld4Dir.setText(scenDir);
+//				}
+//				else 
+//					this.beld4Dir.setText(scenDir);
 			}
 			else 
 				this.beld4Dir.setText( fields.getBeld4ncf());

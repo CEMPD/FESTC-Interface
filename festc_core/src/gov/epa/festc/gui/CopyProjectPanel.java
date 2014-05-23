@@ -97,5 +97,4 @@ public class CopyProjectPanel extends JPanel {
 		return simuYear.getText();
 	}
 
-	
 }

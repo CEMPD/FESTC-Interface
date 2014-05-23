@@ -1,9 +1,11 @@
 package gov.epa.festc.gui;
 
 import gov.epa.festc.core.FestcApplication;
+import gov.epa.festc.util.Constants;
 import gov.epa.festc.util.ModelYearInconsistantException;
 import gov.epa.festc.util.SpringLayoutGenerator;
 
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
@@ -16,17 +18,20 @@ public class DomainPanel extends UtilFieldsPanel {
 	private static final long serialVersionUID = 2383585074083309830L;
 
 	JTextField simuYear;
+	JComboBox nlcdyearBox;
 	JTextField scenaName; // new scenario name
-	private String modelYear;
 	private FestcApplication app;
 
 	public DomainPanel(FestcApplication app) {
 		super(new SpringLayout());	
 		init();
 		this.app = app;
-		modelYear = app.getSSimYear();
+		 
 		SpringLayoutGenerator layout = new SpringLayoutGenerator();
-
+		
+		nlcdyearBox = new JComboBox(Constants.FERTYEARS);
+		nlcdyearBox.setSelectedIndex(1);
+		
 		simuYear = new JTextField(40);
 		scenaName = new JTextField(40);
 
@@ -38,9 +43,10 @@ public class DomainPanel extends UtilFieldsPanel {
 
 		layout.addLabelWidgetPair("Grid Description: ", getGridDescPanel(true), this);
 		layout.addLabelWidgetPair("Simulation Year: ", simuYearPanel, this);
+		layout.addLabelWidgetPair("NLCD/MODIS Data Year: ", nlcdyearBox, this);
 		layout.addLabelWidgetPair("Scenario Name: ", scenaNamePanel, this);
 
-		layout.makeCompactGrid(this, 3, 2, // number of rows and cols
+		layout.makeCompactGrid(this, 4, 2, // number of rows and cols
 				10, 10, // initial X and Y
 				5, 5); // x and y pading
 	}
@@ -138,6 +144,10 @@ public class DomainPanel extends UtilFieldsPanel {
 	
 	public String getSimuYear() throws Exception {
 		return simuYear.getText();
+	}
+	
+	public String getNlcdYear() throws Exception {
+		return (String) nlcdyearBox.getSelectedItem();
 	}
 
 	public String getScenaName() throws Exception {
