@@ -273,7 +273,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		sb.append("# Written by: Fortran by Benson, Script by IE. 2012" + ls);
 		sb.append("# Modified by: IE " + ls); 
 		sb.append("#" + ls);
-		sb.append("# Program: EPIC0509su.exe" + ls);
+		sb.append("# Program: EPIC0509app.exe" + ls);
 		sb.append("#         Needed environment variables included in the script file to run." + ls);        
 		sb.append("# " + ls);
 		sb.append("#***************************************************************************************" + ls + ls);
