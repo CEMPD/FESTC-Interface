@@ -1,44 +1,19 @@
 package gov.epa.festc.gui;
 
-import gov.epa.festc.core.FestcApplication;
-import gov.epa.festc.core.proj.EpicYearlyAverage2CMAQFields;
 import gov.epa.festc.util.Constants;
-import gov.epa.festc.util.FileRunner;
 import gov.epa.festc.util.SpringLayoutGenerator;
 
-import java.awt.BorderLayout;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.LayoutManager;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
-import javax.swing.SwingConstants;
-
-import simphony.util.messages.MessageCenter;
 
 public class UtilFieldsPanel extends JPanel {
 
@@ -256,20 +231,20 @@ public class UtilFieldsPanel extends JPanel {
 			throw new Exception("YCellSize value is invalid.");
 	}
 
-	protected  void setFalseEditable(){
-		rows.setEditable(false);
-		cols.setEditable(false);;
-		xmin.setEditable(false);;
-		ymin.setEditable(false);;
-		xSize.setEditable(false);;
-		ySize.setEditable(false);;
-		//proj4proj.setEditable(false);;
-		gridName.setEditable(false);;
-		 
-		scenarioDir.setEditable(false);;
-		runMessages.setEditable(false);;
-		
-	}
+//	protected  void setFalseEditable(){
+//		rows.setEditable(false);
+//		cols.setEditable(false);;
+//		xmin.setEditable(false);;
+//		ymin.setEditable(false);;
+//		xSize.setEditable(false);;
+//		ySize.setEditable(false);;
+//		//proj4proj.setEditable(false);;
+//		gridName.setEditable(false);;
+//		 
+//		scenarioDir.setEditable(false);;
+//		runMessages.setEditable(false);;
+//		
+//	}
 
 }
 

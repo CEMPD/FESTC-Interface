@@ -216,7 +216,8 @@ public class FestcApplication implements ListSelectionListener,
 	 * 
 	 */
 	public void createProject() {
-		new CustomDialog(this, gui.getFrame(), true, new DomainPanel(this), Constants.NEW_SCENARIO, "Create a New Scenario");
+		new CustomDialog(this, gui.getFrame(), true, new DomainPanel(this), 
+				Constants.NEW_SCENARIO, "Create a New Scenario", projFile);
 	}
 	
 	/**
@@ -224,11 +225,13 @@ public class FestcApplication implements ListSelectionListener,
 	 * 
 	 */
 	public void copyProject() {
-		new CustomDialog(this, gui.getFrame(), true, new CopyProjectPanel(this), Constants.COPY_SCENARIO, "Copy from an Existing Scenario");
+		new CustomDialog(this, gui.getFrame(), true, new CopyProjectPanel(this), 
+				Constants.COPY_SCENARIO, "Copy from an Existing Scenario", projFile);
 	}
 	
 	public void deleteProject() {
-		new CustomDialog(this, gui.getFrame(), true, new DeleteProjectPanel(this), Constants.DELETE_SCENARIO, "Delete an Existing Scenario");
+		new CustomDialog(this, gui.getFrame(), true, new DeleteProjectPanel(this), 
+				Constants.DELETE_SCENARIO, "Delete an Existing Scenario", projFile);
 	}
 	
 	public static MessageCenter getMsg() {
@@ -286,7 +289,7 @@ public class FestcApplication implements ListSelectionListener,
 	 * @throws Exception 
 	 */
 	public void saveProject() {
-		new CustomDialog(this, gui.getFrame(), true, new SaveProjectPanel(projFile), Constants.SAVE_SCENARIO, "Save Scenario");		
+		new CustomDialog(this, gui.getFrame(), true, new SaveProjectPanel(projFile), Constants.SAVE_SCENARIO, "Save Scenario", projFile);		
 	}
 	
 	/**
@@ -443,19 +446,12 @@ public class FestcApplication implements ListSelectionListener,
 		    if ( option == 0 )
 		    	deleteScenarioFold(existScenName);
 		}
-		
+
 		if (cmd.equals(Constants.SAVE_SCENARIO)) {
-			if (projFile == null) {
-				//SaveProjectPanel panel = (SaveProjectPanel)contentPanel;
-				//String scenName = panel.getScenarioName();			
-				//if (scenName == null || scenName.trim().isEmpty()) 
-				throw new Exception("Please create new scenario from File menu. ");
-				
-				//projFile = new File(epicHome + "/scenarios/scenariosInfo/", scenName);
+			if (projFile != null) {
+				firePlotEvent(ProjectEvent.SAVE);
+				saveProj(projFile);
 			}
-			
-			firePlotEvent(ProjectEvent.SAVE);
-			saveProj(projFile);
 		}
 	}
 	

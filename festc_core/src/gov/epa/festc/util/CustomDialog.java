@@ -14,6 +14,9 @@ import javax.swing.JPanel;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JButton;
+
+import java.io.File;
+
 import java.awt.event.ActionEvent;
 
 public class CustomDialog extends JDialog implements ActionListener {
@@ -25,14 +28,17 @@ public class CustomDialog extends JDialog implements ActionListener {
     private CallBack callBack;
     private JPanel customPane;
     private String action;
+    //private File projFile;
 
-    public CustomDialog(CallBack callback, JFrame frame, boolean modal, JPanel customPane, String action, String msg) {
+    public CustomDialog(CallBack callback, JFrame frame, boolean modal, JPanel customPane, 
+    		String action, String msg, File projFile) {
         super(frame, modal);
         this.setTitle(msg);
         
         this.callBack = callback;
         this.action = action;
         this.customPane = customPane;
+        //this.projFile = projFile;
         
         messagePanel = new SingleLineMessagePanel();
         
@@ -49,6 +55,8 @@ public class CustomDialog extends JDialog implements ActionListener {
         noButton = new JButton("Cancel");
         noButton.setToolTipText("Cancel " + action);
         noButton.addActionListener(this);
+        if ( projFile == null && action == Constants.SAVE_SCENARIO)
+        	yesButton.setVisible(false);
         buttonPane.add(noButton, BorderLayout.LINE_END);
         JPanel buttonLayout = new JPanel(new BorderLayout());
         buttonLayout.add(new JLabel(""), BorderLayout.LINE_START);
@@ -59,6 +67,11 @@ public class CustomDialog extends JDialog implements ActionListener {
         pack();
         setLocationRelativeTo(frame);
         setVisible(true);
+    }
+    
+    public void hideYesButton(){
+    	yesButton.setVisible(false);
+    	//yesButton.hide();
     }
 
     public void actionPerformed(ActionEvent e) {
