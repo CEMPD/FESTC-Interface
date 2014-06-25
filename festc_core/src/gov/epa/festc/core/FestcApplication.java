@@ -283,6 +283,7 @@ public class FestcApplication implements ListSelectionListener,
 
 	/**
 	 * Saves the current project -- the current set of text fields and comboboxes.
+	 * @throws Exception 
 	 */
 	public void saveProject() {
 		new CustomDialog(this, gui.getFrame(), true, new SaveProjectPanel(projFile), Constants.SAVE_SCENARIO, "Save Scenario");		
@@ -445,12 +446,12 @@ public class FestcApplication implements ListSelectionListener,
 		
 		if (cmd.equals(Constants.SAVE_SCENARIO)) {
 			if (projFile == null) {
-				SaveProjectPanel panel = (SaveProjectPanel)contentPanel;
-				String scenName = panel.getScenarioName();
+				//SaveProjectPanel panel = (SaveProjectPanel)contentPanel;
+				//String scenName = panel.getScenarioName();			
+				//if (scenName == null || scenName.trim().isEmpty()) 
+				throw new Exception("Please create new scenario from File menu. ");
 				
-				if (scenName == null || scenName.trim().isEmpty()) throw new Exception("Scenario name field cannot be blank!");
-				
-				projFile = new File(epicHome + "/scenarios/scenariosInfo/", scenName);
+				//projFile = new File(epicHome + "/scenarios/scenariosInfo/", scenName);
 			}
 			
 			firePlotEvent(ProjectEvent.SAVE);

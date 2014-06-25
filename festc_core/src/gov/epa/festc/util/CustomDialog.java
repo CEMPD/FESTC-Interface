@@ -70,8 +70,8 @@ public class CustomDialog extends JDialog implements ActionListener {
 					messagePanel.setMessage(excpt.getMessage() + ". Are you sure to continue?");
 					return;
 				} catch (Exception e1) {
-					e1.printStackTrace();
-					messagePanel.setError("Please create new scenario from File menu.");
+					//e1.printStackTrace();
+					messagePanel.setError(e1.getMessage());
 					return;
 				}
         	}

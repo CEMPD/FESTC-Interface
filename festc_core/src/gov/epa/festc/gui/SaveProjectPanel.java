@@ -15,15 +15,15 @@ public class SaveProjectPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = -1146710595018432609L;
 	JTextField scenarioName;
-	
+
 	public SaveProjectPanel(File projFile) {
 		scenarioName = new JTextField(30);
-		
+
 		if (projFile == null) {
-			this.add(new JLabel("Scenarion Name: "));
-			this.add(scenarioName);
-		} 
-		else {
+			JLabel warning = new JLabel("Please create new scenario from File menu.");
+			this.add(warning);
+		}
+		else{
 			JLabel warning = new JLabel("Save Scenario: " + projFile.getName() + "?");
 			this.add(warning);
 		}
