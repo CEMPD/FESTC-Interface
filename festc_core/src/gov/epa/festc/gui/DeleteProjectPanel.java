@@ -59,7 +59,8 @@ public class DeleteProjectPanel extends JPanel {
 		String existScenario = scenario.getText() == null ? "" : scenario.getText();
 		if (existScenario.trim().isEmpty())
 			throw new Exception("Existing scenario is empty.");
- 
+		if (existScenario.trim().contains(" ") )
+			throw new Exception("Existing scenario name has space in between.");
 	}
 	
 }

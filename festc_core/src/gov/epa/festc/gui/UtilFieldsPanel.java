@@ -190,6 +190,8 @@ public class UtilFieldsPanel extends JPanel {
 	protected void validateScen(String scenDir) throws Exception { 
 		if ( scenDir == null || scenDir.isEmpty()) 
 			throw new Exception("Scenario dir is empty!");
+		if (scenDir.trim().contains(" ") )
+			throw new Exception("Scenario dir has space in between.");
 	}
 	
 	protected void validateGrids() throws Exception  {

@@ -72,14 +72,16 @@ public class CopyProjectPanel extends JPanel {
 		String existScenario = scenario.getText() == null ? "" : scenario.getText();
 		if (existScenario.trim().isEmpty())
 			throw new Exception("Existing scenario is empty.");
+		if (existScenario.trim().contains(" ") )
+			throw new Exception("Existing scenario name has space in between.");
 		 
 		String newScenN = newScenName.getText() == null ? "" : newScenName.getText();
 		if (newScenN.trim().isEmpty())
 			throw new Exception("New scenario name is empty.");	
-		if (newScenN.trim().length() > 16)
-			throw new Exception(" New scenario name is too long (larger than 16 chars).");
+//		if (newScenN.trim().length() > 16)
+//			throw new Exception(" New scenario name is too long (larger than 16 chars).");
 		if (newScenN.trim().contains(" ") )
-			throw new Exception(" New scenario name has space in between.");
+			throw new Exception("New scenario name has space in between.");
 		
 		String simuY = simuYear.getText() == null ? "" : simuYear.getText();
 		if (simuY.trim().isEmpty())
@@ -89,8 +91,7 @@ public class CopyProjectPanel extends JPanel {
 			Integer.parseInt(simuY);
 		}catch(NumberFormatException e) {
 			throw new Exception("Simulation year is not a number.");
-		}
-		
+		}	
 	}
 	
 	public String getSimuYear() throws Exception {
