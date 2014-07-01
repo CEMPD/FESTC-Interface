@@ -215,7 +215,10 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
 		String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(now);           
 		String file = scenarioDir.trim() + "/scripts";	 
 		
-		file = file.trim() + "/epicYearlyAverage2CMAQ_" + timeStamp + ".csh";
+		if (spinup)
+			 file = file.trim() + "/epicYearlyAverage2CMAQ_spinup" + timeStamp + ".csh";
+		else
+			file = file.trim() + "/epicYearlyAverage2CMAQ_app" + timeStamp + ".csh";
 		
 		StringBuilder sb = new StringBuilder();
 		 
