@@ -20,7 +20,7 @@ public class SaveProjectPanel extends JPanel {
 		scenarioName = new JTextField(30);
 
 		if (projFile == null) {
-			JLabel warning = new JLabel("Please create new scenario from File menu.");
+			JLabel warning = new JLabel("No opened scenario to save. ");
 			this.add(warning);
 		}
 		else{

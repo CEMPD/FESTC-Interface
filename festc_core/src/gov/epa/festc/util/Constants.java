@@ -44,6 +44,7 @@ public class Constants {
 	public static final String MAN_SPINUP = "Management File Generation for Spinup";
 	public static final String EDIT_INFILES = "View/Edit EPIC Inputs";
 	public static final String[] FERTYEARS = new String[] {"2001", "2006"};
+	public static final String[] NDEPS = new String[] {"RFN0", "dailyNDep_2004","dailyNDep_2008"};
 	public static final String EPIC_SPINUP = "EPIC Runs for Spinup";
 	public static final String MAN_APP = "Management File Generation for Application";
 	public static final String EPIC_APP = "EPIC Runs for Application";

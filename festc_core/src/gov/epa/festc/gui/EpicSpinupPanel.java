@@ -22,6 +22,7 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -35,8 +36,6 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
  
 	private static final long serialVersionUID = -625272283986456313L;
 	private JTextField scenarioDir;
-	private JButton scenarioDirBrowser;
-	 
 	private FestcApplication app;
 
 	private CropSelectionPanel cropSelectionPanel;
@@ -46,6 +45,8 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 	private String baseDir = null;
 
 	private EpicSpinupFields fields;
+	
+	protected JComboBox nDepSel;
  
 	public EpicSpinupPanel(FestcApplication application) {
 		app = application;
@@ -89,28 +90,31 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		JPanel panel = new JPanel(new SpringLayout());
 		SpringLayoutGenerator layout = new SpringLayoutGenerator();
 		
-		JPanel scenarioPanle = new JPanel();
 		this.scenarioDir = new JTextField(40);
-		this.scenarioDirBrowser = new JButton("Browse");
-		this.scenarioDirBrowser.addActionListener(new AbstractAction()
-	    {
-	      public void actionPerformed(ActionEvent ae)
-	      {
-	        JFileChooser fileChooser = new JFileChooser(scenarioDir.getText());
-	        fileChooser.setMultiSelectionEnabled(false);
-	        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-	        int returnVal = fileChooser.showOpenDialog(EpicSpinupPanel.this);
-	        if (returnVal != JFileChooser.APPROVE_OPTION) return;
-	        File selected = fileChooser.getSelectedFile();
-	        scenarioDir.setText(selected.getAbsolutePath());
-	        app.setCurrentDir(selected);
-	      }//actionPerformed()
-	    });
-		scenarioPanle.add(this.scenarioDir);
-		scenarioPanle.add(scenarioDirBrowser);
+//		this.scenarioDirBrowser = new JButton("Browse");
+//		this.scenarioDirBrowser.addActionListener(new AbstractAction()
+//	    {
+//	      public void actionPerformed(ActionEvent ae)
+//	      {
+//	        JFileChooser fileChooser = new JFileChooser(scenarioDir.getText());
+//	        fileChooser.setMultiSelectionEnabled(false);
+//	        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+//	        int returnVal = fileChooser.showOpenDialog(EpicSpinupPanel.this);
+//	        if (returnVal != JFileChooser.APPROVE_OPTION) return;
+//	        File selected = fileChooser.getSelectedFile();
+//	        scenarioDir.setText(selected.getAbsolutePath());
+//	        app.setCurrentDir(selected);
+//	      }//actionPerformed()
+//	    });
+//		scenarioPanle.add(this.scenarioDir);
+//		scenarioPanle.add(scenarioDirBrowser);
+		nDepSel = new JComboBox(Constants.NDEPS);
+		nDepSel.setSelectedIndex(2);
+		nDepSel.setToolTipText("RFNO: get NDep value from EPICCONT.DAT. ");
 
-		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioPanle, panel);
-		layout.makeCompactGrid(panel, 1, 2, // number of rows and cols
+		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDir, panel);
+		layout.addLabelWidgetPair("Daily Average N Deposition: ", nDepSel, panel);
+		layout.makeCompactGrid(panel, 2, 2, // number of rows and cols
 				10, 10, // initial X and Y
 				5, 5); // x and y pading
 
@@ -161,6 +165,8 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		String scenarioDir = this.scenarioDir.getText();
 		if ( scenarioDir == null || scenarioDir.isEmpty()) 
 			throw new Exception( "Please select scenario dir first!");
+		
+		String ndepValue = (String) this.nDepSel.getSelectedItem();
 	
 		String seCropsString = cropSelectionPanel.selectedItemTostring();
 		String[] seCrops = cropSelectionPanel.getSelectedCrops();
@@ -185,7 +191,8 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		outMessages += "Epic base: " + baseDir + ls;
 		outMessages += "Scen directory: " + scenarioDir + ls;
 		
-		final String file = writeRunScript(baseDir, scenarioDir, seCropsString, cropIDs);
+		final String file = writeRunScript(baseDir, scenarioDir, 
+				seCropsString, cropIDs, ndepValue);
 
 		Thread populateThread = new Thread(new Runnable() {
 			public void run() {
@@ -195,8 +202,10 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		populateThread.start();
 	}
 
+	
 	protected String writeRunScript( String baseDir, String scenarioDir, 
-			String cropNames, String cropIDs) {
+			String cropNames, String cropIDs, String ndepValue) {
+		
 		Date now = new Date(); // java.util.Date, NOT java.sql.Date or java.sql.Timestamp!
 		String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(now);
 		
@@ -207,7 +216,7 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(getScirptHeader());
-		sb.append(getEnvironmentDef(baseDir, scenarioDir));
+		sb.append(getEnvironmentDef(baseDir, scenarioDir, ndepValue));
 		sb.append(getRunDef(cropNames, cropIDs));
 		 
 		
@@ -254,7 +263,8 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		return sb.toString();
 	}
 
-	private String getEnvironmentDef(String baseDir, String scenarioDir) {
+	private String getEnvironmentDef(String baseDir, String scenarioDir, 
+			String ndepValue) {
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append(ls + "#" + ls);
@@ -264,8 +274,9 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		sb.append("setenv    EPIC_DIR " + baseDir + ls);
 		sb.append("setenv    SCEN_DIR " + scenarioDir + ls);
 		sb.append("setenv    COMM_DIR $EPIC_DIR/common_data" +ls);
-		sb.append("setenv    SOIL_DIR $EPIC_DIR/common_data/BaumerSoils" +ls);
-		sb.append("setenv    WEAT_DIR $EPIC_DIR/common_data/statWeath" + ls);
+		sb.append("setenv    SOIL_DIR $COMM_DIR/BaumerSoils" +ls);
+		sb.append("setenv    WEAT_DIR $COMM_DIR/statWeath" + ls);
+		sb.append("setenv    NDEP_DIR $COMM_DIR/" + ndepValue + ls);
 		sb.append("setenv    SHARE_DIR $SCEN_DIR/share_data" + ls);
 		 
 		sb.append("" + ls);
@@ -365,6 +376,7 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		if ( fields != null ){
 			this.scenarioDir.setText(fields.getScenarioDir());
 			runMessages.setText(fields.getMessage());
+			nDepSel.setSelectedItem(fields.getNDepDir());
 		}else{
 			newProjectCreated();
 		}
@@ -373,13 +385,15 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 
 	public void saveProjectRequested() {
 		if ( scenarioDir != null ) fields.setScenarioDir(scenarioDir.getText());
-		if ( runMessages != null ) fields.setMessage(runMessages.getText());		
+		if ( runMessages != null ) fields.setMessage(runMessages.getText());
+		if ( nDepSel != null ) fields.setNDepDir( (String) nDepSel.getSelectedItem());
 	}
 
 	@Override
 	public void newProjectCreated() {
 		DomainFields domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		scenarioDir.setText(domain.getScenarioDir());	
+		nDepSel.setSelectedIndex(0);
 		runMessages.setText("");
 		if ( fields == null ) {
 			fields = new EpicSpinupFields();

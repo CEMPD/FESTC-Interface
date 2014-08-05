@@ -136,8 +136,8 @@ public class DomainPanel extends UtilFieldsPanel {
 		String scemN = scenaName.getText() == null ? "" : scenaName.getText();
 		if (scemN.trim().isEmpty())
 			throw new Exception(" New scenario name is empty.");
-		if (scemN.trim().length() > 16)
-			throw new Exception(" New scenario name is too long (larger than 16 chars).");
+//		if (scemN.trim().length() > 16)
+//			throw new Exception(" New scenario name is too long (larger than 16 chars).");
 		if (scemN.trim().contains(" ") )
 			throw new Exception(" New scenario name has space in between.");
 	}
