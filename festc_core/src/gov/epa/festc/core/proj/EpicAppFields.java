@@ -7,6 +7,7 @@ public class EpicAppFields extends PageFields {
 
 	private String finishedCrops;
 	private String simYear;
+	private String nDepDir;
 	
 	public EpicAppFields() {
 		//NOTE: no-op
@@ -26,6 +27,14 @@ public class EpicAppFields extends PageFields {
 	
 	public void setSimYear(String year) {
 		this.simYear = year;
+	}
+	
+	public String getNDepDir() {
+		return nDepDir;
+	}
+	
+	public void setNDepDir(String nDepDir) {
+		this.nDepDir = nDepDir;
 	}
 
 	@Override

@@ -91,23 +91,7 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		SpringLayoutGenerator layout = new SpringLayoutGenerator();
 		
 		this.scenarioDir = new JTextField(40);
-//		this.scenarioDirBrowser = new JButton("Browse");
-//		this.scenarioDirBrowser.addActionListener(new AbstractAction()
-//	    {
-//	      public void actionPerformed(ActionEvent ae)
-//	      {
-//	        JFileChooser fileChooser = new JFileChooser(scenarioDir.getText());
-//	        fileChooser.setMultiSelectionEnabled(false);
-//	        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-//	        int returnVal = fileChooser.showOpenDialog(EpicSpinupPanel.this);
-//	        if (returnVal != JFileChooser.APPROVE_OPTION) return;
-//	        File selected = fileChooser.getSelectedFile();
-//	        scenarioDir.setText(selected.getAbsolutePath());
-//	        app.setCurrentDir(selected);
-//	      }//actionPerformed()
-//	    });
-//		scenarioPanle.add(this.scenarioDir);
-//		scenarioPanle.add(scenarioDirBrowser);
+
 		nDepSel = new JComboBox(Constants.NDEPS);
 		nDepSel.setSelectedIndex(2);
 		nDepSel.setToolTipText("RFNO: get NDep value from EPICCONT.DAT. ");
@@ -167,6 +151,9 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 			throw new Exception( "Please select scenario dir first!");
 		
 		String ndepValue = (String) this.nDepSel.getSelectedItem();
+		if ( ndepValue == null || ndepValue.isEmpty()) 
+			throw new Exception( "Deposition dir is empty, please specify it!");
+
 	
 		String seCropsString = cropSelectionPanel.selectedItemTostring();
 		String[] seCrops = cropSelectionPanel.getSelectedCrops();
