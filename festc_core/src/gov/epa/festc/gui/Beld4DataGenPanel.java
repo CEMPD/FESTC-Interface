@@ -117,7 +117,7 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		nlcdYear = new JTextField(40);
 		nlcdYear.setEditable(false);
 		yearPanel.add(nlcdYear);
-		
+
 		JPanel inputDirPanel = new JPanel();
 		inputDir = new JTextField(40);
 		inputDir.setToolTipText("I.E. ../data/nlcd_modis_files_2006.txt");

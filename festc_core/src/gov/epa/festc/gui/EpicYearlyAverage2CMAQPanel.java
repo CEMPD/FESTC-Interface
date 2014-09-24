@@ -216,7 +216,7 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
 		String file = scenarioDir.trim() + "/scripts";	 
 		
 		if (spinup)
-			file = file.trim() + "/epicYearlyAverage2CMAQ_spinup" + timeStamp + ".csh";
+			file = file.trim() + "/epicYearlyAverage2CMAQ_spinup" + timeStamp + ".csh"; 
 		else
 			file = file.trim() + "/epicYearlyAverage2CMAQ_app" + timeStamp + ".csh";
 		

@@ -6,7 +6,7 @@ package gov.epa.festc.core;
  */
 public class VersionInfo {
 	public static final String version = "1.1";
-	public static final String date = "2014-09-23";
+	public static final String date = "2014-09-24";
 
 	public static String getVersion() {
 		return version;

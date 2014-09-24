@@ -27,8 +27,8 @@ public class FileRunner { // TODO: change this to a cross-platform launcher
 		String autolog = workdir + File.separator + time + "-EPIC-to-CMAQ.log";
 		String log = (logText == null || logText.trim().isEmpty()) ? autolog : logText.trim();
 		File script = new File(file.replaceAll("\\\\", "\\\\\\\\"));
-		String scriptDir = script.getAbsolutePath();
-		System.out.print(scriptDir);
+		String scriptDir = script.getParent();
+		//System.out.print(scriptDir);
 		try {
 			Runtime.getRuntime().exec("chmod 755 " + script);
 		} catch (IOException e1) {
@@ -37,7 +37,7 @@ public class FileRunner { // TODO: change this to a cross-platform launcher
 		}
 	
 		//Set up qcmd or use ./ if qcmd is null
-		String cmd = "cd scriptDir\n";
+		String cmd = "cd " + scriptDir+ "\n";
 
 		cmd = cmd + qcmd + " -q " + qname;
 

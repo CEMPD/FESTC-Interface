@@ -104,7 +104,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		
 		nDepSel = new JComboBox(Constants.NDEPS);
 		nDepSel.setSelectedIndex(2);
-		nDepSel.setToolTipText("RFNO: get NDep value from EPICCONT.DAT. ");
+		nDepSel.setToolTipText("RFN0: get NDep value from EPICCONT.DAT. ");
 
 		this.simYear = new JTextField(40);
 		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDir, panel);
@@ -288,7 +288,15 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		sb.append("setenv    EPIC_DIR " + baseDir + ls);
 		sb.append("setenv    SCEN_DIR " + scenarioDir + ls);
 		sb.append("setenv    COMM_DIR  $EPIC_DIR/common_data" +ls);
-		sb.append("setenv    NDEP_DIR $COMM_DIR/" + ndepValue + ls);
+		if ( ndepValue.contains("RFN") )  ndepValue = "RFN0";
+		else if ( ndepValue.contains("2002") )  ndepValue = "dailyNDep_2004";
+		else if ( ndepValue.contains("2006") )  ndepValue = "dailyNDep_2008";
+		
+		if ( ndepValue.length() == 4) 
+			sb.append("setenv    NDEP_DIR   " + ndepValue + ls);
+		else
+			sb.append("setenv    NDEP_DIR $COMM_DIR/" + ndepValue + ls);
+
 		sb.append("setenv    SHARE_DIR $SCEN_DIR/share_data" + ls);
 		sb.append("setenv    WEAT_DIR  $COMM_DIR/statWeath" + ls);
 		
@@ -407,7 +415,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		DomainFields domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		scenarioDir.setText(domain.getScenarioDir());	
 		simYear.setText(domain.getSimYear());
-		nDepSel.setSelectedIndex(0);
+		nDepSel.setSelectedIndex(2);
 		runMessages.setText("");
 		if ( fields == null ) {
 			fields = new EpicAppFields();
