@@ -30,7 +30,7 @@ public class ViewFileDialog extends JDialog {
 	private static final long serialVersionUID = 712640590623729433L;
 	private File file;
 	private JTextArea text;
-	private JButton runButton;
+	 
 	private boolean editable = false;
 	private int maxWidth, preferedWidth;
 	private int maxHeight, preferedHeight;

@@ -117,9 +117,7 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		nlcdYear = new JTextField(40);
 		nlcdYear.setEditable(false);
 		yearPanel.add(nlcdYear);
-
-		yearPanel.add(nlcdYear);
-		
+ 
 		JPanel inputDirPanel = new JPanel();
 		inputDir = new JTextField(40);
 		inputDir.setToolTipText("I.E. ../data/nlcd_modis_files_2006.txt");
@@ -185,7 +183,7 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 	    
 	    String dYear = this.nlcdYear.getText();
 		if ( dYear.trim().isEmpty() )
-			throw new Exception("Please select NLCD/MODIS data year!");	 
+			throw new Exception("NLCD/MODIS data year is empty!");	 
 		
 		String inputFile = this.inputDir.getText();
 		if (inputFile == null || inputFile.isEmpty()) 
@@ -419,7 +417,7 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		if ( modisBox != null ) fields.setModisDataSelected(modisBox.isSelected());
 		  
 		if ( nlcdYear != null ) {
-			 String dYear = this.nlcdYear.getText();
+			String dYear = this.nlcdYear.getText();
 			fields.setNLCDyear(dYear);
 		}
 		if ( inputDir != null ) fields.setNLCDfile(inputDir.getText().trim());

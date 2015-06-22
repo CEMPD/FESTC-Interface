@@ -258,9 +258,12 @@ public class ManFileModPanel extends UtilFieldsPanel implements PlotEventListene
 			return false;
 		}
 		if ( selCrop.equalsIgnoreCase("POTATOES") && type.equalsIgnoreCase("spinup")) 
-			contFile = scenDir + "/share_data/EPICCONT_POTATOES.DAT"; 
+			contFile = scenDir + "/share_data/EPICCONT_SU_POTATOES.DAT"; 
+		else if ( type.equalsIgnoreCase("spinup")) 
+			contFile = scenDir + "/share_data/EPICCONT_SU.DAT"; 
 		else
-			contFile = scenDir + "/share_data/EPICCONT.DAT"; 
+			contFile = scenDir + "/share_data/EPICCONT_APP.DAT"; 
+		
 		
 		paramFile = baseDir + "/common_data/EPIC_model/" + type + "/PARM0509.DAT";
 		fileFile = baseDir + "/common_data/EPIC_model/" + type + "/EPICFILE.DAT";

@@ -54,6 +54,8 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 	String baseDir = null;
 
 	private EpicAppFields fields;
+	
+	protected JComboBox nDepSel;
 
 	public EpicRunAppPanel(FestcApplication application) {
 		app = application;
@@ -100,26 +102,15 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		
 		this.scenarioDir = new JTextField(40);
 		
-//	    {
-//	      public void actionPerformed(ActionEvent ae)
-//	      {
-//	        JFileChooser fileChooser = new JFileChooser(scenarioDir.getText());
-//	        fileChooser.setMultiSelectionEnabled(false);
-//	        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-//	        int returnVal = fileChooser.showOpenDialog(EpicRunAppPanel.this);
-//	        if (returnVal != JFileChooser.APPROVE_OPTION) return;
-//	        File selected = fileChooser.getSelectedFile();
-//	        scenarioDir.setText(selected.getAbsolutePath());
-//	        app.setCurrentDir(selected);
-//	      }//actionPerformed()
-//	    });
-//		scenarioPanle.add(this.scenarioDir);
-//		scenarioPanle.add(scenarioDirBrowser);
+		nDepSel = new JComboBox(Constants.NDEPS);
+		nDepSel.setSelectedIndex(2);
+		nDepSel.setToolTipText("RFN0: get NDep value from EPICCONT.DAT. ");
 
 		this.simYear = new JTextField(40);
 		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDir, panel);
 		layout.addLabelWidgetPair("Simulation Year: ", simYear, panel);
-		layout.makeCompactGrid(panel, 2, 2, // number of rows and cols
+		layout.addLabelWidgetPair("Daily Average N Deposition: ", nDepSel, panel);
+		layout.makeCompactGrid(panel, 3, 2, // number of rows and cols
 				10, 10, // initial X and Y
 				5, 5); // x and y pading
 
@@ -189,9 +180,11 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 				&& !sSimYear.endsWith(simY) && app.allowDiffCheck()) 
 			throw new Exception("Current modeling year is inconsistent with previous one (" + sSimYear + ")");
 		
-
-		String seCropsString = cropSelectionPanel.selectedItemTostring();
+		String ndepValue = (String) this.nDepSel.getSelectedItem();
+		if ( ndepValue == null || ndepValue.isEmpty()) 
+			throw new Exception( "Deposition dir is empty, please specify it!");
 		
+		String seCropsString = cropSelectionPanel.selectedItemTostring();
 		String[] seCrops = cropSelectionPanel.getSelectedCrops();
 		if ( seCrops == null || seCrops.length == 0) 
 			throw new Exception( "Please select crop(s) first!");
@@ -214,7 +207,8 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		outMessages += "Epic base: " + baseDir + ls;
 		outMessages += "Scen directory: " + scenarioDir + ls;
 		
-		final String file = writeRunScript(baseDir, scenarioDir, seCropsString, cropIDs, simY);
+		final String file = writeRunScript(baseDir, scenarioDir, seCropsString, cropIDs, 
+				simY, ndepValue);
 		Thread populateThread = new Thread(new Runnable() {
 			public void run() {
 				runScript(file);
@@ -224,7 +218,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 	}
 
 	protected String writeRunScript( String baseDir, String scenarioDir, 
-			String cropNames, String cropIDs, String simY) throws Exception {
+			String cropNames, String cropIDs, String simY, String ndepValue) throws Exception {
 		Date now = new Date(); // java.util.Date, NOT java.sql.Date or java.sql.Timestamp!
 		String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(now);
 		
@@ -235,7 +229,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(getScirptHeader());
-		sb.append(getEnvironmentDef(baseDir, scenarioDir, simY));
+		sb.append(getEnvironmentDef(baseDir, scenarioDir, simY,ndepValue));
 		sb.append(getRunDef(cropNames, cropIDs));		 
 		
 		String mesg = "";
@@ -273,7 +267,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		sb.append("# Written by: Fortran by Benson, Script by IE. 2012" + ls);
 		sb.append("# Modified by: IE " + ls); 
 		sb.append("#" + ls);
-		sb.append("# Program: EPIC0509su.exe" + ls);
+		sb.append("# Program: EPIC0509app.exe" + ls);
 		sb.append("#         Needed environment variables included in the script file to run." + ls);        
 		sb.append("# " + ls);
 		sb.append("#***************************************************************************************" + ls + ls);
@@ -281,7 +275,8 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		return sb.toString();
 	}
 
-	private String getEnvironmentDef(String baseDir, String scenarioDir, String simY) {
+	private String getEnvironmentDef(String baseDir, String scenarioDir, 
+			String simY, String ndepValue ) {
 		StringBuilder sb = new StringBuilder();
 		
 		String ls = "\n";
@@ -293,6 +288,16 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		sb.append("setenv    EPIC_DIR " + baseDir + ls);
 		sb.append("setenv    SCEN_DIR " + scenarioDir + ls);
 		sb.append("setenv    COMM_DIR  $EPIC_DIR/common_data" +ls);
+		if ( ndepValue.contains("RFN") )  ndepValue = "RFN0";
+		else if ( ndepValue.contains("2002") )  ndepValue = "dailyNDep_2004";
+		else if ( ndepValue.contains("2010") )  ndepValue = "dailyNDep_2008";
+
+		if ( ndepValue.length() == 4) 
+			sb.append("setenv    NDEP_DIR   " + ndepValue + ls);
+		else
+			sb.append("setenv NDEP_DIR $COMM_DIR/EPIC_model/app/" 
+					+ ndepValue + ls);
+		System.out.println(sb);
 		sb.append("setenv    SHARE_DIR $SCEN_DIR/share_data" + ls);
 		sb.append("setenv    WEAT_DIR  $COMM_DIR/statWeath" + ls);
 		
@@ -393,6 +398,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 			this.scenarioDir.setText(fields.getScenarioDir());
 			simYear.setText(fields.getSimYear());
 			runMessages.setText(fields.getMessage());
+			nDepSel.setSelectedItem(fields.getNDepDir());
 		}else{
 			newProjectCreated();
 		}
@@ -401,7 +407,8 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 	public void saveProjectRequested() {
 		if ( scenarioDir != null ) fields.setScenarioDir(scenarioDir.getText());
 		if ( simYear != null ) fields.setSimYear(simYear.getText());
-		if ( runMessages != null ) fields.setMessage(runMessages.getText());		
+		if ( runMessages != null ) fields.setMessage(runMessages.getText());	
+		if ( nDepSel != null ) fields.setNDepDir( (String) nDepSel.getSelectedItem());
 	}
 
 	@Override
@@ -409,6 +416,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		DomainFields domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		scenarioDir.setText(domain.getScenarioDir());	
 		simYear.setText(domain.getSimYear());
+		nDepSel.setSelectedIndex(2);
 		runMessages.setText("");
 		if ( fields == null ) {
 			fields = new EpicAppFields();
