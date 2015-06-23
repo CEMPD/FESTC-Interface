@@ -169,7 +169,7 @@ public class ManFileModPanel extends UtilFieldsPanel implements PlotEventListene
 		rainPanel.add(vrainButton);
 		rainPanel.add(erainButton);
 		
-		layout.addLabelWidgetPair("EPICCONT.DAT", contPanel, rightPanel);
+		layout.addLabelWidgetPair("EPICCONT*.DAT", contPanel, rightPanel);
 		layout.addLabelWidgetPair("PARM0509.DAT", paramPanel, rightPanel);
 		layout.addLabelWidgetPair("EPICFILE.DAT", filePanel, rightPanel);
 		 

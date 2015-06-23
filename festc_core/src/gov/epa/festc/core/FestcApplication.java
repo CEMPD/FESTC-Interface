@@ -557,8 +557,10 @@ public class FestcApplication implements ListSelectionListener,
 		sb.append("mkdir -p  $SCEN_DIR/share_data"   +ls ); 
 		sb.append("mkdir -p  $SCEN_DIR/scripts"   +ls ); 
 		sb.append("mkdir -p  $SCEN_DIR/work_dir"   +ls ); 
-		sb.append("cp $COMM_DIR/EPIC_model/app/EPICCONT.DAT $SCEN_DIR/share_data/."   +ls ); 
-		sb.append("sed -i '1s/^.\\{,8\\}/   " + year+ "/' $SCEN_DIR/share_data/EPICCONT.DAT"  +ls ) ;
+		sb.append("cp $COMM_DIR/EPIC_model/spinup/EPICCONT.DAT $SCEN_DIR/share_data/EPICCONT_SU.DAT"   +ls ); 
+		sb.append("cp $COMM_DIR/EPIC_model/spinup/EPICCONT_POTATOES.DAT $SCEN_DIR/share_data/EPICCONT_SU_POTATOES.DAT"   +ls ); 
+		sb.append("cp $COMM_DIR/EPIC_model/app/EPICCONT.DAT $SCEN_DIR/share_data/EPICCONT_APP.DAT"   +ls ); 
+		sb.append("sed -i '1s/^.\\{,8\\}/   " + year+ "/' $SCEN_DIR/share_data/EPICCONT_APP.DAT"  +ls ) ;
 
 		try {
 			File script = new File(file);
