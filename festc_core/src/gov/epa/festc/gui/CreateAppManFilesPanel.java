@@ -23,6 +23,7 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -44,6 +45,7 @@ public class CreateAppManFilesPanel extends UtilFieldsPanel implements PlotEvent
 	private FestcApplication app;
 	private MessageCenter msg;
 	private ManageAppFields fields;
+	 
 	 
 	private CropSelectionPanel cropSelectionPanel;
 	
@@ -75,6 +77,7 @@ public class CreateAppManFilesPanel extends UtilFieldsPanel implements PlotEvent
 		JButton btn = new JButton(runAction());
 		btn.setPreferredSize(new Dimension(100,50));
 		buttonPanel.add(btn);
+		 
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(70, 30, 70, 30));
 		this.cropSelectionPanel = new CropSelectionPanel(app);
 		layout.addWidgetPair(cropSelectionPanel, buttonPanel, panel);
@@ -194,7 +197,9 @@ public class CreateAppManFilesPanel extends UtilFieldsPanel implements PlotEvent
 			StringBuilder sb = new StringBuilder();
 			sb.append(getScriptHeader());
 			sb.append(getEnvironmentDef(baseDir, scenarioDir, fYear));
-			sb.append(getManSu(cropNames, cropIDs));		
+			sb.append(getManSu(cropNames, cropIDs));	
+			if(runTiledrain.isSelected())
+				sb.append(getRunTD());
 
 			File script = new File(file);
 
@@ -284,8 +289,24 @@ public class CreateAppManFilesPanel extends UtilFieldsPanel implements PlotEvent
 		sb.append("   endif " + ls);
 		sb.append("   @ n = $n + 1 " + ls);
 		sb.append("end " + ls ); 
-		sb.append(ls);		 
-
+		sb.append(ls);		 	
+		return sb.toString();
+	}
+	
+	private String getRunTD(){
+		StringBuilder sb = new StringBuilder();
+		sb.append(ls + "#" + ls);
+		sb.append("# Run tile drain " + ls + ls); 
+		 
+		sb.append("foreach crop ($CROPS) " + ls);
+		sb.append("   setenv CROP_NAME $crop " + ls);
+	 
+		sb.append("  if ( ! -e $SCEN_DIR/$CROP_NAME/spinup/manage/tileDrain )  " +
+				"mkdir -p $SCEN_DIR/$CROP_NAME/spinup/manage/tileDrain" + ls);
+		sb.append("  cp $SCEN_DIR/$CROP_NAME/spinup/manage/tileDrain/SOILLISTALLDW.DAT " +
+				"$SCEN_DIR/$CROP_NAME/app/manage/tileDrain/SOILLIST.DAT" + ls);
+		sb.append("end " + ls ); 
+		sb.append(ls);		 	
 		return sb.toString();
 	}
 	

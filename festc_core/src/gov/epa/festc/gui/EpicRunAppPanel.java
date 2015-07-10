@@ -25,6 +25,7 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -105,11 +106,13 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		nDepSel = new JComboBox(Constants.NDEPS);
 		nDepSel.setSelectedIndex(2);
 		nDepSel.setToolTipText("RFN0: get NDep value from EPICCONT.DAT. ");
+		
 
 		this.simYear = new JTextField(40);
 		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDir, panel);
 		layout.addLabelWidgetPair("Simulation Year: ", simYear, panel);
 		layout.addLabelWidgetPair("Daily Average N Deposition: ", nDepSel, panel);
+		 
 		layout.makeCompactGrid(panel, 3, 2, // number of rows and cols
 				10, 10, // initial X and Y
 				5, 5); // x and y pading

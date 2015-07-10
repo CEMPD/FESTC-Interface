@@ -23,6 +23,7 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
@@ -74,6 +75,7 @@ public class CreateSpinupManFilesPanel extends UtilFieldsPanel implements PlotEv
 		buttonPanel.add(btn);
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(70, 30, 70, 30));
 		this.cropSelectionPanel = new CropSelectionPanel(app);
+		
 		layout.addWidgetPair(cropSelectionPanel, buttonPanel, panel);
 		layout.makeCompactGrid(panel, 1, 2, // number of rows and cols
 				10, 10, // initial X and Y
@@ -174,7 +176,9 @@ public class CreateSpinupManFilesPanel extends UtilFieldsPanel implements PlotEv
 			StringBuilder sb = new StringBuilder();
 			sb.append(getScriptHeader());
 			sb.append(getEnvironmentDef(baseDir, scenarioDir, fYear));
-			sb.append(getManSu(cropNames));		
+			sb.append(getManSu(cropNames));	
+			if(runTiledrain.isSelected())
+				sb.append(getRunTD(baseDir));
 
 			File script = new File(file);
 
@@ -263,6 +267,34 @@ public class CreateSpinupManFilesPanel extends UtilFieldsPanel implements PlotEv
 
 		return sb.toString();
 	}
+	
+	private String getRunTD(String baseDir){
+		StringBuilder sb = new StringBuilder();
+		sb.append(ls + "#" + ls);
+		
+		sb.append("# Run tile drain " + ls + ls);
+		 
+		sb.append("set    EXEC_DIR = " + baseDir + "/util/tileDrain" + ls);
+		sb.append("foreach crop ($CROPS) " + ls);
+		sb.append("   setenv CROP_NAME $crop " + ls);
+		sb.append("  if ( ! -e $SCEN_DIR/$CROP_NAME/spinup/manage/tileDrain )  " +
+				"mkdir -p $SCEN_DIR/$CROP_NAME/spinup/manage/tileDrain" + ls);  
+		sb.append("  time $EXEC_DIR/soilDrain.exe" + ls);
+		sb.append("      if ( $status == 0 ) then" + ls);
+		sb.append("        echo  ==== Finished soil drain run for crop $CROP_NAME. " + ls);
+		sb.append("     else " + ls);
+		sb.append("         echo  ==status== Error in soil drain run for crop $CROP_NAME. " + ls); 
+		sb.append("       exit 1 " + ls);
+		sb.append("  endif " + ls);
+		    
+		sb.append("  mv $SCEN_DIR/$CROP_NAME/spinup/manage/tileDrain/SOILLISTALLSU.DAT  " +
+				"$SCEN_DIR/$CROP_NAME/spinup/manage/tileDrain/SOILLIST.DAT" + ls);
+
+		sb.append("end " + ls ); 
+		sb.append(ls);		 	
+		return sb.toString();
+	}
+	
 
 	public void projectLoaded() {
 		fields = (ManageSpinupFields) app.getProject().getPage(fields.getName());

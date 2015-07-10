@@ -331,7 +331,7 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
 		if ( scenarioDir != null ) fields.setScenarioDir(scenarioDir.getText());
 		if ( runMessages != null ) fields.setMessage(runMessages.getText());
 		if ( minAcreas != null)  fields.setMinAcres(minAcreas.getText());
-		if ( co2Factor != null)  fields.setMinAcres(co2Factor.getText());
+		if ( co2Factor != null)  fields.setCO2Fac(co2Factor.getText());
 	}
 
 	@Override

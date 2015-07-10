@@ -3,12 +3,16 @@ package gov.epa.festc.gui;
 import gov.epa.festc.util.Constants;
 import gov.epa.festc.util.SpringLayoutGenerator;
 
+import java.awt.Dimension;
 import java.text.NumberFormat;
 
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -31,6 +35,7 @@ public class UtilFieldsPanel extends JPanel {
 	protected JTextField gridName;
 	protected JTextField scenarioDir;
 	protected JComboBox fertYearSel;
+	protected JCheckBox runTiledrain;
 	
 	protected JTextArea runMessages;
 
@@ -175,11 +180,17 @@ public class UtilFieldsPanel extends JPanel {
         JPanel panel = new JPanel(new SpringLayout());
 		SpringLayoutGenerator layout = new SpringLayoutGenerator();
 		
+		JPanel bPanel = new JPanel(); 
+		this.runTiledrain = new JCheckBox("RunTiledrain", true);
+		
 	    fertYearSel = new JComboBox(Constants.FERTYEARS);
 	    fertYearSel.setSelectedIndex(1);
-	    //fertYearSel.addActionListener(selectAction());
+	    bPanel.add(fertYearSel);
+	    bPanel.add(new JLabel("               "));
+	    bPanel.add(runTiledrain);
+	    
 		
-		layout.addLabelWidgetPair("Fertilizer Year: ", fertYearSel, panel);
+		layout.addLabelWidgetPair("Fertilizer Year: ", bPanel, panel);
 		
 		layout.makeCompactGrid(panel, 1, 2, // number of rows and cols
 				10, 10, // initial X and Y
