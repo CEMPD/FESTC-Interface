@@ -198,8 +198,8 @@ public class CreateAppManFilesPanel extends UtilFieldsPanel implements PlotEvent
 			sb.append(getScriptHeader());
 			sb.append(getEnvironmentDef(baseDir, scenarioDir, fYear));
 			sb.append(getManSu(cropNames, cropIDs));	
-			if(runTiledrain.isSelected())
-				sb.append(getRunTD());
+			//tile drain script
+			sb.append(getRunTD());
 
 			File script = new File(file);
 

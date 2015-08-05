@@ -22,6 +22,7 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -46,7 +47,9 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 
 	private EpicSpinupFields fields;
 	
-	protected JComboBox nDepSel;
+	private JComboBox nDepSel;
+	private JCheckBox runTiledrain;
+	private JTextField co2Factor;
  
 	public EpicSpinupPanel(FestcApplication application) {
 		app = application;
@@ -95,10 +98,15 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		nDepSel = new JComboBox(Constants.SU_NDEPS);
 		nDepSel.setSelectedIndex(2);
 		nDepSel.setToolTipText("RFN0: get NDep value from EPICCONT.DAT. ");
+		JPanel co2FacPanel = new JPanel();
+		co2Factor = new JTextField(20);
+		co2Factor.setToolTipText("Default value is 413.00");
+		co2FacPanel.add(co2Factor);
 
 		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDir, panel);
 		layout.addLabelWidgetPair("Daily Average N Deposition: ", nDepSel, panel);
-		layout.makeCompactGrid(panel, 2, 2, // number of rows and cols
+		layout.addLabelWidgetPair("CO2 Concentration (PPM): ", co2FacPanel, panel);
+		layout.makeCompactGrid(panel, 3, 2, // number of rows and cols
 				10, 10, // initial X and Y
 				5, 5); // x and y pading
 
@@ -114,6 +122,9 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		btn.setPreferredSize(new Dimension(100,50));
 		buttonPanel.add(btn);
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(70, 30, 70, 30));
+		this.runTiledrain = new JCheckBox("RunTiledrain", true);
+		buttonPanel.add(runTiledrain);
+		
 		this.cropSelectionPanel = new CropSelectionPanel(app);
 		layout.addWidgetPair(cropSelectionPanel, buttonPanel, panel);
 		layout.makeCompactGrid(panel, 1, 2, // number of rows and cols
@@ -150,10 +161,19 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		if ( scenarioDir == null || scenarioDir.isEmpty()) 
 			throw new Exception( "Please select scenario dir first!");
 		
+		String co2Fac = co2Factor.getText();
+		if (co2Fac == null || co2Fac.isEmpty()) 
+			throw new Exception("co2Factor is not specified!");
+		
 		String ndepValue = (String) this.nDepSel.getSelectedItem();
 		if ( ndepValue == null || ndepValue.isEmpty()) 
 			throw new Exception( "Deposition dir is empty, please specify it!");
-
+		
+		try {
+			Float.parseFloat(co2Fac);
+		}catch(NumberFormatException e) {
+			throw new Exception("CO2 factor is not a number!");
+		}
 	
 		String seCropsString = cropSelectionPanel.selectedItemTostring();
 		String[] seCrops = cropSelectionPanel.getSelectedCrops();
@@ -263,6 +283,12 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		sb.append("setenv    COMM_DIR $EPIC_DIR/common_data" +ls);
 		sb.append("setenv    SOIL_DIR $COMM_DIR/BaumerSoils" +ls);
 		sb.append("setenv    WEAT_DIR $COMM_DIR/statWeath" + ls);
+		sb.append("setenv    CO2_FAC  " + co2Factor.getText() + ls);
+		if ( runTiledrain.isSelected() )  
+			sb.append("setenv    RUN_TD   YES"  + ls);
+		else 
+			sb.append("setenv    RUN_TD   NO"  + ls);
+		
 		if ( ndepValue.contains("RFN") )  ndepValue = "RFN0";
 		else if ( ndepValue.contains("2002") )  ndepValue = "dailyNDep_2004";
 		else if ( ndepValue.contains("2010") )  ndepValue = "dailyNDep_2008";
@@ -373,6 +399,7 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 			this.scenarioDir.setText(fields.getScenarioDir());
 			runMessages.setText(fields.getMessage());
 			nDepSel.setSelectedItem(fields.getNDepDir());
+			co2Factor.setText(fields.getCO2Fac()==null? "413.00":fields.getCO2Fac());
 		}else{
 			newProjectCreated();
 		}
@@ -383,6 +410,7 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		if ( scenarioDir != null ) fields.setScenarioDir(scenarioDir.getText());
 		if ( runMessages != null ) fields.setMessage(runMessages.getText());
 		if ( nDepSel != null ) fields.setNDepDir( (String) nDepSel.getSelectedItem());
+		if ( co2Factor != null)  fields.setCO2Fac(co2Factor.getText());
 	}
 
 	@Override
@@ -391,6 +419,7 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		scenarioDir.setText(domain.getScenarioDir());	
 		nDepSel.setSelectedIndex(2);
 		runMessages.setText("");
+		co2Factor.setText("413.00");
 		if ( fields == null ) {
 			fields = new EpicSpinupFields();
 			app.getProject().addPage(fields);

@@ -177,8 +177,8 @@ public class CreateSpinupManFilesPanel extends UtilFieldsPanel implements PlotEv
 			sb.append(getScriptHeader());
 			sb.append(getEnvironmentDef(baseDir, scenarioDir, fYear));
 			sb.append(getManSu(cropNames));	
-			if(runTiledrain.isSelected())
-				sb.append(getRunTD(baseDir));
+			 
+			sb.append(getRunTD(baseDir));
 
 			File script = new File(file);
 
@@ -231,6 +231,7 @@ public class CreateSpinupManFilesPanel extends UtilFieldsPanel implements PlotEv
 		sb.append("setenv    SOIL_DIR $EPIC_DIR/common_data/BaumerSoils" +ls);
 		sb.append("setenv    MANG_DIR $EPIC_DIR/common_data/util/manageCreate/" + fYear + ls);
 		sb.append("setenv    WEAT_DIR $EPIC_DIR/common_data/statWeath" + ls);
+		
 		sb.append("" + ls);
 		sb.append("set    EXEC_DIR = " + baseDir + "/util/manageCreate" + ls);
 		sb.append("" + ls);
@@ -273,8 +274,10 @@ public class CreateSpinupManFilesPanel extends UtilFieldsPanel implements PlotEv
 		sb.append(ls + "#" + ls);
 		
 		sb.append("# Run tile drain " + ls + ls);
-		 
-		sb.append("set    EXEC_DIR = " + baseDir + "/util/tileDrain" + ls);
+		sb.append("setenv   WORK_DIR $SCEN_DIR/work_dir" + ls);
+		sb.append("setenv   COMM_DIR $EPIC_DIR/common_data" + ls);
+		sb.append("setenv   TYPE_NAME spinup" + ls);
+		sb.append("set    EXEC_DIR = " + baseDir + "/util/tileDrain" + ls +ls);
 		sb.append("foreach crop ($CROPS) " + ls);
 		sb.append("   setenv CROP_NAME $crop " + ls);
 		sb.append("  if ( ! -e $SCEN_DIR/$CROP_NAME/spinup/manage/tileDrain )  " +

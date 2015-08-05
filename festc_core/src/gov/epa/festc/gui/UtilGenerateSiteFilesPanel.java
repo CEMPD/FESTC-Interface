@@ -33,7 +33,6 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
 	private MessageCenter msg;
 	private SiteFilesFields fields;
 	private JTextField minAcreas;
-	private JTextField co2Factor;
 	
 	public UtilGenerateSiteFilesPanel(FestcApplication application, MessageCenter msg) {
 		app = application;
@@ -56,21 +55,16 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
 		minAcreas = new JTextField(20);
 		minAcreas.setToolTipText("Default value is 40.0");
 		minAcrePanel.add(minAcreas);
-		JPanel co2FacPanel = new JPanel();
-		co2Factor = new JTextField(20);
-		co2Factor.setToolTipText("Default value is 413.00");
-		co2FacPanel.add(co2Factor);
-
+		 
 		JPanel buttonPanel = new JPanel();
 		JButton btn = new JButton(generateSiteFilesAction());
 		buttonPanel.add(btn);
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 0));
 		
 		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDir, panel);
-		layout.addLabelWidgetPair("Minimum Crop Acres: ", minAcrePanel, panel);
-		layout.addLabelWidgetPair("CO2 Factor: ", co2FacPanel, panel);
+		layout.addLabelWidgetPair("Minimum Crop Acres: ", minAcrePanel, panel); 
 	
-		layout.makeCompactGrid(panel, 3, 2, // number of rows and cols
+		layout.makeCompactGrid(panel, 2, 2, // number of rows and cols
 				10, 10, // initial X and Y
 				5, 5); // x and y pading
 
@@ -105,10 +99,6 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
 		String scenarioDir = this.scenarioDir.getText(); 
 		validateScen(scenarioDir);
 		
-		String co2Fac = co2Factor.getText();
-		if (co2Fac == null || co2Fac.isEmpty()) 
-			throw new Exception("co2Factor is not specified!");
-		
 		String minAcres = minAcreas.getText();
 		if (minAcres == null || minAcres.isEmpty()) 
 			throw new Exception("Minimum Crop Acres is not specified!");
@@ -127,12 +117,6 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
 			Float.parseFloat(minAcres);
 		}catch(NumberFormatException e) {
 			throw new Exception("Minimum Crop Acres is not a number!");
-		}
-		
-		try {
-			Float.parseFloat(co2Fac);
-		}catch(NumberFormatException e) {
-			throw new Exception("CO2 factor is not a number!");
 		}
 		
 		outMessages += "Epic base: " + baseDir + ls;
@@ -229,8 +213,7 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
 		sb.append("setenv    WORK_DIR " + scenarioDir + "/work_dir" +ls);
 		sb.append("setenv    SHARE_DIR " + scenarioDir + "/share_data" + ls);
 		sb.append("setenv    SIT_DIR  " + "$SHARE_DIR/SIT" + ls);
-		sb.append("setenv    CO2_FAC  " + co2Factor.getText() + ls);
-
+		 
 		return sb.toString();
 	}
 	
@@ -320,7 +303,6 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
 			this.scenarioDir.setText(fields.getScenarioDir());
 			runMessages.setText(fields.getMessage());
 			minAcreas.setText(fields.getMinAcres()==null? "40.0":fields.getMinAcres());
-			co2Factor.setText(fields.getCO2Fac()==null? "413.00":fields.getCO2Fac());
 		} else{
 			newProjectCreated();
 		}
@@ -331,7 +313,6 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
 		if ( scenarioDir != null ) fields.setScenarioDir(scenarioDir.getText());
 		if ( runMessages != null ) fields.setMessage(runMessages.getText());
 		if ( minAcreas != null)  fields.setMinAcres(minAcreas.getText());
-		if ( co2Factor != null)  fields.setCO2Fac(co2Factor.getText());
 	}
 
 	@Override
@@ -340,7 +321,7 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
 		scenarioDir.setText(domain.getScenarioDir());	
 		runMessages.setText("");
 		minAcreas.setText("40.0");
-		co2Factor.setText("513.00");
+		 
 		if ( fields == null ) {
 			fields = new SiteFilesFields();
 			app.getProject().addPage(fields);

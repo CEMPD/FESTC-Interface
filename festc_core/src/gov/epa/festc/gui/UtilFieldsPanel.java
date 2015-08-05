@@ -35,7 +35,6 @@ public class UtilFieldsPanel extends JPanel {
 	protected JTextField gridName;
 	protected JTextField scenarioDir;
 	protected JComboBox fertYearSel;
-	protected JCheckBox runTiledrain;
 	
 	protected JTextArea runMessages;
 
@@ -181,14 +180,13 @@ public class UtilFieldsPanel extends JPanel {
 		SpringLayoutGenerator layout = new SpringLayoutGenerator();
 		
 		JPanel bPanel = new JPanel(); 
-		this.runTiledrain = new JCheckBox("RunTiledrain", true);
+		 
 		
 	    fertYearSel = new JComboBox(Constants.FERTYEARS);
 	    fertYearSel.setSelectedIndex(1);
 	    bPanel.add(fertYearSel);
-	    bPanel.add(new JLabel("               "));
-	    bPanel.add(runTiledrain);
-	    
+//	    bPanel.add(new JLabel("               "));
+//	    bPanel.add(runTiledrain);    
 		
 		layout.addLabelWidgetPair("Fertilizer Year: ", bPanel, panel);
 		
