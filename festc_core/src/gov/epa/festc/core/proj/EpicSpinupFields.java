@@ -8,7 +8,7 @@ public class EpicSpinupFields extends PageFields {
 	private String finishedCrops;
 	private String nDepDir;
 	private String co2Fac;
-	
+	private String runTiledrain;
 	public EpicSpinupFields() {
 		//NOTE: no-op
 	}
@@ -23,6 +23,14 @@ public class EpicSpinupFields extends PageFields {
 	
 	public String getNDepDir() {
 		return nDepDir;
+	}
+	
+	public void setRunTiledrain(String runTiledrain) {
+		this.runTiledrain = runTiledrain;
+	}
+	
+	public String getRunTiledrain() {
+		return runTiledrain;
 	}
 	
 	public void setNDepDir(String nDepDir) {

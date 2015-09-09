@@ -9,6 +9,7 @@ public class EpicAppFields extends PageFields {
 	private String simYear;
 	private String nDepDir;
 	private String co2Fac;
+	private String runTiledrain;
 	
 	public EpicAppFields() {
 		//NOTE: no-op
@@ -43,6 +44,14 @@ public class EpicAppFields extends PageFields {
 	}
 	public String getCO2Fac() {
 		return co2Fac;
+	}
+	
+	public void setRunTiledrain(String runTiledrain) {
+		this.runTiledrain = runTiledrain;
+	}
+	
+	public String getRunTiledrain() {
+		return runTiledrain;
 	}
 
 	@Override
