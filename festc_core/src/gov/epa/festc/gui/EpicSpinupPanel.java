@@ -100,7 +100,7 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		nDepSel.setToolTipText("RFN0: get NDep value from EPICCONT.DAT. ");
 		 
 		co2Factor = new JTextField(20);
-		co2Factor.setToolTipText("Default value is 413.00");
+		//co2Factor.setToolTipText("Default value is 413.00");
 		 
 		runTiledrain = new JComboBox(new String[] {"YES", "NO"});
 		runTiledrain.setSelectedIndex(1);
@@ -294,7 +294,7 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		if ( ndepValue.length() == 4) 
 			sb.append("setenv    NDEP_DIR   " + ndepValue + ls);
 		else
-			sb.append("setenv  NDEP_DIR $COMM_DIR/EPIC_model/spinup/" 
+			sb.append("setenv  NDEP_DIR $COMM_DIR/EPIC_model/" 
 					+ ndepValue + ls);
 
 		sb.append("setenv    SHARE_DIR $SCEN_DIR/share_data" + ls);
@@ -397,7 +397,7 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 			this.scenarioDir.setText(fields.getScenarioDir());
 			runMessages.setText(fields.getMessage());
 			nDepSel.setSelectedItem(fields.getNDepDir());
-			co2Factor.setText(fields.getCO2Fac()==null? "390.00":fields.getCO2Fac());
+			co2Factor.setText(fields.getCO2Fac()==null? "380.00":fields.getCO2Fac());
 			runTiledrain.setSelectedItem(fields.getRunTiledrain()==null?"NO":fields.getRunTiledrain());
 		}else{
 			newProjectCreated();
@@ -419,7 +419,7 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		scenarioDir.setText(domain.getScenarioDir());	
 		nDepSel.setSelectedIndex(2);
 		runMessages.setText("");
-		co2Factor.setText("390.00");
+		co2Factor.setText("380.00");
 		runTiledrain.setSelectedIndex(1);
 		if ( fields == null ) {
 			fields = new EpicSpinupFields();

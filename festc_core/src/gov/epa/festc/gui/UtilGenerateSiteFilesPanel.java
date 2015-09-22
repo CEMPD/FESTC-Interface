@@ -36,6 +36,7 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
 	
 	public UtilGenerateSiteFilesPanel(FestcApplication application, MessageCenter msg) {
 		app = application;
+		init();
 		fields = new SiteFilesFields();
 		app.getProject().addPage(fields);
 		app.addPlotListener(this);
@@ -50,7 +51,7 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
         JPanel panel = new JPanel(new SpringLayout());
 		SpringLayoutGenerator layout = new SpringLayoutGenerator();
 	
-		this.scenarioDir = new JTextField(40);	
+		//this.scenarioDir = new JTextField(40);	
 		JPanel minAcrePanel = new JPanel();
 		minAcreas = new JTextField(20);
 		minAcreas.setToolTipText("Default value is 40.0");
@@ -61,7 +62,7 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
 		buttonPanel.add(btn);
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 0));
 		
-		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDir, panel);
+		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDirP, panel);
 		layout.addLabelWidgetPair("Minimum Crop Acres: ", minAcrePanel, panel); 
 	
 		layout.makeCompactGrid(panel, 2, 2, // number of rows and cols

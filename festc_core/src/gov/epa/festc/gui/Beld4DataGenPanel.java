@@ -126,7 +126,7 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		inputDirPanel.add(inputDirBrowser);	
 
 		layout.addLabelWidgetPair("Grid Description: ", getGridDescPanel(false), panel);
-		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDir, panel);
+		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDirP, panel);
 		layout.addLabelWidgetPair("NLCD/MODIS Data Year:", yearPanel, panel);
 		layout.addLabelWidgetPair("NLCD/MODIS List File:", inputDirPanel, panel);
 		layout.addLabelWidgetPair("Data selection:", dataPanel, panel);
@@ -363,7 +363,7 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		proj4proj.setText(domain.getProj());
 		gridName.setText(domain.getGridName());
 		scenarioDir.setText(domain.getScenarioDir());
-		String nlcdY = domain.getNlcdYear();
+		String nlcdY = domain.getNlcdYear()==null? "2006":domain.getNlcdYear();		
 		nlcdYear.setText(nlcdY);
 		String sahome = Constants.getProperty(Constants.SA_HOME, msg);	
 		inputDir.setText(sahome.trim() + "/data/nlcd_modis_files_" + nlcdY + ".txt");

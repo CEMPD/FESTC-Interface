@@ -98,11 +98,11 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 		minAcreas.setToolTipText("Default value is 40.0");
 		minAcrePanel.add(minAcreas);
 		
-		JPanel scenPanel = new JPanel();
-        scenPanel.add(scenarioDir);
+//		JPanel scenPanel = new JPanel();
+//        scenPanel.add(scenarioDir);
 		
 		layout.addLabelWidgetPair("Grid Description: ", getGridDescPanel(false), panel);
-		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenPanel, panel);
+		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDirP, panel);
 		layout.addLabelWidgetPair("BELD4 NetCDF File: ", beld4DirPanel, panel);
 		layout.addLabelWidgetPair("Minimum Crop Acres: ", minAcrePanel, panel);
 

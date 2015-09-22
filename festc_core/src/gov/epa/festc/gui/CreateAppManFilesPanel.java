@@ -301,8 +301,8 @@ public class CreateAppManFilesPanel extends UtilFieldsPanel implements PlotEvent
 		sb.append("foreach crop ($CROPS) " + ls);
 		sb.append("   setenv CROP_NAME $crop " + ls);
 	 
-		sb.append("  if ( ! -e $SCEN_DIR/$CROP_NAME/spinup/manage/tileDrain )  " +
-				"mkdir -p $SCEN_DIR/$CROP_NAME/spinup/manage/tileDrain" + ls);
+		sb.append("  if ( ! -e $SCEN_DIR/$CROP_NAME/app/manage/tileDrain )  " +
+				"mkdir -p $SCEN_DIR/$CROP_NAME/app/manage/tileDrain" + ls);
 		sb.append("  cp $SCEN_DIR/$CROP_NAME/spinup/manage/tileDrain/SOILLISTALLDW.DAT " +
 				"$SCEN_DIR/$CROP_NAME/app/manage/tileDrain/SOILLIST.DAT" + ls);
 		sb.append("end " + ls ); 

@@ -190,12 +190,12 @@ public class FestcApplication implements ListSelectionListener,
 		if (helpDir == null)
 			return;
 		helpDir = helpDir + "/help";
-		String helpName1 = helpDir + "/userManualIndex.htm";
+		//String helpName1 = helpDir + "/userManualIndex.htm";
 		String helpName2 = helpDir + "/userManual.htm";
 		HelpWindowWithContents.showContents(null, "FEST-C User Guide",
-				helpName1, helpName2);
+				null, helpName2);
 
-		msg.warn("help: " + helpName1);
+		//msg.warn("help: " + helpName1);
 		msg.warn("help: " + helpName2);
 	}
 
@@ -376,6 +376,7 @@ public class FestcApplication implements ListSelectionListener,
 			domain.setSimYear(panel.getSimuYear());
 			domain.setNlcdYear(panel.getNlcdYear());
 			domain.setScenarioDir(epicHome + "/scenarios/" + newScenario);	 
+			 
 			project.setName(newScenario);		 	
 			
 			/***
@@ -419,19 +420,23 @@ public class FestcApplication implements ListSelectionListener,
 			domain.setYmin(fields.getYmin());
 			domain.setScenarioDir(epicHome + "/scenarios/" + newScenName);
 			domain.setSimYear(panel.getSimuYear());		
-			domain.setNlcdYear(domain.getNlcdYear());
+			domain.setNlcdYear(domain.getNlcdYear()==null? "2006":domain.getNlcdYear());
 			project.setName(newScenName);
 			
 			projFile = new File(epicHome + "/scenarios/scenariosInfo/", newScenName);
 			if ( projFile.isFile() )
 				throw new Exception("New scenario \"" + newScenName +  "\" already exist.");
 			 
-			firePlotEvent(ProjectEvent.CREATED);	 
+			System.out.println("Creating Scenario: " + newScenName);
+			firePlotEvent(ProjectEvent.CREATED);
+			System.out.println("Saving Scenario: " + newScenName);
 			saveProj(projFile);
 			/***
 			 * NOTE: We still need to copy all the files from the existing scenario folder to the new scenario folder
-			 */		 
+			 */	
+			System.out.println("Coping Scenario: " + newScenName);
 			copyScenarioFold( existScenName, newScenName, panel.getSimuYear());
+			System.out.println("Finished Coping Scenario: " + newScenName);
 		}
 		
 		if (cmd.equals(Constants.DELETE_SCENARIO)) {
@@ -557,10 +562,8 @@ public class FestcApplication implements ListSelectionListener,
 		sb.append("mkdir -p  $SCEN_DIR/share_data"   +ls ); 
 		sb.append("mkdir -p  $SCEN_DIR/scripts"   +ls ); 
 		sb.append("mkdir -p  $SCEN_DIR/work_dir"   +ls ); 
-		sb.append("cp $COMM_DIR/EPIC_model/spinup/EPICCONT.DAT $SCEN_DIR/share_data/EPICCONT_SU.DAT"   +ls ); 
-		sb.append("cp $COMM_DIR/EPIC_model/spinup/EPICCONT_POTATOES.DAT $SCEN_DIR/share_data/EPICCONT_SU_POTATOES.DAT"   +ls ); 
-		sb.append("cp $COMM_DIR/EPIC_model/app/EPICCONT.DAT $SCEN_DIR/share_data/EPICCONT_APP.DAT"   +ls ); 
-		sb.append("sed -i '1s/^.\\{,8\\}/   " + year+ "/' $SCEN_DIR/share_data/EPICCONT_APP.DAT"  +ls ) ;
+		sb.append("cp $COMM_DIR/EPIC_model/app/EPICCONT.DAT $SCEN_DIR/share_data/."   +ls ); 
+		sb.append("sed -i '1s/^.\\{,8\\}/   " + year+ "/' $SCEN_DIR/share_data/EPICCONT.DAT"  +ls ) ;
 
 		try {
 			File script = new File(file);

@@ -34,6 +34,7 @@ public class UtilFieldsPanel extends JPanel {
 	protected JTextField proj4proj;
 	protected JTextField gridName;
 	protected JTextField scenarioDir;
+	protected JPanel scenarioDirP = new JPanel();;
 	protected JComboBox fertYearSel;
 	
 	protected JTextArea runMessages;
@@ -57,6 +58,7 @@ public class UtilFieldsPanel extends JPanel {
 		//proj4proj.setToolTipText("Use full description, ie. +proj=lcc +a=6370000.0 +b=6370000.0 +lat_1=33 +lat_2=45 +lat_0=40 +lon_0=-97");
 		
 		scenarioDir = new JTextField(40);
+		scenarioDirP.add(scenarioDir);
 		rows = new JFormattedTextField(NumberFormat.getNumberInstance());
 		rows.setColumns(3);
 		//rows.setValue(299);
@@ -161,6 +163,7 @@ public class UtilFieldsPanel extends JPanel {
 		
         JPanel panel = new JPanel(new SpringLayout());
 		SpringLayoutGenerator layout = new SpringLayoutGenerator();
+		
 		
 		this.scenarioDir = new JTextField(40);
 		 

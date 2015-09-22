@@ -121,7 +121,7 @@ public class Epic2CMAQPanel extends UtilFieldsPanel implements PlotEventListener
 		endDatePanel.add(endDate);
 	
 		layout.addLabelWidgetPair("Grid Description:", getGridDescPanel(false), panel);
-		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDir, panel);
+		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDirP, panel);
 		layout.addLabelWidgetPair("Start Date (YYYYMMDD):", startDatePanel, panel);
 		layout.addLabelWidgetPair("End Date (YYYYMMDD):", endDatePanel, panel);		 
 		layout.addLabelWidgetPair("Output File Prefix:", filesPrefixPanel, panel);

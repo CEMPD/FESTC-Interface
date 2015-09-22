@@ -148,7 +148,7 @@ public class HelpWindowWithContents extends OKWindow {
 						doc2);
 		} else {
 			window.setTitle(title);
-			window.setDoc(window.editorPaneLeft, doc);
+			//window.setDoc(window.editorPaneLeft, doc);
 			window.setDoc(window.editorPaneRight, doc2);
 		}
 	}

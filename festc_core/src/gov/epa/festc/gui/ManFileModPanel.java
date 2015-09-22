@@ -101,7 +101,7 @@ public class ManFileModPanel extends UtilFieldsPanel implements PlotEventListene
 		JPanel panel = new JPanel(new SpringLayout());
 		SpringLayoutGenerator layout = new SpringLayoutGenerator();
 		
-		this.scenarioDir = new JTextField(40);
+		//this.scenarioDir = new JTextField(40);
 		
 		JPanel spinupPanel = new JPanel();
 		this.applicationBtn = new JRadioButton(applicationSelection()); 
@@ -127,7 +127,7 @@ public class ManFileModPanel extends UtilFieldsPanel implements PlotEventListene
 		JPanel leftPanel = new JPanel();
 		leftPanel.add(cropsPanel);
 		 
-		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDir, panel);
+		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDirP, panel);
 		layout.addLabelWidgetPair(indent + "Simulation Type:", spinupPanel, panel);
 		layout.addLabelWidgetPair("   ", new JLabel("   "), panel);
 		layout.addWidgetPair(leftPanel, rightPanel(), panel);
@@ -258,11 +258,11 @@ public class ManFileModPanel extends UtilFieldsPanel implements PlotEventListene
 			return false;
 		}
 		if ( selCrop.equalsIgnoreCase("POTATOES") && type.equalsIgnoreCase("spinup")) 
-			contFile = scenDir + "/share_data/EPICCONT_SU_POTATOES.DAT"; 
+			contFile = baseDir + "/common_data/EPIC_model/" + type + "/EPICCONT_POTATOES.DAT"; 
 		else if ( type.equalsIgnoreCase("spinup")) 
-			contFile = scenDir + "/share_data/EPICCONT_SU.DAT"; 
+			contFile = baseDir + "/common_data/EPIC_model/" + type + "/EPICCONT.DAT"; 
 		else
-			contFile = scenDir + "/share_data/EPICCONT_APP.DAT"; 
+			contFile = scenDir + "/share_data/EPICCONT.DAT"; 
 		
 		
 		paramFile = baseDir + "/common_data/EPIC_model/" + type + "/PARM0509.DAT";

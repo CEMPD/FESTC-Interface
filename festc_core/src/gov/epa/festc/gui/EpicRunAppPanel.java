@@ -110,7 +110,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		nDepSel.setToolTipText("RFN0: get NDep value from EPICCONT.DAT. ");
 		//JPanel co2FacPanel = new JPanel();
 		co2Factor = new JTextField(20);
-		co2Factor.setToolTipText("Default value is 413.00");
+		//co2Factor.setToolTipText("Default value is 413.00");
 		//co2FacPanel.add(co2Factor);
 		
 		runTiledrain = new JComboBox(new String[] {"YES", "NO"});
@@ -322,7 +322,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		if ( ndepValue.length() == 4) 
 			sb.append("setenv    NDEP_DIR   " + ndepValue + ls);
 		else
-			sb.append("setenv NDEP_DIR $COMM_DIR/EPIC_model/app/" 
+			sb.append("setenv NDEP_DIR $COMM_DIR/EPIC_model/" 
 					+ ndepValue + ls);
 		System.out.println(sb);
 		sb.append("setenv    SHARE_DIR $SCEN_DIR/share_data" + ls);
@@ -426,7 +426,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 			simYear.setText(fields.getSimYear());
 			runMessages.setText(fields.getMessage());
 			nDepSel.setSelectedItem(fields.getNDepDir());
-			co2Factor.setText(fields.getCO2Fac()==null? "390":fields.getCO2Fac());
+			co2Factor.setText(fields.getCO2Fac()==null? "380":fields.getCO2Fac());
 		}else{
 			newProjectCreated();
 		}
@@ -447,7 +447,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		simYear.setText(domain.getSimYear());
 		nDepSel.setSelectedIndex(2);
 		runMessages.setText("");
-		co2Factor.setText("390");
+		co2Factor.setText("380");
 		runTiledrain.setSelectedIndex(1);
 		if ( fields == null ) {
 			fields = new EpicAppFields();

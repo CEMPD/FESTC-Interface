@@ -105,9 +105,11 @@ public class Mcip2EpicPanel extends UtilFieldsPanel implements PlotEventListener
 		dataDirPanel.add(mdataDir);
 		dataDirPanel.add(dataDirBrowser);
 		
+		JPanel deposSPanel = new JPanel();
 		depositionSel = new JComboBox(Constants.DEPSELECTIONS);
 		depositionSel.setSelectedIndex(0);
 		depositionSel.addActionListener(selectAction());
+		deposSPanel.add(depositionSel);
 		 
 		JPanel deposDirPanel = new JPanel();
 		depositionDir = new JTextField(40);
@@ -130,11 +132,11 @@ public class Mcip2EpicPanel extends UtilFieldsPanel implements PlotEventListener
 		endDatePanel.add(endDate);
 		
 		layout.addLabelWidgetPair("Grid Description:", getGridDescPanel(false), panel);
-		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDir, panel);
+		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDirP, panel);
 		layout.addLabelWidgetPair("Start Date (YYYYMMDD):", startDatePanel, panel);
 		layout.addLabelWidgetPair("End Date (YYYYMMDD):", endDatePanel, panel);
 		layout.addLabelWidgetPair("MCIP Data Directory:", dataDirPanel, panel);
-		layout.addLabelWidgetPair("Deposition Selection: ", depositionSel, panel);
+		layout.addLabelWidgetPair("Deposition Selection: ", deposSPanel, panel);
 		layout.addLabelWidgetPair("CMAQ Deposition Directory:", deposDirPanel, panel);
 		
 		layout.makeCompactGrid(panel, 7, 2, // number of rows and cols

@@ -277,7 +277,7 @@ public class CreateSpinupManFilesPanel extends UtilFieldsPanel implements PlotEv
 		sb.append("setenv   WORK_DIR $SCEN_DIR/work_dir" + ls);
 		sb.append("setenv   COMM_DIR $EPIC_DIR/common_data" + ls);
 		sb.append("setenv   TYPE_NAME spinup" + ls);
-		sb.append("set    EXEC_DIR = " + baseDir + "/util/tileDrain" + ls +ls);
+		//sb.append("set    EXEC_DIR = " + baseDir + "/util/tileDrain" + ls +ls);
 		sb.append("foreach crop ($CROPS) " + ls);
 		sb.append("   setenv CROP_NAME $crop " + ls);
 		sb.append("  if ( ! -e $SCEN_DIR/$CROP_NAME/spinup/manage/tileDrain )  " +
