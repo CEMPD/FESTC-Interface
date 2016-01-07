@@ -28,6 +28,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -35,6 +36,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
@@ -53,6 +55,8 @@ public class Epic2CMAQPanel extends UtilFieldsPanel implements PlotEventListener
 	private MessageCenter msg;
 	private JFormattedTextField startDate;
 	private JFormattedTextField endDate;
+	private JRadioButton applicationBtn, spinupBtn;
+	private boolean spinup = false;
 	
 	private FestcApplication app;
 	private Epic2CMAQFields fields;
@@ -119,18 +123,57 @@ public class Epic2CMAQPanel extends UtilFieldsPanel implements PlotEventListener
 		endDate = new JFormattedTextField(enf);
 		endDate.setColumns(40);
 		endDatePanel.add(endDate);
+		
+		JPanel butPanel = new JPanel();
+		this.applicationBtn = new JRadioButton(applicationSelection()); 
+		this.spinupBtn = new JRadioButton(spinupSelection()); 
+		this.applicationBtn.setSelected(true);
+		this.spinupBtn.setSelected(false);
+		butPanel.add(this.spinupBtn);
+		butPanel.add(this.applicationBtn);
+		 
+		ButtonGroup btnGroup = new ButtonGroup();
+		btnGroup.add(this.spinupBtn);
+		btnGroup.add(this.applicationBtn);
 	
 		layout.addLabelWidgetPair("Grid Description:", getGridDescPanel(false), panel);
 		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDirP, panel);
 		layout.addLabelWidgetPair("Start Date (YYYYMMDD):", startDatePanel, panel);
 		layout.addLabelWidgetPair("End Date (YYYYMMDD):", endDatePanel, panel);		 
 		layout.addLabelWidgetPair("Output File Prefix:", filesPrefixPanel, panel);
+		layout.addLabelWidgetPair("Output Type:", butPanel, panel);
 		
-		layout.makeCompactGrid(panel, 5, 2, // number of rows and cols
+		layout.makeCompactGrid(panel, 6, 2, // number of rows and cols
 				10, 10, // initial X and Y
 				5, 5); // x and y pading
 
 		return panel;
+	}
+	
+	private Action applicationSelection() {
+		return new AbstractAction("EPIC APP") {
+			public void actionPerformed(ActionEvent e) {
+				processSelec();
+			}
+				
+		};
+	}
+	
+	private Action spinupSelection() {
+		return new AbstractAction("EPIC SPINUP") {
+			public void actionPerformed(ActionEvent e) {
+				processSelec();
+			}
+				
+		};
+	}
+	
+	private void processSelec() {
+		if ( applicationBtn.isSelected()) {
+			spinup = false;
+		} else {
+			spinup = true;
+		}
 	}
 
 	private Action runAction() {
@@ -203,7 +246,12 @@ public class Epic2CMAQPanel extends UtilFieldsPanel implements PlotEventListener
 	
 		if ( !file.endsWith(System.getProperty("file.separator"))) 
 			file += System.getProperty("file.separator");
-		file += "epic2CMAQ_" + timeStamp + ".csh";
+		
+		//file += "epic2CMAQ_" + timeStamp + ".csh";
+		if (spinup) 
+			file = file.trim() + "/epic2CMAQ_spinup_" + timeStamp + ".csh"; 
+		else
+			file = file.trim() + "/epic2CMAQ_app_" + timeStamp + ".csh";
 		
 		StringBuilder sb = new StringBuilder();
 		String ls = "\n";
@@ -224,8 +272,12 @@ public class Epic2CMAQPanel extends UtilFieldsPanel implements PlotEventListener
 		sb.append("#" + ls 
 				+ "#set EPIC output file directory which containts each day data:" + ls 
 				+ "#" + ls);
-		 
-		sb.append("setenv DATA_DIR   $SCEN_DIR/output4CMAQ/app/daily" + ls + ls);
+		if (spinup)
+			sb.append("setenv DATA_DIR   $SCEN_DIR/output4CMAQ/spinup/daily/" + ls + ls);
+		else
+			sb.append("setenv DATA_DIR   $SCEN_DIR/output4CMAQ/app/daily/" + ls + ls);
+		
+		//sb.append("setenv DATA_DIR   $SCEN_DIR/output4CMAQ/app/daily" + ls + ls);
 		sb.append("#" + ls + "#Set date and time range: YYYYMMDDHHMM" + ls + "#" + ls);
 		sb.append("setenv START_DATE  " + startDate.getText() + ls);
 		sb.append("setenv END_DATE    " + endDate.getText() + ls + ls);
@@ -237,7 +289,10 @@ public class Epic2CMAQPanel extends UtilFieldsPanel implements PlotEventListener
 				  "# Output file prefix for soil and EPIC daily output" + ls + 
 				  "# \"prefix\"_soil.nc for soil ouput and \"prefix\"_time\"yyyymm\".nc for daily EPIC output" + ls + 
 				  "#" + ls);
-		sb.append("setenv OUTPUT_NETCDF_FILE_PREFIX   $SCEN_DIR/output4CMAQ/app/toCMAQ/" + filesPrefix.getText().trim()+ ls);
+		if (spinup)
+			sb.append("setenv OUTPUT_NETCDF_FILE_PREFIX   $SCEN_DIR/output4CMAQ/spinup/toCMAQ/" + filesPrefix.getText().trim()+ ls);
+		else
+			sb.append("setenv OUTPUT_NETCDF_FILE_PREFIX   $SCEN_DIR/output4CMAQ/app/toCMAQ/" + filesPrefix.getText().trim()+ ls);
 		sb.append("#" + ls + "# run the EPIC output processing program" + ls + "#" + ls);
 		sb.append("$SA_HOME/bin/64bits/extractEPIC2CMAQ.exe" + ls + ls);
 		sb.append("if ( $status == 0 ) then" + ls);

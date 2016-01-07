@@ -286,7 +286,7 @@ public class FestcConfigurator implements IAppConfigurator {
 		customizer.useSavedViewLayout();
 		customizer.setTitle(
 				//"FEST-C"
-				"Fertilizer Emission Scenario Tool for CMAQ (FEST-C)"
+				"Fertilizer Emission Scenario Tool for CMAQ (FEST-C v1.2)"
 				);
 		return true;
 	}

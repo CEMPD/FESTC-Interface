@@ -426,7 +426,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 			simYear.setText(fields.getSimYear());
 			runMessages.setText(fields.getMessage());
 			nDepSel.setSelectedItem(fields.getNDepDir());
-			co2Factor.setText(fields.getCO2Fac()==null? "380":fields.getCO2Fac());
+			co2Factor.setText(fields.getCO2Fac()==null? "380.00":fields.getCO2Fac());
 		}else{
 			newProjectCreated();
 		}
@@ -447,7 +447,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		simYear.setText(domain.getSimYear());
 		nDepSel.setSelectedIndex(2);
 		runMessages.setText("");
-		co2Factor.setText("380");
+		co2Factor.setText("380.00");
 		runTiledrain.setSelectedIndex(1);
 		if ( fields == null ) {
 			fields = new EpicAppFields();

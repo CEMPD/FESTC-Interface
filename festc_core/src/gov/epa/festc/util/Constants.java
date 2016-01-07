@@ -44,10 +44,10 @@ public class Constants {
 	public static final String MAN_SPINUP = "Management File Generation for Spinup";
 	public static final String EDIT_INFILES = "View/Edit EPIC Inputs";
 	public static final String[] FERTYEARS = new String[] {"2001", "2006"};
-	public static final String[] NDEPS = new String[] {"CMAQ", "Default from EPIC RFN0 or RFNX", 
+	public static final String[] NDEPS = new String[] {"CMAQ", "EPIC parameter input file", 
 		                               "2002-2006 5-year CMAQ average",
 		                               "2006-2010 5-year CMAQ average"};
-	public static final String[] SU_NDEPS = new String[] {"Default from EPIC RFN0 or RFNX", 
+	public static final String[] SU_NDEPS = new String[] {"EPIC parameter input file", 
         "2002-2006 5-year CMAQ average",
         "2006-2010 5-year CMAQ average"};
 	public static final String EPIC_SPINUP = "EPIC Runs for Spinup";
