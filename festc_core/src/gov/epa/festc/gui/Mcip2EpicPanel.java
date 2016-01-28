@@ -282,7 +282,7 @@ public class Mcip2EpicPanel extends UtilFieldsPanel implements PlotEventListener
 		sb.append("setenv    EPIC_DIR " + baseDir + ls);
 		sb.append("setenv    SCEN_DIR " + scenarioDir + ls);
 		sb.append("setenv    SA_HOME " + sahome +ls);
-		sb.append("source $SA_HOME/"+ Constants.SA_SETUP_FILE + ls + ls);
+		sb.append("#source $SA_HOME/"+ Constants.SA_SETUP_FILE + ls + ls);
 		
 		sb.append("#" + ls + "# Define MCIP domain grid information" + ls + "#" + ls);
 		sb.append("setenv GRID_PROJ \"" + proj4proj.getText().trim() + "\"" + ls + ls);

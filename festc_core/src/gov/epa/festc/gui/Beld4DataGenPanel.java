@@ -220,7 +220,7 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		//String netcdfout = (netcdfFile.getText() == null || netcdfFile.getText().trim().isEmpty()) ? "NONE" : netcdfFile.getText().trim();
 		sb.append(getScriptHeader() + ls);
 		sb.append("#" + ls + "# Set up runtime environment" + ls + "#" + ls);
-		sb.append("source " + sahome.trim() + Constants.SA_SETUP_FILE + ls + ls);
+		sb.append("#source " + sahome.trim() + Constants.SA_SETUP_FILE + ls + ls);
 		
 		sb.append(ls + "#" + ls);
 		sb.append("# Define environment variables" + ls);
