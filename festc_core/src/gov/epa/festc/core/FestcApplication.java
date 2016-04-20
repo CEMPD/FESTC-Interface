@@ -56,6 +56,7 @@ public class FestcApplication implements ListSelectionListener,
 	private File projFile;
 	
 	private String epicHome;
+	private String workdir;
 	
 	private String sSimYear;	
 	private String sFertYear;
@@ -91,8 +92,8 @@ public class FestcApplication implements ListSelectionListener,
 		//		String curdir = Constants.getProperty(Constants.EPIC_HOME, msg);
 		//		String usrhome = Constants.getProperty(Constants.USER_HOME, msg);
 		epicHome = Constants.getProperty(Constants.EPIC_HOME, msg);
-//		epicHome= "/Users/jizhen/Documents";
-		this.currentDir = new File(epicHome + "/scenarios/scenariosInfo/");
+		workdir = Constants.getProperty(Constants.WORK_DIR, msg);
+		this.currentDir = new File(workdir + "/scenarios/scenariosInfo/");
 //		this.currentDir = (curdir == null || curdir.trim().isEmpty()) ? new File(
 //				epicHome) : new File(curdir);
 		String allow = Constants.getProperty(Constants.ALLOW_DIFF_CHECK, msg);
@@ -245,6 +246,10 @@ public class FestcApplication implements ListSelectionListener,
 	public String getEpicHome() {
 		return epicHome;
 	}
+	
+	public String getWorkDir() {
+		return workdir;
+	}
 
 	public List<PlotEventListener> getPlotListeners() {
 		return plotListeners;
@@ -355,7 +360,7 @@ public class FestcApplication implements ListSelectionListener,
 			panel.validateFields();
 			String newScenario = panel.getScenaName();
 			 
-			projFile = new File(epicHome + "/scenarios/scenariosInfo/", newScenario);
+			projFile = new File(workdir + "/scenarios/scenariosInfo/", newScenario);
 			if ( projFile.isFile() )
 				throw new Exception("New scenario name already exist.");
 			
@@ -375,7 +380,7 @@ public class FestcApplication implements ListSelectionListener,
 			domain.setYmin(panel.getYmin());
 			domain.setSimYear(panel.getSimuYear());
 			domain.setNlcdYear(panel.getNlcdYear());
-			domain.setScenarioDir(epicHome + "/scenarios/" + newScenario);	 
+			domain.setScenarioDir(workdir + "/scenarios/" + newScenario);	 
 			 
 			project.setName(newScenario);		 	
 			
