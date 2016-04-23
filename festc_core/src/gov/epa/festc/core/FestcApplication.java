@@ -398,16 +398,17 @@ public class FestcApplication implements ListSelectionListener,
 		if (cmd.equals(Constants.COPY_SCENARIO)) {
 			CopyProjectPanel panel = (CopyProjectPanel)contentPanel;
 			panel.validateFields();
-			String existScenName = panel.getExistScenario();
+			String existScenNameWdir = panel.getExistScenario();
 			String newScenName = panel.getNewScenName();		
-			File existScenFile = new File(epicHome + "/scenarios/scenariosInfo/", existScenName);
+			File existScenFile = new File(existScenNameWdir);
+			//copyScenarioFold( existScenNameWdir, newScenName, panel.getSimuYear());
 			if ( ! existScenFile.isFile() )
-				throw new Exception("Scenario " + existScenName + " does not exist. " );
+				throw new Exception("Scenario " + existScenNameWdir + " does not exist. " );
 			
 			try {
 				openProject(existScenFile);
 			} catch (Exception e) {
-				msg.warn("Error copying scenario " + existScenName + ".", e.getMessage());
+				msg.warn("Error copying scenario " + existScenNameWdir + ".", e.getMessage());
 			} 
 			SiteInfoGenFields fields = (SiteInfoGenFields) project.getPage(SiteInfoGenFields.class.getCanonicalName());
 			DomainFields domain =(DomainFields) project.getPage(DomainFields.class.getCanonicalName());
@@ -428,7 +429,7 @@ public class FestcApplication implements ListSelectionListener,
 			domain.setNlcdYear(domain.getNlcdYear()==null? "2006":domain.getNlcdYear());
 			project.setName(newScenName);
 			
-			projFile = new File(epicHome + "/scenarios/scenariosInfo/", newScenName);
+			projFile = new File(workdir + "/scenarios/scenariosInfo/", newScenName);
 			if ( projFile.isFile() )
 				throw new Exception("New scenario \"" + newScenName +  "\" already exist.");
 			 
@@ -440,7 +441,7 @@ public class FestcApplication implements ListSelectionListener,
 			 * NOTE: We still need to copy all the files from the existing scenario folder to the new scenario folder
 			 */	
 			System.out.println("Coping Scenario: " + newScenName);
-			copyScenarioFold( existScenName, newScenName, panel.getSimuYear());
+			copyScenarioFold( existScenNameWdir, newScenName, panel.getSimuYear());
 			System.out.println("Finished Coping Scenario: " + newScenName);
 		}
 		
@@ -499,10 +500,16 @@ public class FestcApplication implements ListSelectionListener,
 		
 	}
 	
-	private void copyScenarioFold(String oldName, String newName, String year) {
-		String file = epicHome + "/scenarios/scenariosInfo/logs/copyScenario_" + newName+ "_from_" +oldName + ".csh"; ; 
-		String oldScenDir = epicHome + "/scenarios/" + oldName ;
-		String newScenDir = epicHome + "/scenarios/" + newName ;
+	private void copyScenarioFold(String oldNameWdir, String newName, String year) {
+		Integer lIndex = oldNameWdir.lastIndexOf("/");
+		String oldName = oldNameWdir.substring(lIndex+1);
+		Integer sIndex =  oldNameWdir.indexOf("scenarios");
+		String oldDir = oldNameWdir.substring(0, sIndex);
+        System.out.printf(oldDir + "  " + oldName);
+
+		String file = workdir + "/scenarios/scenariosInfo/logs/copyScenario_" + newName+ "_from_" +oldName + ".csh"; ; 
+		String oldScenDir = oldDir + "/scenarios/" + oldName ;
+		String newScenDir = workdir + "/scenarios/" + newName ;
 		String commonDir = epicHome + "/common_data"  ;
 		
 		year = "2"+(Integer.parseInt(year)-1);

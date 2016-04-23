@@ -28,15 +28,15 @@ public class CopyProjectPanel extends JPanel {
 		SpringLayoutGenerator layout = new SpringLayoutGenerator();
 
 		JPanel existScen = new JPanel();
-		scenario = new JTextField(20);
-		newScenName = new JTextField(20);
-		simuYear = new JTextField(20);
+		scenario = new JTextField(30);
+		newScenName = new JTextField(30);
+		simuYear = new JTextField(30);
 		
 		File scenFileHome = new File(app.getEpicHome() + "/scenarios/scenariosInfo");
 		//System.out.println(scenFileHome);
 		if (!scenFileHome.exists()) scenFileHome = app.getCurrentDir();
 		
-		JButton browser = new JButton(BrowseAction.browseAction(this, scenFileHome, "scenario file", scenario));
+		JButton browser = new JButton(BrowseAction.browseAction(this, scenFileHome, "exis scenario file", scenario));
 		existScen.add(scenario);
 		existScen.add(browser);
 
