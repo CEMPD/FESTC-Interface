@@ -94,8 +94,9 @@ public class FestcApplication implements ListSelectionListener,
 		epicHome = Constants.getProperty(Constants.EPIC_HOME, msg);
 		workdir = Constants.getProperty(Constants.WORK_DIR, msg);
 		this.currentDir = new File(workdir + "/scenarios/scenariosInfo/");
-//		this.currentDir = (curdir == null || curdir.trim().isEmpty()) ? new File(
-//				epicHome) : new File(curdir);
+		File logdir = new File(workdir + "/scenarios/scenariosInfo/logs");
+		if ( !logdir.exists())
+			logdir.mkdirs();
 		String allow = Constants.getProperty(Constants.ALLOW_DIFF_CHECK, msg);
 		allowDiffCheck = (allow != null && allow.equalsIgnoreCase("true")) ? true : false;
 		//System.out.println("Allow: " + allow + allowDiffCheck);
@@ -393,6 +394,7 @@ public class FestcApplication implements ListSelectionListener,
 			saveProj(projFile);
 			
 			newScenarioFold(newScenario, panel.getSimuYear());
+			System.out.println("Created New Scenario: " + newScenario);
 		}
 		
 		if (cmd.equals(Constants.COPY_SCENARIO)) {
@@ -424,7 +426,7 @@ public class FestcApplication implements ListSelectionListener,
 			domain.setYcellSize(fields.getYcellSize());
 			domain.setXmin(fields.getXmin());
 			domain.setYmin(fields.getYmin());
-			domain.setScenarioDir(epicHome + "/scenarios/" + newScenName);
+			domain.setScenarioDir(workdir + "/scenarios/" + newScenName);
 			domain.setSimYear(panel.getSimuYear());		
 			domain.setNlcdYear(domain.getNlcdYear()==null? "2006":domain.getNlcdYear());
 			project.setName(newScenName);
@@ -450,7 +452,7 @@ public class FestcApplication implements ListSelectionListener,
 			panel.validateFields();
 			String existScenName = panel.getExistScenario();
 			 
-			File existScenFile = new File(epicHome + "/scenarios/scenariosInfo/", existScenName);
+			File existScenFile = new File(workdir + "/scenarios/scenariosInfo/", existScenName);
 			if ( ! existScenFile.isFile() )
 				throw new Exception("Scenario " + existScenName + " does not exist. " );
 			int option = JOptionPane.showConfirmDialog(null, "Confirm that you want to delete scenario: " + existScenName + "? ", "Confirmation", JOptionPane.YES_NO_OPTION);
@@ -467,9 +469,9 @@ public class FestcApplication implements ListSelectionListener,
 	}
 	
 	private void deleteScenarioFold(String oldName) {
-		String file = epicHome + "/scenarios/scenariosInfo/logs/delete_" +oldName + ".csh";
-		String scenFile = epicHome + "/scenarios/scenariosInfo/" +oldName;
-		String oldScenDir = epicHome + "/scenarios/" + oldName ;
+		String file = workdir + "/scenarios/scenariosInfo/logs/delete_" +oldName + ".csh";
+		String scenFile = workdir + "/scenarios/scenariosInfo/" +oldName;
+		String oldScenDir = workdir + "/scenarios/" + oldName ;
 		StringBuilder sb = new StringBuilder();
 		String ls = "\n";
 		sb.append("#!/bin/csh -f" + ls);
@@ -505,7 +507,7 @@ public class FestcApplication implements ListSelectionListener,
 		String oldName = oldNameWdir.substring(lIndex+1);
 		Integer sIndex =  oldNameWdir.indexOf("scenarios");
 		String oldDir = oldNameWdir.substring(0, sIndex);
-        System.out.printf(oldDir + "  " + oldName);
+        //System.out.printf(oldDir + "  " + oldName);
 
 		String file = workdir + "/scenarios/scenariosInfo/logs/copyScenario_" + newName+ "_from_" +oldName + ".csh"; ; 
 		String oldScenDir = oldDir + "/scenarios/" + oldName ;
@@ -549,8 +551,8 @@ public class FestcApplication implements ListSelectionListener,
 	}
 
 	private void newScenarioFold(String newName, String year) {
-		String file = epicHome + "/scenarios/scenariosInfo/logs/createScenario_"+ newName + ".csh";  
-		String newScenDir = epicHome + "/scenarios/" + newName ;
+		String file = workdir + "/scenarios/scenariosInfo/logs/createScenario_"+ newName + ".csh";  
+		String newScenDir = workdir + "/scenarios/" + newName ;
 		String commonDir = epicHome + "/common_data"  ;
 		year = "2"+(Integer.parseInt(year)-1);
 		

@@ -39,6 +39,7 @@ public class FileRunner { // TODO: change this to a cross-platform launcher
 		//Set up qcmd or use ./ if qcmd is null
 		String cmd = "cd " + scriptDir+ "\n";
 
+		//if ( qcmd != null && qcmd !="" )
 		cmd = cmd + qcmd + " -q " + qname;
 
 		//System.out.println("qcmd="+qcmd + qname);
@@ -53,7 +54,7 @@ public class FileRunner { // TODO: change this to a cross-platform launcher
 			cmd = cmd + " -o " + log + " " + script.getAbsolutePath();
 
 		if ((qcmd == null || qcmd.trim().isEmpty()) && (qname == null || qname.trim().isEmpty()))
-			cmd = "" + script.getAbsolutePath() + " > & " + log ;
+			cmd = "cd " + scriptDir+ "\n" + script.getAbsolutePath() + " > " + log ;
 
 		cmd = cmd + "\ncd - \n";
 		if (Constants.DEBUG) {

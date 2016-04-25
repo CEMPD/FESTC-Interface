@@ -30,7 +30,7 @@ public class DeleteProjectPanel extends JPanel {
 		JPanel existScen = new JPanel();
 		scenario = new JTextField(20);
 		
-		File scenFileHome = new File(app.getEpicHome() + "/scenarios/scenariosInfo");
+		File scenFileHome = new File(app.getWorkDir() + "/scenarios/scenariosInfo");
 		System.out.println(scenFileHome);
 		if (!scenFileHome.exists()) scenFileHome = app.getCurrentDir();
 		

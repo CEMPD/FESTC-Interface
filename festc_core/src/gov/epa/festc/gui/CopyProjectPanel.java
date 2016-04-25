@@ -32,7 +32,7 @@ public class CopyProjectPanel extends JPanel {
 		newScenName = new JTextField(30);
 		simuYear = new JTextField(30);
 		
-		File scenFileHome = new File(app.getEpicHome() + "/scenarios/scenariosInfo");
+		File scenFileHome = new File(app.getWorkDir() + "/scenarios/scenariosInfo");
 		//System.out.println(scenFileHome);
 		if (!scenFileHome.exists()) scenFileHome = app.getCurrentDir();
 		
