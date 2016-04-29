@@ -291,7 +291,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		sb.append("# Written by: Fortran by Benson, Script by IE. 2012" + ls);
 		sb.append("# Modified by: IE " + ls); 
 		sb.append("#" + ls);
-		sb.append("# Program: EPIC0509app.exe" + ls);
+		sb.append("# Program: EPICapp.exe" + ls);
 		sb.append("#         Needed environment variables included in the script file to run." + ls);        
 		sb.append("# " + ls);
 		sb.append("#***************************************************************************************" + ls + ls);
@@ -308,7 +308,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		sb.append("# Define environment variables" + ls);
 		sb.append("#" + ls + ls);
 		sb.append("setenv    SIM_YEAR " + simY + ls);
-		sb.append("set type = 'app' " + ls);
+		sb.append("setenv    type    'app' " + ls);
 		sb.append("setenv    EPIC_DIR " + baseDir + ls);
 		sb.append("setenv    SCEN_DIR " + scenarioDir + ls);
 		sb.append("setenv    COMM_DIR  $EPIC_DIR/common_data" +ls);
@@ -371,7 +371,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		sb.append("      foreach out ( \"NCM\" \"NCS\" \"DFA\" \"OUT\" \"SOL\" \"TNA\" \"TNS\" )" + ls); 
 		sb.append("        if ( ! -e $WORK_DIR/$out  ) mkdir -p $WORK_DIR/$out" + ls); 
 		sb.append("      end " + ls);
-		sb.append("      time $EXEC_DIR/EPIC0509app.exe " + ls);
+		sb.append("      time $EXEC_DIR/EPICapp.exe " + ls);
 		sb.append("      if ( $status == 0 ) then " + ls);
 		sb.append("         echo  ==== Finished EPIC app run of CROP: $CROP_NAME, rainf $cropN" + ls);
 		sb.append("      else " + ls);
@@ -393,7 +393,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		sb.append("      foreach out ( \"NCM\" \"NCS\" \"DFA\" \"OUT\" \"SOL\" \"TNA\" \"TNS\" )" + ls); 
 		sb.append("        if ( ! -e $WORK_DIR/$out  ) mkdir -p $WORK_DIR/$out" + ls); 
 		sb.append("      end" + ls); 
-		sb.append("      time $EXEC_DIR/EPIC0509app.exe" + ls); 
+		sb.append("      time $EXEC_DIR/EPICapp.exe" + ls); 
 		sb.append("      if ( $status == 0 ) then " + ls);
 		sb.append("         echo  ==== Finished EPIC app run of CROP: $CROP_NAME, irr $cropN" + ls);
 		sb.append("      else " + ls);
