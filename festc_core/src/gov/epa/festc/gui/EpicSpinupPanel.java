@@ -287,8 +287,8 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		sb.append("setenv    CO2_FAC  " + co2Factor.getText() + ls);	 
 		sb.append("setenv    RUN_TD   " +  (String)runTiledrain.getSelectedItem()  + ls);
 		
-		if ( ndepValue.contains("RFN") )  ndepValue = "RFN0";
-		else if ( ndepValue.contains("2002") )  ndepValue = "dailyNDep_2004";
+		ndepValue = "RFN0";
+		if ( ndepValue.contains("2002") )  ndepValue = "dailyNDep_2004";
 		else if ( ndepValue.contains("2010") )  ndepValue = "dailyNDep_2008";
 
 		if ( ndepValue.length() == 4) 

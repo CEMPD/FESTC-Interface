@@ -315,7 +315,8 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		sb.append("setenv    CO2_FAC  " + co2Factor.getText() + ls);
 		sb.append("setenv    RUN_TD   " +  (String)runTiledrain.getSelectedItem()  + ls);
 		 
-		if ( ndepValue.contains("RFN") )  ndepValue = "RFN0";
+		ndepValue = "RFN0";
+		if ( ndepValue.contains("CMAQ") )  ndepValue = "CMAQ";
 		else if ( ndepValue.contains("2002") )  ndepValue = "dailyNDep_2004";
 		else if ( ndepValue.contains("2010") )  ndepValue = "dailyNDep_2008";
 
