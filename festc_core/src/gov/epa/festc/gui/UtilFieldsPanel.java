@@ -229,11 +229,11 @@ public class UtilFieldsPanel extends JPanel {
 		
 		
 		String xminValue = xmin.getValue() == null ? "": xmin.getValue()+"";
-		if (xminValue.trim().isEmpty() || xminValue.trim().charAt(0) == '0')
+		if (xminValue.trim().isEmpty() )
 			throw new Exception("XMin value is invalid.");
 		
 		String yminValue = ymin.getValue() == null ? "": ymin.getValue()+"";
-		if (yminValue.trim().isEmpty() || yminValue.trim().charAt(0) == '0')
+		if (yminValue.trim().isEmpty() )
 			throw new Exception("YMin value is invalid.");
 		
 		String xSizeValue = xSize.getValue() == null ? "": xSize.getValue()+"";
