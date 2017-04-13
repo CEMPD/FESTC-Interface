@@ -3,7 +3,7 @@ package gov.epa.festc.core.proj;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "gov.epa.festc.core.proj.SoilFilesFields")
-public class SoilFilesFields extends PageFields {
+public class SoilFilesFields extends DomainFields {
 
 	private String finishedCrops;
 	

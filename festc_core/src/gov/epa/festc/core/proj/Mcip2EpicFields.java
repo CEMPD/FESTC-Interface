@@ -3,7 +3,7 @@ package gov.epa.festc.core.proj;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "gov.epa.festc.core.proj.Mcip2EpicFields")
-public class Mcip2EpicFields  extends PageFields{
+public class Mcip2EpicFields  extends DomainFields{
 
 	private String startdate;
 	private String enddate;

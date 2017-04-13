@@ -118,18 +118,13 @@ public class CreateSpinupManFilesPanel extends UtilFieldsPanel implements PlotEv
 			throw new Exception("Please select scenario dir first!");
 
 		String fYear = (String) this.fertYearSel.getSelectedItem();
+		
 		if ( fYear.trim().isEmpty() )
 			throw new Exception("Please select fertilizer year!");
-			 
-		String sFYear = app.getSFertYear();
-		if (sFYear == null || sFYear.trim().isEmpty()) {
-			app.setSFertYear(fYear);
-			sFYear = fYear;
-		}	
-		else if (sFYear != null && !sFYear.trim().isEmpty() 
-				&& !sFYear.endsWith(fYear) && app.allowDiffCheck()) 
-			throw new Exception("Current land use year is inconsistent with previous one (" + sFYear + ")");
-		//System.out.println("sfYear: " + sFYear + " " + fYear);
+		
+		fields.setFertYear(fYear);
+		fields.setSFertYear(fYear);
+		
 		String seCropsString = cropSelectionPanel.selectedItemTostring();
 		//System.out.println();
 		String[] seCrops = cropSelectionPanel.getSelectedCrops();

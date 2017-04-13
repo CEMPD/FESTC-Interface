@@ -3,7 +3,7 @@ package gov.epa.festc.core.proj;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "gov.epa.festc.core.proj.ManageSpinupFields")
-public class ManageSpinupFields extends PageFields {
+public class ManageSpinupFields extends DomainFields {
 
 	private String fertYear;
 	

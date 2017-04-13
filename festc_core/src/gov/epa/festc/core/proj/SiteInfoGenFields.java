@@ -3,10 +3,9 @@ package gov.epa.festc.core.proj;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "gov.epa.festc.core.proj.SiteInfoGenFields")
-public class SiteInfoGenFields  extends PageFields{
+public class SiteInfoGenFields  extends DomainFields{
 
 	private String beld4ncf;
-	private String minAcres;
 	
 	public SiteInfoGenFields() {
 		//NOTE: no-op
@@ -19,12 +18,6 @@ public class SiteInfoGenFields  extends PageFields{
 		return beld4ncf;
 	}
 	
-	public void setMinAcres(String acres) {
-		this.minAcres = acres;
-	}
-	public String getMinAcres() {
-		return minAcres;
-	}
 
 	@Override
 	public String getName() {

@@ -160,17 +160,11 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 		
 		String minAcres = minAcreas.getText();
 		if (minAcres == null || minAcres.isEmpty()) 
-			throw new Exception("Minimum Crop Acres is not specified!");	 
+			throw new Exception("Minimum Crop Acres is not specified!");
 		
-		String sMAcres = app.getSMinAcre();
-		if (sMAcres == null || sMAcres.trim().isEmpty()) {
-			app.setSMinAcre(minAcres);
-			sMAcres = minAcres;
-		}	
-		else if (sMAcres != null && !sMAcres.trim().isEmpty() 
-				&& !sMAcres.endsWith(minAcres) && app.allowDiffCheck() ) 
-			throw new Exception("Current minimum acre is inconsistent with previous one (" + sMAcres + ")");	 
-		
+		fields.setMinAcre(minAcres);
+		fields.setSMinAcre(minAcres);
+		 
 		try {
 			Float.parseFloat(minAcres);
 		}catch(NumberFormatException e) {
@@ -368,13 +362,14 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 	public void projectLoaded() {
 		Beld4DataGenFields beld4fields = (Beld4DataGenFields) app.getProject().getPage(Beld4DataGenFields.class.getName());
 		fields = (SiteInfoGenFields) app.getProject().getPage(fields.getName());
+		//domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		 
 		if( fields != null ) {
 			this.scenarioDir.setText(fields.getScenarioDir());
 			if ((fields.getBeld4ncf()==null || fields.getBeld4ncf().trim().isEmpty() ) && beld4fields != null) {
 				String scenDir = fields.getScenarioDir().trim();
 				String  gridName = fields.getGridName().trim();
-				String year = beld4fields.getNLCDyear().trim();
+				String year = domain.getNlcdYear().trim();
 				String beld4file = scenDir + "/share_data/beld4_" + gridName + "_" + year +".nc";
 				//System.out.println(beld4file);
 //				File f = new File(beld4file);
@@ -395,7 +390,7 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 			ySize.setValue(fields.getYcellSize());
 			proj4proj.setText(fields.getProj());
 			gridName.setText(fields.getGridName());	
-			minAcreas.setText(fields.getMinAcres()==null? "40.0":fields.getMinAcres());
+			minAcreas.setText(fields.getMinAcre()==null? "40.0":fields.getMinAcre());
 			
 		}else {
 			newProjectCreated();
@@ -416,7 +411,8 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 		if ( proj4proj != null ) fields.setProj(proj4proj.getText() == null? "" : proj4proj.getText());
 		if ( gridName != null ) fields.setGridName(gridName.getText()== null? "" : gridName.getText());
 		if ( runMessages != null ) fields.setMessage(runMessages.getText());
-		if ( minAcreas != null)  fields.setMinAcres(minAcreas.getText());
+		if ( minAcreas != null)  fields.setMinAcre(minAcreas.getText());
+		if ( minAcreas != null)  fields.setSMinAcre(minAcreas.getText());
 	}
 	
 }

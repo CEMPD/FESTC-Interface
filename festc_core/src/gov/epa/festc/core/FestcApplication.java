@@ -58,10 +58,6 @@ public class FestcApplication implements ListSelectionListener,
 	private String epicHome;
 	private String workdir;
 	
-	private String sSimYear;	
-	private String sFertYear;
-	private String sMinAcre;
-	
 	private boolean allowDiffCheck;
 	
 	private enum ProjectEvent {CREATED, OPENED, SAVE, SAVED};
@@ -133,37 +129,6 @@ public class FestcApplication implements ListSelectionListener,
 	 * Gets the modeling year associated with the app
 	 */
 	
-	public String getSSimYear() {
-		return this.sSimYear;
-	}
-	 
-	public void setSSimYear(String year) {
-		this.sSimYear = year;
-	}
-	
-	/***
-	 * Sets the fertilizer year associated with the app
-	 */
-	
-	public String getSFertYear() {
-		return this.sFertYear;
-	}
-	
-	public void setSFertYear(String year) {
-		this.sFertYear = year;
-	}
-	
-	/***
-	 * Sets the minimum crop acres associated with the app
-	 */
-	
-	public String getSMinAcre() {
-		return this.sMinAcre;
-	}
-	
-	public void setSMinAcre(String minAcre) {
-		this.sMinAcre = minAcre;
-	}
 
 	/**
 	 * Exits the application.

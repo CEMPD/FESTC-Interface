@@ -324,23 +324,24 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
 	public void projectLoaded() {
 		fields = (EpicYearlyAverage2CMAQFields)app.getProject().getPage(fields.getName());
 		Beld4DataGenFields beld4fields = (Beld4DataGenFields) app.getProject().getPage(Beld4DataGenFields.class.getName());
-	
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
+		
 		if ( fields != null ){
-			this.scenarioDir.setText(fields.getScenarioDir());
-			rows.setValue(fields.getRows());
-			cols.setValue(fields.getCols());
-			xSize.setValue(fields.getXcellSize());
-			ySize.setValue(fields.getYcellSize());
-			xmin.setValue(fields.getXmin());
-			ymin.setValue(fields.getYmin());
-			proj4proj.setText(fields.getProj());
-			gridName.setText(fields.getGridName());
+			this.scenarioDir.setText(domain.getScenarioDir());
+			rows.setValue(domain.getRows());
+			cols.setValue(domain.getCols());
+			xSize.setValue(domain.getXcellSize());
+			ySize.setValue(domain.getYcellSize());
+			xmin.setValue(domain.getXmin());
+			ymin.setValue(domain.getYmin());
+			proj4proj.setText(domain.getProj());
+			gridName.setText(domain.getGridName());
 			runMessages.setText(fields.getMessage());
 
 			if ((fields.getBeld4ncf()==null || fields.getBeld4ncf().trim().isEmpty() ) && beld4fields != null) {
 				String scenDir = fields.getScenarioDir().trim();
 				String  gridName = fields.getGridName().trim();
-				String year = beld4fields.getNLCDyear().trim();
+				String year = domain.getNlcdYear().trim();
 				String beld4file = scenDir + "/share_data/beld4_" + gridName + "_" + year +".nc";
 				//System.out.println(beld4file);
 //				File f = new File(beld4file);
@@ -375,7 +376,7 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
 
 	@Override
 	public void newProjectCreated() {
-		DomainFields domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		
 		String scenDir = domain.getScenarioDir().trim();
 		String  gName = domain.getGridName().trim();

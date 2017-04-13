@@ -1,5 +1,6 @@
 package gov.epa.festc.gui;
 
+import gov.epa.festc.core.proj.DomainFields;
 import gov.epa.festc.util.Constants;
 import gov.epa.festc.util.SpringLayoutGenerator;
 
@@ -38,6 +39,7 @@ public class UtilFieldsPanel extends JPanel {
 	protected JComboBox fertYearSel;
 	
 	protected JTextArea runMessages;
+	protected DomainFields domain;
 
 	protected String outMessages = "Job messages: \n";
 	protected String ls = "\n";

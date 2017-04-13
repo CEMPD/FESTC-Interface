@@ -5,7 +5,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import gov.epa.festc.gui.Epic2CMAQPanel;
 
 @XmlRootElement(name = "gov.epa.festc.core.proj.Epic2CMAQFields")
-public class Epic2CMAQFields extends PageFields{
+public class Epic2CMAQFields extends DomainFields{
 	 
 	private String startdate;
 	private String enddate;

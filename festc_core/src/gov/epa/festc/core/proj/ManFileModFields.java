@@ -3,7 +3,7 @@ package gov.epa.festc.core.proj;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "gov.epa.festc.core.proj.ManFileModFields")
-public class ManFileModFields  extends PageFields{
+public class ManFileModFields  extends DomainFields{
 	
 	public ManFileModFields() {
 		//NOTE: no-op

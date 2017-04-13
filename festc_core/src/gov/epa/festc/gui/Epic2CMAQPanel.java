@@ -400,7 +400,7 @@ public class Epic2CMAQPanel extends UtilFieldsPanel implements PlotEventListener
 
 	@Override
 	public void newProjectCreated() {
-		DomainFields domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		scenarioDir.setText(domain.getScenarioDir());	
 		rows.setValue(domain.getRows());
 		cols.setValue(domain.getCols());

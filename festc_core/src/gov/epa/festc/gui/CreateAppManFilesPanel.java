@@ -127,9 +127,9 @@ public class CreateAppManFilesPanel extends UtilFieldsPanel implements PlotEvent
 		if ( fYear.trim().isEmpty() )
 			throw new Exception("Please select fertilizer year!");	 
 		
-		String sFYear = app.getSFertYear();
+		String sFYear = fields.getSFertYear();
 		if (sFYear == null || sFYear.trim().isEmpty()) {
-			app.setSFertYear(fYear);
+			fields.setSFertYear(fYear);
 			sFYear = fYear;
 		}	
 		 
@@ -334,7 +334,7 @@ public class CreateAppManFilesPanel extends UtilFieldsPanel implements PlotEvent
 
 	public void saveProjectRequested() {
 		if ( scenarioDir != null ) fields.setScenarioDir(scenarioDir.getText());
-		if ( fertYearSel != null ) fields.setFertYear((String) fertYearSel.getSelectedItem());
+		//if ( fertYearSel != null ) fields.setFertYear((String) fertYearSel.getSelectedItem());
 		if ( runMessages != null ) fields.setMessage(runMessages.getText());	
 	}				
 }

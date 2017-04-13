@@ -104,12 +104,9 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
 		if (minAcres == null || minAcres.isEmpty()) 
 			throw new Exception("Minimum Crop Acres is not specified!");
 		
-		String sMAcres = app.getSMinAcre();
-		if (sMAcres == null || sMAcres.trim().isEmpty()) {
-			app.setSMinAcre(minAcres);
-			sMAcres = minAcres;
-		}	
-		else if (sMAcres != null && !sMAcres.trim().isEmpty() 
+		String sMAcres = fields.getSMinAcre();
+		 
+		if (sMAcres != null && !sMAcres.trim().isEmpty() 
 				&& !sMAcres.endsWith(minAcres) && app.allowDiffCheck()) 
 			throw new Exception("Current minimum acre is inconsistent with previous one (" + sMAcres + ")");	 
 		
@@ -313,7 +310,7 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
 	public void saveProjectRequested() {
 		if ( scenarioDir != null ) fields.setScenarioDir(scenarioDir.getText());
 		if ( runMessages != null ) fields.setMessage(runMessages.getText());
-		if ( minAcreas != null)  fields.setMinAcres(minAcreas.getText());
+		//if ( minAcreas != null)  fields.setMinAcres(minAcreas.getText());
 	}
 
 	@Override

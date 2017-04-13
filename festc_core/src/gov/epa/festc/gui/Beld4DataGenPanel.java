@@ -62,7 +62,7 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 	private Beld4DataGenFields fields;
 	private JCheckBox nlcdBox; 
 	private JCheckBox modisBox;
-	private JTextField nlcdYear;
+	private JComboBox nlcdYearBox;
 	private JTextField inputDir;
 	private JButton inputDirBrowser;
 	
@@ -114,9 +114,9 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		dataPanel.add(this.modisBox);
 		
 		JPanel yearPanel = new JPanel( );
-		nlcdYear = new JTextField(40);
-		nlcdYear.setEditable(false);
-		yearPanel.add(nlcdYear);
+		nlcdYearBox = new JComboBox(Constants.FERTYEARS);
+		//nlcdYear.setEditable(false);
+		yearPanel.add(nlcdYearBox);
  
 		JPanel inputDirPanel = new JPanel();
 		inputDir = new JTextField(40);
@@ -181,7 +181,7 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		validateGrids();
 		 
 	    
-	    String dYear = this.nlcdYear.getText();
+	    String dYear = (String)this.nlcdYearBox.getSelectedItem();
 		if ( dYear.trim().isEmpty() )
 			throw new Exception("NLCD/MODIS data year is empty!");	 
 		
@@ -353,7 +353,7 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 	
 	@Override
 	public void newProjectCreated() {
-		DomainFields domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		rows.setValue(domain.getRows());
 		cols.setValue(domain.getCols());
 		xmin.setValue(domain.getXmin());
@@ -363,8 +363,9 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		proj4proj.setText(domain.getProj());
 		gridName.setText(domain.getGridName());
 		scenarioDir.setText(domain.getScenarioDir());
-		String nlcdY = domain.getNlcdYear()==null? "2006":domain.getNlcdYear();		
-		nlcdYear.setText(nlcdY);
+		String nlcdY = domain.getNlcdYear()==null? domain.defaultNlcdYear():domain.getNlcdYear();
+//		Integer index = nlcdYear.getItemCount(); 
+//		nlcdYear.setSelectedItem(index);
 		String sahome = Constants.getProperty(Constants.SA_HOME, msg);	
 		inputDir.setText(sahome.trim() + "/data/nlcd_modis_files_" + nlcdY + ".txt");
 		
@@ -377,6 +378,7 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 
 	@Override
 	public void projectLoaded() {
+		//domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		fields = (Beld4DataGenFields) app.getProject().getPage(fields.getName());
 		if( fields != null ) {
 			this.scenarioDir.setText(fields.getScenarioDir());
@@ -390,7 +392,8 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 			ySize.setValue(fields.getYcellSize());
 			proj4proj.setText(fields.getProj());
 			gridName.setText(fields.getGridName());	
-			nlcdYear.setText(fields.getNLCDyear());
+			nlcdYearBox.setSelectedItem(fields.getNlcdYear()==null? fields.defaultNlcdYear():fields.getNlcdYear());
+
 			inputDir.setText(fields.getNLCDfile());
 			nlcdBox.setSelected(fields.isNlcdDataSelected());
 			modisBox.setSelected(fields.isModisDataSelected());
@@ -416,9 +419,9 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		if ( nlcdBox != null ) fields.setNlcdDataSelected(nlcdBox.isSelected());
 		if ( modisBox != null ) fields.setModisDataSelected(modisBox.isSelected());
 		  
-		if ( nlcdYear != null ) {
-			String dYear = this.nlcdYear.getText();
-			fields.setNLCDyear(dYear);
+		if ( nlcdYearBox != null ) {
+			String dYear = (String) this.nlcdYearBox.getSelectedItem();
+			fields.setNlcdYear(dYear);
 		}
 		if ( inputDir != null ) fields.setNLCDfile(inputDir.getText().trim());
 		

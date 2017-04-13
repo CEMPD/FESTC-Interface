@@ -3,10 +3,10 @@ package gov.epa.festc.core.proj;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "gov.epa.festc.core.proj.EpicAppFields")
-public class EpicAppFields extends PageFields {
+public class EpicAppFields extends DomainFields {
 
 	private String finishedCrops;
-	private String simYear;
+	//private String simYear;
 	private String nDepDir;
 	private String co2Fac;
 	private String runTiledrain;

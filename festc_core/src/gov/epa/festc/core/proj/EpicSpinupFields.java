@@ -3,7 +3,7 @@ package gov.epa.festc.core.proj;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "gov.epa.festc.core.proj.EpicSpinupFields")
-public class EpicSpinupFields extends PageFields {
+public class EpicSpinupFields extends DomainFields {
  
 	private String finishedCrops;
 	private String nDepDir;

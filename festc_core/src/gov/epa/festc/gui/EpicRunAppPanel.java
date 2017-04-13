@@ -195,12 +195,9 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 			throw new Exception( "Simulation year is not an integer!");
 		}
 		
-		String sSimYear = app.getSSimYear();
-		if (sSimYear == null || sSimYear.trim().isEmpty()) {
-			app.setSSimYear(sSimYear);
-			sSimYear = simY;
-		}	
-		else if (sSimYear != null && !sSimYear.trim().isEmpty() 
+		String sSimYear = fields.getSSimYear();
+		 
+		if (sSimYear != null && !sSimYear.trim().isEmpty() 
 				&& !sSimYear.endsWith(simY) && app.allowDiffCheck()) 
 			throw new Exception("Current modeling year is inconsistent with previous one (" + sSimYear + ")");
 		

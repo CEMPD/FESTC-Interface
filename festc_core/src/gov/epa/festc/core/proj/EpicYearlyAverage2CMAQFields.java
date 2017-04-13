@@ -3,7 +3,7 @@ package gov.epa.festc.core.proj;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "gov.epa.festc.core.proj.EpicYearlyAverage2CMAQFields")
-public class EpicYearlyAverage2CMAQFields  extends PageFields{
+public class EpicYearlyAverage2CMAQFields  extends DomainFields{
 	
 	private String beld4ncf;
 	 

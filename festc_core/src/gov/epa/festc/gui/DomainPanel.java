@@ -132,7 +132,6 @@ public class DomainPanel extends UtilFieldsPanel {
 			throw new Exception("Simulation year is not a number.");
 		}
 		
-		
 		String scemN = scenaName.getText() == null ? "" : scenaName.getText();
 		if (scemN.trim().isEmpty())
 			throw new Exception(" New scenario name is empty.");
