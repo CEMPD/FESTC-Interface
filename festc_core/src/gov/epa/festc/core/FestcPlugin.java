@@ -46,8 +46,6 @@ public class FestcPlugin extends Plugin implements IApplicationRunnable {
 			ISAFDisplay display = GUICreator.createDisplay(configurator, workspace);
 
 			GUICreator.runDisplay(configurator, display);
-		} catch (PluginLifecycleException e) {
-			MessageCenter.getMessageCenter(getClass()).error("Error while loading core FEST-C plugin", e);
 		} catch (Exception ex) {
 			MessageCenter.getMessageCenter(getClass()).error("Error", ex);
 		}

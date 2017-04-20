@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="lib" path="lib/forms-1.0.5.jar"/>
 	<classpathentry kind="lib" path="lib/jh-2.0_02.jar"/>
-	<classpathentry kind="lib" path="lib/jh.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/l2fprod-common-all.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/rs_flexdock-0.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/TableLayout.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/wizard-0.1.12.jar"/>
-	<classpathentry exported="true" kind="lib" path="saf.core.ui.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/dockingFramesCommon.jar"/>
+	<classpathentry kind="lib" path="lib/dockingFramesCore.jar"/>
+	<classpathentry kind="lib" path="/festc_bootstrap/lib/log4j-1.2-api-2.0-rc1.jar"/>
+	<classpathentry kind="lib" path="/festc_bootstrap/lib/log4j-api-2.0-rc1.jar"/>
+	<classpathentry kind="lib" path="/festc_bootstrap/lib/log4j-core-2.0-rc1.jar"/>
+	<classpathentry kind="lib" path="/festc_bootstrap/lib/jpf-boot.jar"/>
+	<classpathentry kind="lib" path="/festc_bootstrap/lib/jpf.jar"/>
+	<classpathentry exported="true" kind="lib" path="/festc_bootstrap/lib/saf.core.runtime.jar"/>
+	<classpathentry kind="lib" path="lib/AppleJavaExtensions.jar"/>
+	<classpathentry kind="lib" path="lib/osx.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

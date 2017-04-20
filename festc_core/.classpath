@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/festc_bootstrap"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/festc_saf_ui"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/festc_bootstrap"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/velocity-dep-1.5.jar"/>
 	<classpathentry kind="lib" path="lib/reference.jar"/>
-	<classpathentry kind="lib" path="lib/swingx-2007_03_04.jar"/>
-	<classpathentry kind="lib" path="lib/xpp3_min-1.1.3.4.O.jar"/>
-	<classpathentry kind="lib" path="lib/xstream-1.2.1.jar"/>
+	<classpathentry kind="lib" path="/festc_bootstrap/lib/commons-logging-1.1.3.jar"/>
+	<classpathentry kind="lib" path="/festc_bootstrap/lib/log4j-1.2-api-2.0-rc1.jar"/>
+	<classpathentry kind="lib" path="/festc_bootstrap/lib/log4j-api-2.0-rc1.jar"/>
+	<classpathentry kind="lib" path="/festc_bootstrap/lib/log4j-core-2.0-rc1.jar"/>
+	<classpathentry kind="lib" path="lib/swingx-all-1.6.5-sources.jar"/>
+	<classpathentry kind="lib" path="lib/swingx-all-1.6.5.jar"/>
+	<classpathentry kind="lib" path="lib/velocity-1.7.jar"/>
+	<classpathentry kind="lib" path="lib/xstream-1.4.7.jar"/>
+	<classpathentry kind="lib" path="/festc_saf_ui/lib/saf.core.ui.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

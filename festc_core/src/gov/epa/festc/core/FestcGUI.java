@@ -2,17 +2,20 @@ package gov.epa.festc.core;
 
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import org.flexdock.view.View;
+import com.sun.glass.events.ViewEvent;
 
-import saf.core.ui.actions.ViewEvent;
-import saf.core.ui.view.ViewListener;
-import saf.core.ui.view.ViewManager;
+import saf.core.ui.dock.DefaultDockingManager;
+import saf.core.ui.dock.DockableFrame;
+import saf.core.ui.dock.DockingManager;
+import saf.core.ui.event.DockableFrameEvent;
+import saf.core.ui.event.DockableFrameListener;
 import simphony.util.messages.MessageCenter;
 
 /**
@@ -21,25 +24,25 @@ import simphony.util.messages.MessageCenter;
  * @author IE, UNC
  * @version $Revision$ $Date$
  */
-public class FestcGUI implements ViewListener {
+public class FestcGUI implements DockableFrameListener  {
 
 	private static final MessageCenter ctr = MessageCenter
 			.getMessageCenter(FestcGUI.class);
 
-	private ViewManager viewManager;
+	private DefaultDockingManager viewManager;
 	private JFrame frame;
 	private java.util.List<String> viewList = new ArrayList<String>(); 
 	private java.util.List<JFrame> framesToDisplay = new ArrayList<JFrame>(); 
 
-	public FestcGUI(ViewManager viewManager) {
+	public FestcGUI(DefaultDockingManager viewManager) {
 		this.viewManager = viewManager;
 	}
 
 	public void undockAllPlots() {
-		java.util.List<View> views = viewManager.getViews(
+		java.util.List<DockableFrame> views = viewManager.getDockableFrames(
 				FestcConstants.PERSPECTIVE_ID, FestcConstants.MAIN_GROUP_ID);
-		for (View view : views) {
-			viewManager.floatView(view);
+		for (DockableFrame view : views) {
+			view.doFloat();
 		}
 	}
 	
@@ -67,7 +70,7 @@ public class FestcGUI implements ViewListener {
 		framesToDisplay.clear();
 	}
 
-	public ViewManager getViewManager() {
+	public DockingManager getViewManager() {
 		return viewManager;
 	}
 
@@ -166,11 +169,71 @@ public class FestcGUI implements ViewListener {
 		return viewList;
 	}
 
-	public void setActive(String tabId) {
-		viewManager.setActiveView(tabId);
+	public void setActive(String tabId) {	
+		viewManager.setActiveDockable(tabId);
 	}
 	
 	public void refreshViews() {
+		
+	}
+
+	@Override
+	public void dockableClosed(DockableFrameEvent evt) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void dockableClosing(DockableFrameEvent evt) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void dockableFloating(DockableFrameEvent evt) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void dockableRestoring(DockableFrameEvent evt) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void dockableMinimizing(DockableFrameEvent evt) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void dockableMinimized(DockableFrameEvent evt) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void dockableFloated(DockableFrameEvent evt) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void dockableMaximizing(DockableFrameEvent evt) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void dockableMaximized(DockableFrameEvent evt) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void dockableRestored(DockableFrameEvent evt) {
+		// TODO Auto-generated method stub
 		
 	}
 	

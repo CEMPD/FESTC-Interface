@@ -28,7 +28,7 @@ import com.jgoodies.forms.layout.RowSpec;
  * @author IE, UNC
  */
 public class AboutDialog extends JDialog {
-	private static final long serialVersionUID = -3158674310794549095L;
+	//private static final long serialVersionUID = -3158674310794549095L;
 	public AboutDialog(Frame owner) {
 		super(owner);
 		initComponents();
