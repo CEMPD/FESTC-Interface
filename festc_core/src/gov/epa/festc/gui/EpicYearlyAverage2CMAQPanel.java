@@ -43,6 +43,7 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
 	private FestcApplication app;
 	private static final String indent = "            ";
 	private EpicYearlyAverage2CMAQFields fields;
+	 
 	private JRadioButton applicationBtn, spinupBtn;
 	private boolean spinup = false;
 	private JTextField beld4Dir;
@@ -97,6 +98,7 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
 		JPanel beld4DirPanel = new JPanel();
 		beld4Dir = new JTextField(40);
 		beld4Dir.setToolTipText("I.E. share_data/beld4_cmaq12km_2001.nc");
+ 
 		beld4DirBrowser = new JButton(BrowseAction.browseAction(this, app.getCurrentDir(), "BELD4 file", beld4Dir));
 		beld4DirPanel.add(beld4Dir);
 		beld4DirPanel.add(beld4DirBrowser);	
@@ -104,10 +106,11 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
 		JPanel panel = new JPanel(new SpringLayout());
 		SpringLayoutGenerator layout = new SpringLayoutGenerator();
 		
-		JPanel scenPanel = new JPanel();
-		scenPanel.add(scenarioDir);
+//		JPanel scenPanel = new JPanel();
+//		scenPanel.add(scenarioDir);
  
 		layout.addLabelWidgetPair("Grid Description:", getGridDescPanel(false), panel);
+		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDirP, panel);
 		layout.addLabelWidgetPair("BELD4 NetCDF File: ", beld4DirPanel, panel);
 		layout.addLabelWidgetPair("   ", new JLabel("   "), panel);
 		layout.addLabelWidgetPair(indent + "Output Type:", spinupPanel, panel);
@@ -115,7 +118,7 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
 		//layout.addLabelWidgetPair("Output NetCDF File:", netcdfFilePanel, panel);
 		//layout.addLabelWidgetPair("Message Box:", messageScroll, panel);
 
-		layout.makeCompactGrid(panel, 5, 2, // number of rows and cols
+		layout.makeCompactGrid(panel, 6, 2, // number of rows and cols
 				10, 10, // initial X and Y
 				5, 5); // x and y pading
 
@@ -323,10 +326,13 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
 	@Override
 	public void projectLoaded() {
 		fields = (EpicYearlyAverage2CMAQFields)app.getProject().getPage(fields.getName());
-		Beld4DataGenFields beld4fields = (Beld4DataGenFields) app.getProject().getPage(Beld4DataGenFields.class.getName());
-	
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		if ( fields != null ){
-			this.scenarioDir.setText(fields.getScenarioDir());
+			String scenloc = domain.getScenarioDir();
+			if (scenloc != null && scenloc.trim().length()>0 )
+				this.scenarioDir.setText(scenloc);
+			else 
+				this.scenarioDir.setText(fields.getScenarioDir());
 			rows.setValue(fields.getRows());
 			cols.setValue(fields.getCols());
 			xSize.setValue(fields.getXcellSize());
@@ -337,10 +343,10 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
 			gridName.setText(fields.getGridName());
 			runMessages.setText(fields.getMessage());
 
-			if ((fields.getBeld4ncf()==null || fields.getBeld4ncf().trim().isEmpty() ) && beld4fields != null) {
+			if ((fields.getBeld4ncf()==null || fields.getBeld4ncf().trim().isEmpty() )) {
 				String scenDir = fields.getScenarioDir().trim();
 				String  gridName = fields.getGridName().trim();
-				String year = beld4fields.getNLCDyear().trim();
+				String year = fields.getNlcdYear().trim();
 				String beld4file = scenDir + "/share_data/beld4_" + gridName + "_" + year +".nc";
 				//System.out.println(beld4file);
 //				File f = new File(beld4file);
@@ -360,6 +366,7 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
 
 	@Override
 	public void saveProjectRequested() {
+		if ( scenarioDir != null ) domain.setScenarioDir(scenarioDir.getText());
 		if ( scenarioDir != null ) fields.setScenarioDir(scenarioDir.getText());
 		if ( rows != null ) fields.setRows(Integer.parseInt(rows.getText() == null? "" : rows.getValue()+""));
 		if ( cols != null ) fields.setCols(Integer.parseInt(cols.getText() == null? "" : cols.getValue()+""));
@@ -369,13 +376,14 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
 		if ( ymin != null ) fields.setYmin(Float.parseFloat(ymin.getText() == null? "" : ymin.getValue()+""));
 		if ( proj4proj != null ) fields.setProj(proj4proj.getText() == null? "" : proj4proj.getText());
 		if ( gridName != null ) fields.setGridName(gridName.getText()== null? "" : gridName.getText());
+		 
 		if ( runMessages != null ) fields.setMessage(runMessages.getText());
 		if ( beld4Dir != null ) fields.setBeld4ncf(beld4Dir.getText()== null? "" : beld4Dir.getText());
 	}
 
 	@Override
 	public void newProjectCreated() {
-		DomainFields domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		
 		String scenDir = domain.getScenarioDir().trim();
 		String  gName = domain.getGridName().trim();

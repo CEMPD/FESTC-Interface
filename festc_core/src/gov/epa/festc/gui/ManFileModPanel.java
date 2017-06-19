@@ -317,7 +317,7 @@ public class ManFileModPanel extends UtilFieldsPanel implements PlotEventListene
 
 	@Override
 	public void newProjectCreated() {
-		DomainFields domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		scenarioDir.setText(domain.getScenarioDir());
 		runMessages.setText("");
 		if ( fields == null ) {
@@ -328,10 +328,17 @@ public class ManFileModPanel extends UtilFieldsPanel implements PlotEventListene
 	
 	public void projectLoaded() {
 		fields = (ManFileModFields) app.getProject().getPage(fields.getName());
-
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		if ( fields != null ){
-			this.scenarioDir.setText(fields.getScenarioDir());
-			if ( runMessages != null ) fields.setMessage(runMessages.getText());
+			String scenloc = domain.getScenarioDir();
+			if (scenloc != null && scenloc.trim().length()>0 )
+				this.scenarioDir.setText(scenloc);
+			else 
+				this.scenarioDir.setText(fields.getScenarioDir());
+			if ( fields.getMessage() != null ) 
+				runMessages.setText(fields.getMessage());
+			else
+				runMessages.setText("");
 		}
 		else{
 			newProjectCreated();
@@ -339,6 +346,8 @@ public class ManFileModPanel extends UtilFieldsPanel implements PlotEventListene
 	}
 
 	public void saveProjectRequested() {
+		if ( scenarioDir != null ) domain.setScenarioDir(scenarioDir.getText());
 		if ( scenarioDir != null ) fields.setScenarioDir(scenarioDir.getText());
+		if ( runMessages != null ) fields.setMessage(runMessages.getText().trim());
 	}				
 }

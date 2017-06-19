@@ -32,6 +32,7 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
 	private FestcApplication app;
 	private MessageCenter msg;
 	private SiteFilesFields fields;
+	 
 	private JTextField minAcreas;
 	
 	public UtilGenerateSiteFilesPanel(FestcApplication application, MessageCenter msg) {
@@ -104,14 +105,14 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
 		if (minAcres == null || minAcres.isEmpty()) 
 			throw new Exception("Minimum Crop Acres is not specified!");
 		
-		String sMAcres = app.getSMinAcre();
+		String sMAcres = domain.getCMinAcres();
 		if (sMAcres == null || sMAcres.trim().isEmpty()) {
-			app.setSMinAcre(minAcres);
+			domain.setCMinAcres(minAcres);
 			sMAcres = minAcres;
 		}	
 		else if (sMAcres != null && !sMAcres.trim().isEmpty() 
-				&& !sMAcres.endsWith(minAcres) && app.allowDiffCheck()) 
-			throw new Exception("Current minimum acre is inconsistent with previous one (" + sMAcres + ")");	 
+			&& (Float.parseFloat(sMAcres))!=(Float.parseFloat(minAcres)) && app.allowDiffCheck()) 
+			throw new Exception("Current minimum acre "+minAcres+ " is inconsistent with previous one (" + sMAcres + ")");	 
 		
 			 
 		try {
@@ -299,26 +300,34 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
 	@Override
 	public void projectLoaded() {
 		fields = (SiteFilesFields) app.getProject().getPage(fields.getName());
-		
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		if ( fields != null ){
-			this.scenarioDir.setText(fields.getScenarioDir());
+			String scenloc = domain.getScenarioDir();
+			if (scenloc != null && scenloc.trim().length()>0 )
+				this.scenarioDir.setText(scenloc);
+			else 
+				this.scenarioDir.setText(fields.getScenarioDir());
 			runMessages.setText(fields.getMessage());
 			minAcreas.setText(fields.getMinAcres()==null? "40.0":fields.getMinAcres());
 		} else{
 			newProjectCreated();
 		}
+		domain.setCMinAcres(null);
 	}
 
 	@Override
 	public void saveProjectRequested() {
+		if ( scenarioDir != null ) domain.setScenarioDir(scenarioDir.getText());
 		if ( scenarioDir != null ) fields.setScenarioDir(scenarioDir.getText());
 		if ( runMessages != null ) fields.setMessage(runMessages.getText());
-		if ( minAcreas != null)  fields.setMinAcres(minAcreas.getText());
+		if ( minAcreas != null)   fields.setMinAcres(minAcreas.getText());
+		if ( runMessages != null ) fields.setMessage(runMessages.getText());
+		domain.setCMinAcres(null);
 	}
 
 	@Override
 	public void newProjectCreated() {
-		DomainFields domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		scenarioDir.setText(domain.getScenarioDir());	
 		runMessages.setText("");
 		minAcreas.setText("40.0");

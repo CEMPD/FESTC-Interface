@@ -272,9 +272,13 @@ public class UtilGenerateSoilMatchPanel extends UtilFieldsPanel implements PlotE
 	@Override
 	public void projectLoaded() {
 		fields = (SoilFilesFields) app.getProject().getPage(fields.getName());
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		if ( fields != null ){
-			this.scenarioDir.setText(fields.getScenarioDir());
-			//finishedCrops = fields.getFinishedCrops();
+			String scenloc = domain.getScenarioDir();
+			if (scenloc != null && scenloc.trim().length()>0 )
+				this.scenarioDir.setText(scenloc);
+			else 
+				this.scenarioDir.setText(fields.getScenarioDir());
 			runMessages.setText(fields.getMessage());
 		}else{
 			newProjectCreated();
@@ -284,13 +288,14 @@ public class UtilGenerateSoilMatchPanel extends UtilFieldsPanel implements PlotE
 
 	@Override
 	public void saveProjectRequested() {
+		if ( scenarioDir != null ) domain.setScenarioDir(scenarioDir.getText());
 		if ( scenarioDir != null ) fields.setScenarioDir(scenarioDir.getText());
 		if ( runMessages != null ) fields.setMessage(runMessages.getText());		
 	}
 
 	@Override
 	public void newProjectCreated() {
-		DomainFields domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		scenarioDir.setText(domain.getScenarioDir());
 		runMessages.setText("");
 		if ( fields == null ) {

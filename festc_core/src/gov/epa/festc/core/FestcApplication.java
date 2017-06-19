@@ -52,6 +52,7 @@ public class FestcApplication implements ListSelectionListener,
 	private Project project;
 
 	private File currentDir;
+	private File infoDir;
 	
 	private File projFile;
 	
@@ -94,6 +95,7 @@ public class FestcApplication implements ListSelectionListener,
 		epicHome = Constants.getProperty(Constants.EPIC_HOME, msg);
 		workdir = Constants.getProperty(Constants.WORK_DIR, msg);
 		this.currentDir = new File(workdir + "/scenarios/scenariosInfo/");
+		this.infoDir = new File(workdir + "/scenarios/scenariosInfo/");
 		File logdir = new File(workdir + "/scenarios/scenariosInfo/logs");
 		if ( !logdir.exists())
 			logdir.mkdirs();
@@ -133,37 +135,37 @@ public class FestcApplication implements ListSelectionListener,
 	 * Gets the modeling year associated with the app
 	 */
 	
-	public String getSSimYear() {
-		return this.sSimYear;
-	}
-	 
-	public void setSSimYear(String year) {
-		this.sSimYear = year;
-	}
+//	public String getSSimYear() {
+//		return this.sSimYear;
+//	}
+//	 
+//	public void setSSimYear(String year) {
+//		this.sSimYear = year;
+//	}
 	
 	/***
 	 * Sets the fertilizer year associated with the app
 	 */
 	
-	public String getSFertYear() {
-		return this.sFertYear;
-	}
-	
-	public void setSFertYear(String year) {
-		this.sFertYear = year;
-	}
+//	public String getSFertYear() {
+//		return this.sFertYear;
+//	}
+//	
+//	public void setSFertYear(String year) {
+//		this.sFertYear = year;
+//	}
 	
 	/***
 	 * Sets the minimum crop acres associated with the app
 	 */
 	
-	public String getSMinAcre() {
-		return this.sMinAcre;
-	}
-	
-	public void setSMinAcre(String minAcre) {
-		this.sMinAcre = minAcre;
-	}
+//	public String getSMinAcre() {
+//		return this.sMinAcre;
+//	}
+//	
+//	public void setSMinAcre(String minAcre) {
+//		this.sMinAcre = minAcre;
+//	}
 
 	/**
 	 * Exits the application.
@@ -262,11 +264,11 @@ public class FestcApplication implements ListSelectionListener,
 	 */
 	public void openProject() {
 		if (projFile != null ) {
-			int option = JOptionPane.showConfirmDialog(null, "Do you want to save scenario? ", "Confirmation", JOptionPane.YES_NO_OPTION);
-			if ( option == 0 )
+//			int option = JOptionPane.showConfirmDialog(null, "Do you want to save scenario? ", "Confirmation", JOptionPane.YES_NO_OPTION);
+//			if ( option == 0 )
 				saveProject();
 		}
-		File file = FileChooserUtilities.getOpenFile(currentDir);
+		File file = FileChooserUtilities.getOpenFile(infoDir);
 		openProject(file);
 	}
 	
@@ -381,6 +383,7 @@ public class FestcApplication implements ListSelectionListener,
 			domain.setYmin(panel.getYmin());
 			domain.setSimYear(panel.getSimuYear());
 			domain.setNlcdYear(panel.getNlcdYear());
+			domain.setCMinAcres("40.0");
 			domain.setScenarioDir(workdir + "/scenarios/" + newScenario);	 
 			 
 			project.setName(newScenario);		 	
@@ -427,8 +430,10 @@ public class FestcApplication implements ListSelectionListener,
 			domain.setXmin(fields.getXmin());
 			domain.setYmin(fields.getYmin());
 			domain.setScenarioDir(workdir + "/scenarios/" + newScenName);
-			domain.setSimYear(panel.getSimuYear());		
-			domain.setNlcdYear(domain.getNlcdYear()==null? "2006":domain.getNlcdYear());
+			domain.setSimYear(panel.getSimuYear());	
+			// get default nlcd year from simulation year
+			domain.setNlcdYear();
+			domain.setCMinAcres(domain.getCMinAcres());
 			project.setName(newScenName);
 			
 			projFile = new File(workdir + "/scenarios/scenariosInfo/", newScenName);
@@ -444,7 +449,7 @@ public class FestcApplication implements ListSelectionListener,
 			 */	
 			System.out.println("Coping Scenario: " + newScenName);
 			copyScenarioFold( existScenNameWdir, newScenName, panel.getSimuYear());
-			System.out.println("Finished Coping Scenario: " + newScenName);
+			//System.out.println("Finished Coping Scenario: " + newScenName);
 		}
 		
 		if (cmd.equals(Constants.DELETE_SCENARIO)) {

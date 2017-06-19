@@ -45,7 +45,7 @@ public class CreateAppManFilesPanel extends UtilFieldsPanel implements PlotEvent
 	private FestcApplication app;
 	private MessageCenter msg;
 	private ManageAppFields fields;
-	 
+	//private DomainFields domain;
 	 
 	private CropSelectionPanel cropSelectionPanel;
 	
@@ -127,15 +127,15 @@ public class CreateAppManFilesPanel extends UtilFieldsPanel implements PlotEvent
 		if ( fYear.trim().isEmpty() )
 			throw new Exception("Please select fertilizer year!");	 
 		
-		String sFYear = app.getSFertYear();
+		String sFYear = domain.getCFertYear();
 		if (sFYear == null || sFYear.trim().isEmpty()) {
-			app.setSFertYear(fYear);
+			domain.setCFertYear(fYear);
 			sFYear = fYear;
 		}	
 		 
 		else if (sFYear != null && !sFYear.trim().isEmpty() 
 				&& !sFYear.endsWith(fYear) && app.allowDiffCheck()) 
-			throw new Exception("Current modeling year is inconsistent with previous one (" + sFYear + ")");
+			throw new Exception("Current modeling year is " + fYear + " inconsistent with previous one (" + sFYear + ")");
 		 
 		String seCropsString = cropSelectionPanel.selectedItemTostring();
 		String[] seCrops = cropSelectionPanel.getSelectedCrops();
@@ -191,7 +191,7 @@ public class CreateAppManFilesPanel extends UtilFieldsPanel implements PlotEvent
 			    
 		if ( !file.endsWith(System.getProperty("file.separator"))) 
 				file += System.getProperty("file.separator");
-		file += "runAppManGeneration_" + timeStamp + ".csh";
+		file += "runEPICManApp_" + timeStamp + ".csh";
 		String mesg = "";
 		try {
 			StringBuilder sb = new StringBuilder();
@@ -311,30 +311,39 @@ public class CreateAppManFilesPanel extends UtilFieldsPanel implements PlotEvent
 	}
 	
 	public void newProjectCreated() {
-		DomainFields domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
-		scenarioDir.setText(domain.getScenarioDir());	
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
+		scenarioDir.setText(domain.getScenarioDir());
+		
 		runMessages.setText("");
 		if ( fields == null ) {
 			fields = new ManageAppFields();
 			app.getProject().addPage(fields);
 		}
+		this.fertYearSel.setSelectedItem(domain.getCFertYear());
 	}
 	 
 	public void projectLoaded() {
-		fields = (ManageAppFields) app.getProject().getPage(fields.getName());	
+		fields = (ManageAppFields) app.getProject().getPage(fields.getName());
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		if ( fields != null ) {
-			this.scenarioDir.setText(fields.getScenarioDir());
+			String scenloc = domain.getScenarioDir();
+			if (scenloc != null && scenloc.trim().length()>0 )
+				this.scenarioDir.setText(scenloc);
+			else 
+				this.scenarioDir.setText(fields.getScenarioDir());
 			this.fertYearSel.setSelectedItem(fields.getFertYear());
 			runMessages.setText(fields.getMessage());
 		}else{
 			newProjectCreated();
 		}
-		
+		domain.setCFertYear(null);
 	}
 
 	public void saveProjectRequested() {
+		if ( scenarioDir != null ) domain.setScenarioDir(scenarioDir.getText());
 		if ( scenarioDir != null ) fields.setScenarioDir(scenarioDir.getText());
 		if ( fertYearSel != null ) fields.setFertYear((String) fertYearSel.getSelectedItem());
 		if ( runMessages != null ) fields.setMessage(runMessages.getText());	
+		domain.setCFertYear(null);
 	}				
 }

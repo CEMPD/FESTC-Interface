@@ -54,7 +54,7 @@ public class FileRunner { // TODO: change this to a cross-platform launcher
 			cmd = cmd + " -o " + log + " " + script.getAbsolutePath();
 
 		if ((qcmd == null || qcmd.trim().isEmpty()) || (qname == null || qname.trim().isEmpty()))
-			cmd = "cd " + scriptDir+ "\n" + script.getAbsolutePath() + " >  & " + log ;
+			cmd = "cd " + scriptDir+ "\n" + script.getAbsolutePath() + " > " + log + " & " ;
 
 		cmd = cmd + "\ncd - \n";
 		if (Constants.DEBUG) {

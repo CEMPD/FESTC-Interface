@@ -46,6 +46,7 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 	private String baseDir = null;
 
 	private EpicSpinupFields fields;
+	//private DomainFields domain;
 	
 	private JComboBox nDepSel;
 	private JComboBox runTiledrain;
@@ -287,9 +288,10 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		sb.append("setenv    CO2_FAC  " + co2Factor.getText() + ls);	 
 		sb.append("setenv    RUN_TD   " +  (String)runTiledrain.getSelectedItem()  + ls);
 		
-		ndepValue = "RFN0";
+		//ndepValue = "RFN0";
 		if ( ndepValue.contains("2002") )  ndepValue = "dailyNDep_2004";
 		else if ( ndepValue.contains("2010") )  ndepValue = "dailyNDep_2008";
+		else if ( ndepValue.contains("EPIC") )  ndepValue = "RFN0";
 
 		if ( ndepValue.length() == 4) 
 			sb.append("setenv    NDEP_DIR   " + ndepValue + ls);
@@ -391,9 +393,13 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 
 	public void projectLoaded() {
 		fields = (EpicSpinupFields) app.getProject().getPage(fields.getName());
-
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		if ( fields != null ){
-			this.scenarioDir.setText(fields.getScenarioDir());
+			String scenloc = domain.getScenarioDir();
+			if (scenloc != null && scenloc.trim().length()>0 )
+				this.scenarioDir.setText(scenloc);
+			else 
+				this.scenarioDir.setText(fields.getScenarioDir());
 			runMessages.setText(fields.getMessage());
 			nDepSel.setSelectedItem(fields.getNDepDir());
 			co2Factor.setText(fields.getCO2Fac()==null? "380.00":fields.getCO2Fac());
@@ -405,18 +411,20 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 	}
 
 	public void saveProjectRequested() {
+		if ( scenarioDir != null ) domain.setScenarioDir(scenarioDir.getText());
 		if ( scenarioDir != null ) fields.setScenarioDir(scenarioDir.getText());
 		if ( runMessages != null ) fields.setMessage(runMessages.getText());
 		if ( nDepSel != null ) fields.setNDepDir( (String) nDepSel.getSelectedItem());
 		if ( co2Factor != null)  fields.setCO2Fac(co2Factor.getText());
 		if ( runTiledrain != null ) fields.setRunTiledrain((String) runTiledrain.getSelectedItem());
+		if ( runMessages != null ) fields.setMessage(runMessages.getText().trim());
 	}
 
 	@Override
 	public void newProjectCreated() {
-		DomainFields domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		scenarioDir.setText(domain.getScenarioDir());	
-		nDepSel.setSelectedIndex(2);
+		nDepSel.setSelectedIndex(1);
 		runMessages.setText("");
 		co2Factor.setText("380.00");
 		runTiledrain.setSelectedIndex(1);

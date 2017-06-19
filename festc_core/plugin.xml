@@ -11,7 +11,7 @@
 		</library>
 		<library type="resources" path="icons/" id="icons" />
 
-		<library id="velocity" path="lib/velocity-dep-1.5.jar" type="code">
+		<library id="velocity" path="lib/velocity-1.7.jar" type="code">
 			<export prefix="*" />
 		</library>
 
@@ -66,7 +66,7 @@
 				<parameter id="groupID" value="gov.epa.festc.core.tools_group" />
 				<parameter id="location" value="west" />
 				<parameter id="parent" value="gov.epa.festc.core.main_group" />
-				<parameter id="fillPercentage" value="0.35" />
+				<parameter id="fillPercentage" value="0.32" />
 			</parameter>
 		</parameter>
 	</extension>

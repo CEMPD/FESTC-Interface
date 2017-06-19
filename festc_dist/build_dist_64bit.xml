@@ -1,0 +1,209 @@
+<project name="festc" default="build.linux.dist" basedir=".">
+
+	<property file="build_64bit.properties" />
+	<property name="linux.dist.name" value="${app.name}_${app.version}_64bit"/>
+	<property name="dist.dir" value="${build.home}/${linux.dist.name}"/>
+	<property name="install.home" value="${build.home}/${install.dir}"/>
+	<property name="plugins.dir" value="plugins"/>
+	<property name="plugins.dist.dir" value="${dist.dir}/${plugins.dir}"/>
+	<property name="core.dir" value="${basedir}/../festc_core"/>
+	<property name="bootstrap.dir" value="${basedir}/../festc_bootstrap"/>
+	<property name="saf.dir" value="${basedir}/../festc_saf_ui"/>
+	<property name="versiondir" value="../festc_core/src/gov/epa/festc/core" />
+	<property name="versionbuild.dir" value="../festc_core/bin/gov/epa/festc/core" />
+	
+	<path id="classpath">
+		<pathelement location="../festc_core/bin/" />
+        <fileset dir="../festc_core/lib">
+            <include name="**/*.jar" />
+        </fileset>
+	</path>
+	<target name="init">
+        <delete dir="${dist.dir}" />
+        <mkdir dir="${dist.dir}" />
+		
+		<delete dir="${install.home}" />
+		<mkdir dir="${install.home}"/>
+		
+		<delete dir="${plugins.dist.dir}" />
+		<mkdir dir="${plugins.dist.dir}" />
+		
+		<mkdir dir="${plugins.dist.dir}/core" />
+		<mkdir dir="${plugins.dist.dir}/bootstrap" />
+	</target>
+	<target name="compile-version" depends="build-version">
+        <javac srcdir="${versiondir}"
+               destdir="${versionbuild.dir}"
+               classpathref="classpath"
+               debug="on"
+        />
+	</target>
+	
+    <target name="build-version" description="Build FEST-C version" >
+        <java classname="gov.epa.festc.core.WriteVersionInfo"
+              fork="true"
+              failonerror="true"
+    	      classpathref="classpath" >
+        </java>
+    </target>
+	
+	<target name="create-plugin-dir">
+		<mkdir dir="${dist.dir}"/>
+		<mkdir dir="${plugins.dist.dir}" />
+		<mkdir dir="${plugins.dist.dir}/core" />
+		<mkdir dir="${plugins.dist.dir}/bootstrap" />
+	</target>
+	<target name="delete-dist-dir">
+		<delete dir="${dist.dir}"/>
+	</target>
+	
+	<target name="jars">
+		<jar destfile="${core.dir}/core.jar"
+				     basedir="${core.dir}/bin"/>
+		
+		<jar destfile="${plugins.dist.dir}/core/core.jar"
+		     basedir="${core.dir}/bin"/>
+
+		<jar destfile="${plugins.dist.dir}/bootstrap/bootstrap.jar"
+		     basedir="${bootstrap.dir}/bin"/>
+	</target>
+
+	<target name="prep.dist" depends="init, compile-version">
+		<copy tofile="${plugins.dist.dir}/bootstrap/boot.properties">
+			<fileset file="${bootstrap.dir}/dist_boot.properties"/>
+		</copy>
+		
+		<copy todir="${plugins.dist.dir}/bootstrap/">
+			<fileset file="${bootstrap.dir}/ui.properties"/>
+		</copy>
+
+		<copy todir="${plugins.dist.dir}/bootstrap/lib">
+			<fileset dir="${bootstrap.dir}/lib"/>
+		</copy>
+
+		<copy todir="${plugins.dist.dir}/bootstrap/help">
+			<fileset dir="${bootstrap.dir}/help"/>
+		</copy>
+
+		<jar destfile="${plugins.dist.dir}/bootstrap/bootstrap.jar"
+		     basedir="${bootstrap.dir}/bin"/>
+
+		<!-- core -->
+		<copy tofile="${plugins.dist.dir}/core/plugin.xml">
+			<fileset file="${core.dir}/dist_plugin.xml"/>
+		</copy>
+
+		<copy todir="${plugins.dist.dir}/core/lib">
+			<fileset dir="${core.dir}/lib"/>
+		</copy>
+
+		<copy todir="${plugins.dist.dir}/core/icons">
+			<fileset dir="${core.dir}/icons"/>
+		</copy>
+
+		<jar destfile="${plugins.dist.dir}/core/core.jar"
+		     basedir="${core.dir}/bin"/>
+
+		<!-- saf ui -->
+		<copy todir="${plugins.dist.dir}/saf.core.ui">
+			<fileset file="${saf.dir}/plugin.xml"/>
+			<fileset file="${saf.dir}/saf.core.ui.jar"/>
+		</copy>
+
+		<copy todir="${plugins.dist.dir}/saf.core.ui/lib">
+			<fileset dir="${saf.dir}/lib">
+				<exclude name="**/*.zip"/>
+			</fileset>
+		</copy>
+
+		<copy todir="${plugins.dist.dir}/saf.core.ui/icons">
+			<fileset dir="${saf.dir}/icons"/>
+		</copy>
+	</target>
+	
+	<tstamp/>
+	<!--
+	<target name="build.linux.dist" depends="prep.dist">
+	        <unzip src="./distfiles/licenses.zip" dest="${linux.dir}/${linux.dist.name}"/>
+	    
+	        <copy todir="${linux.dir}/${linux.dist.name}">
+	            <fileset file="./distfiles/INSTALL.linux.txt"/>
+	            <fileset file="./distfiles/README.txt"/>
+	            <fileset file="./distfiles/festc.sh"/>
+	            <fileset file="./distfiles/RELEASE-NOTES.txt"/>
+	        	<fileset file="./distfiles/config.properties"/>
+	        </copy>
+	       
+	        <copy todir="${linux.dir}/${linux.dist.name}/data">
+	            <fileset dir="./distfiles/data">
+	                <include name="**/*" />
+	            </fileset>
+	        </copy>
+	       
+	        <copy todir="${linux.dir}/${linux.dist.name}/${plugins.dir}">
+	            <fileset dir="${plugins.dist.dir}"/>
+	        </copy>
+
+	        <delete failonerror="false">
+	            <fileset dir="${dist.dir}">
+	                <include name="**/${linux.dist.name}*.tar.gz" />
+	                <include name="**/${linux.dist.name}*.tar" />
+	            </fileset>
+	        </delete>
+	       
+	        <tar destfile="${dist.dir}/${linux.dist.name}.tar" basedir="${linux.dir}/"/>
+	        <gzip destfile="${dist.dir}/${linux.dist.name}_${DSTAMP}.tar.gz">
+	            <fileset file="${dist.dir}/${linux.dist.name}.tar"/>
+	        </gzip>
+	       
+	        <delete failonerror="false">
+	            <fileset dir="${dist.dir}">
+	                <include name="**/${linux.dist.name}*.tar" />
+	            </fileset>
+	        </delete>
+	       
+	        <delete dir="${plugins.dist.dir}" failonerror="false"/>
+	    </target> 
+	    -->
+	
+    <target name="build.linux.dist" depends="prep.dist">
+    
+    	<echoproperties/>
+        
+        <unzip src="./distfiles/licenses.zip" dest="${dist.dir}"/>
+    
+        <copy todir="${dist.dir}">
+        	<fileset file="./distfiles/config.properties"/>
+        </copy>
+    	
+        <copy todir="${dist.dir}">
+        	<fileset file="./distfiles/README"/>
+        </copy>
+           
+    	<exec executable="cp">
+    		<arg line="-p ./distfiles/festc.sh ${dist.dir}/festc.sh"/>
+    	</exec>
+            
+    	<exec executable="cp">
+    		<arg line="-p -R ${jre.home} ${dist.dir}/jre"/>
+    	</exec>
+    	<exec executable="pwd">
+    	    <arg line=""/>
+    	</exec>
+    	<exec executable="tar">
+    		<arg line="-cpf ${install.home}/${linux.dist.name}_linux.tar ../../../${linux.dist.name}"/>
+    	</exec>
+    
+    	<gzip destfile="${install.home}/${linux.dist.name}_linux_${DSTAMP}.tar.gz">
+    		<fileset file="${install.home}/${linux.dist.name}_linux.tar"/>
+    	</gzip>
+    		
+    	<delete failonerror="false">
+    		<fileset dir="${install.home}">
+    			<include name="**/${linux.dist.name}_linux.tar" />
+    		</fileset>
+    	</delete>
+    </target>
+
+
+</project>

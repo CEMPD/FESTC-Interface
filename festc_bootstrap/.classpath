@@ -15,7 +15,7 @@
 	<classpathentry kind="lib" path="/festc_saf_ui/lib/dockingFramesCommon.jar"/>
 	<classpathentry kind="lib" path="/festc_saf_ui/lib/dockingFramesCore.jar"/>
 	<classpathentry kind="lib" path="/festc_core/lib/commons-collections-3.2.1.jar"/>
-	<classpathentry kind="lib" path="lib/org.apache.commons.lang_2.6.0.v201205030909.jar"/>
 	<classpathentry kind="lib" path="/festc_saf_ui/lib/TableLayout.jar"/>
+	<classpathentry kind="lib" path="lib/org.apache.commons.lang_2.6.0.v201205030909.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

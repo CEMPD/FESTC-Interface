@@ -356,9 +356,13 @@ public class Epic2CMAQPanel extends UtilFieldsPanel implements PlotEventListener
 	@Override
 	public void projectLoaded() {
 		fields = (Epic2CMAQFields)app.getProject().getPage(fields.getName());
-		//System.out.println(fields.getXcellSize()+"  " + fields.getYcellSize() );
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		if ( fields != null ) {
-			this.scenarioDir.setText(fields.getScenarioDir());
+			String scenloc = domain.getScenarioDir();
+			if (scenloc != null && scenloc.trim().length()>0 )
+				this.scenarioDir.setText(scenloc);
+			else 
+				this.scenarioDir.setText(fields.getScenarioDir());
 			rows.setValue(fields.getRows());
 			cols.setValue(fields.getCols());
 			xSize.setValue(fields.getXcellSize());
@@ -383,7 +387,8 @@ public class Epic2CMAQPanel extends UtilFieldsPanel implements PlotEventListener
 
 	@Override
 	public void saveProjectRequested() {
-		if ( scenarioDir != null ) fields.setScenarioDir(scenarioDir.getText()== null? "" : scenarioDir.getText());
+		if ( scenarioDir != null ) domain.setScenarioDir(scenarioDir.getText()== null? "" : scenarioDir.getText());
+		if ( scenarioDir != null ) fields.setScenarioDir(scenarioDir.getText());
 		if ( rows != null ) fields.setRows(Integer.parseInt(rows.getText() == null? "" : rows.getValue()+""));
 		if ( cols != null ) fields.setCols(Integer.parseInt(cols.getText() == null? "" : cols.getValue()+""));
 		if ( xSize != null ) fields.setXcellSize(Float.parseFloat(xSize.getText() == null? "" : xSize.getValue()+""));
@@ -400,7 +405,7 @@ public class Epic2CMAQPanel extends UtilFieldsPanel implements PlotEventListener
 
 	@Override
 	public void newProjectCreated() {
-		DomainFields domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		scenarioDir.setText(domain.getScenarioDir());	
 		rows.setValue(domain.getRows());
 		cols.setValue(domain.getCols());

@@ -40,13 +40,6 @@ public class Epic2CMAQFields extends PageFields{
 		this.outfileprefix = outfileprefix;
 	}
 
-	public void setGridName(String gridName) {
-		this.gridName = gridName;
-	}
-
-	public String getGridName() {
-		return gridName;
-	}
 
 	@Override
 	public String getName() {

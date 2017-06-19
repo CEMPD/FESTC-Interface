@@ -55,6 +55,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 	String baseDir = null;
 
 	private EpicAppFields fields;
+	//private DomainFields domain;
 	
 	private JComboBox nDepSel;
 	private JComboBox runTiledrain;
@@ -195,15 +196,6 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 			throw new Exception( "Simulation year is not an integer!");
 		}
 		
-		String sSimYear = app.getSSimYear();
-		if (sSimYear == null || sSimYear.trim().isEmpty()) {
-			app.setSSimYear(sSimYear);
-			sSimYear = simY;
-		}	
-		else if (sSimYear != null && !sSimYear.trim().isEmpty() 
-				&& !sSimYear.endsWith(simY) && app.allowDiffCheck()) 
-			throw new Exception("Current modeling year is inconsistent with previous one (" + sSimYear + ")");
-		
 		String ndepValue = (String) this.nDepSel.getSelectedItem();
 		if ( ndepValue == null || ndepValue.isEmpty()) 
 			throw new Exception( "Deposition dir is empty, please specify it!");
@@ -315,10 +307,11 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		sb.append("setenv    CO2_FAC  " + co2Factor.getText() + ls);
 		sb.append("setenv    RUN_TD   " +  (String)runTiledrain.getSelectedItem()  + ls);
 		 
-		ndepValue = "RFN0";
+		//ndepValue = "RFN0";
 		if ( ndepValue.contains("CMAQ") )  ndepValue = "CMAQ";
 		else if ( ndepValue.contains("2002") )  ndepValue = "dailyNDep_2004";
 		else if ( ndepValue.contains("2010") )  ndepValue = "dailyNDep_2008";
+		else if ( ndepValue.contains("EPIC") )  ndepValue = "RFN0";
 
 		if ( ndepValue.length() == 4) 
 			sb.append("setenv    NDEP_DIR   " + ndepValue + ls);
@@ -422,31 +415,40 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 
 	public void projectLoaded() {
 		fields = (EpicAppFields) app.getProject().getPage(fields.getName());
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		if ( fields != null ){	
-			this.scenarioDir.setText(fields.getScenarioDir());
-			simYear.setText(fields.getSimYear());
+			String scenloc = domain.getScenarioDir();
+			if (scenloc != null && scenloc.trim().length()>0 )
+				this.scenarioDir.setText(scenloc);
+			else 
+				this.scenarioDir.setText(fields.getScenarioDir());
+			simYear.setText(domain.getSimYear());
 			runMessages.setText(fields.getMessage());
 			nDepSel.setSelectedItem(fields.getNDepDir());
 			co2Factor.setText(fields.getCO2Fac()==null? "380.00":fields.getCO2Fac());
+			runTiledrain.setSelectedItem(fields.getRunTiledrain()==null?"NO":fields.getRunTiledrain());
 		}else{
 			newProjectCreated();
 		}
 	}
 
 	public void saveProjectRequested() {
+		if ( scenarioDir != null ) domain.setScenarioDir(scenarioDir.getText());
 		if ( scenarioDir != null ) fields.setScenarioDir(scenarioDir.getText());
-		if ( simYear != null ) fields.setSimYear(simYear.getText());
+		if ( simYear != null ) domain.setSimYear(simYear.getText());
 		if ( runMessages != null ) fields.setMessage(runMessages.getText());	
 		if ( nDepSel != null ) fields.setNDepDir( (String) nDepSel.getSelectedItem());
 		if ( co2Factor != null)  fields.setCO2Fac(co2Factor.getText());
+		if ( runTiledrain != null ) fields.setRunTiledrain((String) runTiledrain.getSelectedItem());
+		if ( runMessages != null ) fields.setMessage(runMessages.getText().trim());
 	}
 
 	@Override
 	public void newProjectCreated() {
-		DomainFields domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		scenarioDir.setText(domain.getScenarioDir());	
 		simYear.setText(domain.getSimYear());
-		nDepSel.setSelectedIndex(2);
+		nDepSel.setSelectedIndex(1);
 		runMessages.setText("");
 		co2Factor.setText("380.00");
 		runTiledrain.setSelectedIndex(1);

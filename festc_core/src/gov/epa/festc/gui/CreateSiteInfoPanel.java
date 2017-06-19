@@ -41,6 +41,7 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 	private MessageCenter msg;
 	private FestcApplication app;
 	private SiteInfoGenFields fields;
+	//private DomainFields domain;
 	private JTextField beld4Dir;
 	private JTextField minAcreas;
 	private JButton beld4DirBrowser;
@@ -89,6 +90,7 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 		JPanel beld4DirPanel = new JPanel();
 		beld4Dir = new JTextField(40);
 		beld4Dir.setToolTipText("I.E. share_data/beld4_cmaq12km_2001.nc");
+		
 		beld4DirBrowser = new JButton(BrowseAction.browseAction(this, app.getCurrentDir(), "BELD4 file", beld4Dir));
 		beld4DirPanel.add(beld4Dir);
 		beld4DirPanel.add(beld4DirBrowser);	
@@ -162,14 +164,14 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 		if (minAcres == null || minAcres.isEmpty()) 
 			throw new Exception("Minimum Crop Acres is not specified!");	 
 		
-		String sMAcres = app.getSMinAcre();
+		String sMAcres = domain.getCMinAcres(); 
 		if (sMAcres == null || sMAcres.trim().isEmpty()) {
-			app.setSMinAcre(minAcres);
+			domain.setCMinAcres(minAcres);
 			sMAcres = minAcres;
 		}	
 		else if (sMAcres != null && !sMAcres.trim().isEmpty() 
-				&& !sMAcres.endsWith(minAcres) && app.allowDiffCheck() ) 
-			throw new Exception("Current minimum acre is inconsistent with previous one (" + sMAcres + ")");	 
+				&& (Float.parseFloat(sMAcres))!=(Float.parseFloat(minAcres)) && app.allowDiffCheck() ) 
+			throw new Exception("Current minimum acre  "+minAcres+ " is inconsistent with previous one (" + sMAcres + ")");	 
 		
 		try {
 			Float.parseFloat(minAcres);
@@ -335,7 +337,7 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 	
 	@Override
 	public void newProjectCreated() {
-		DomainFields domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		rows.setValue(domain.getRows());
 		cols.setValue(domain.getCols());
 		xmin.setValue(domain.getXmin());
@@ -366,37 +368,33 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 
 	@Override
 	public void projectLoaded() {
-		Beld4DataGenFields beld4fields = (Beld4DataGenFields) app.getProject().getPage(Beld4DataGenFields.class.getName());
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		fields = (SiteInfoGenFields) app.getProject().getPage(fields.getName());
 		 
 		if( fields != null ) {
-			this.scenarioDir.setText(fields.getScenarioDir());
-			if ((fields.getBeld4ncf()==null || fields.getBeld4ncf().trim().isEmpty() ) && beld4fields != null) {
-				String scenDir = fields.getScenarioDir().trim();
-				String  gridName = fields.getGridName().trim();
-				String year = beld4fields.getNLCDyear().trim();
-				String beld4file = scenDir + "/share_data/beld4_" + gridName + "_" + year +".nc";
-				//System.out.println(beld4file);
-//				File f = new File(beld4file);
-//				if(f.exists()){
-					this.beld4Dir.setText(beld4file);
-//				}
-//				else 
-//					this.beld4Dir.setText(scenDir);
-			}
+			String scenloc = domain.getScenarioDir();
+			if (scenloc != null && scenloc.trim().length()>0 )
+				this.scenarioDir.setText(scenloc);
 			else 
-				this.beld4Dir.setText( fields.getBeld4ncf());
+				this.scenarioDir.setText(fields.getScenarioDir());
+			String scenDir = domain.getScenarioDir().trim();
+			String  gridNames = domain.getGridName().trim();
+			String year = domain.getNlcdYear().trim();
+			String beld4file = fields.getBeld4ncf();
+			if ( beld4file == null || beld4file.trim().isEmpty() )
+				beld4file = scenDir + "/share_data/beld4_" + gridName + "_" + year +".nc";			
+			this.beld4Dir.setText(beld4file);
 			this.runMessages.setText(fields.getMessage());
-			rows.setValue(fields.getRows());
-			cols.setValue(fields.getCols());
-			xmin.setValue(fields.getXmin());
-			ymin.setValue(fields.getYmin());
-			xSize.setValue(fields.getXcellSize());
-			ySize.setValue(fields.getYcellSize());
-			proj4proj.setText(fields.getProj());
-			gridName.setText(fields.getGridName());	
+			rows.setValue(domain.getRows());
+			cols.setValue(domain.getCols());
+			xmin.setValue(domain.getXmin());
+			ymin.setValue(domain.getYmin());
+			xSize.setValue(domain.getXcellSize());
+			ySize.setValue(domain.getYcellSize());
+			proj4proj.setText(domain.getProj());
+			gridName.setText(gridNames);	
 			minAcreas.setText(fields.getMinAcres()==null? "40.0":fields.getMinAcres());
-			
+			domain.setCMinAcres(null);
 		}else {
 			newProjectCreated();
 		}	
@@ -405,6 +403,7 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 
 	@Override
 	public void saveProjectRequested() {
+		if ( scenarioDir != null ) domain.setScenarioDir(scenarioDir.getText());
 		if ( scenarioDir != null ) fields.setScenarioDir(scenarioDir.getText());
 		if ( rows != null ) fields.setRows(Integer.parseInt(rows.getText() == null? "0" : rows.getValue()+""));
 		if ( beld4Dir != null ) fields.setBeld4ncf(beld4Dir.getText()== null? "" : beld4Dir.getText());
@@ -417,6 +416,8 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 		if ( gridName != null ) fields.setGridName(gridName.getText()== null? "" : gridName.getText());
 		if ( runMessages != null ) fields.setMessage(runMessages.getText());
 		if ( minAcreas != null)  fields.setMinAcres(minAcreas.getText());
+		fields.setBeld4ncf(beld4Dir.getText().trim());
+		domain.setCMinAcres(null);
 	}
 	
 }

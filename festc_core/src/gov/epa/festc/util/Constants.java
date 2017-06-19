@@ -44,6 +44,7 @@ public class Constants {
 	public static final String MAN_SPINUP = "Management File Generation for Spinup";
 	public static final String EDIT_INFILES = "View/Edit EPIC Inputs";
 	public static final String[] FERTYEARS = new String[] {"2001", "2006"};
+	public static final String[] NLCDYEARS = new String[] {"2001", "2006", "2011"};
 	public static final String[] NDEPS = new String[] {"CMAQ", "EPIC parameter input file", 
 		                               "2002-2006 5-year CMAQ average",
 		                               "2006-2010 5-year CMAQ average"};

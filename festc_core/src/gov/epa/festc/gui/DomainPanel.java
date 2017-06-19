@@ -29,7 +29,8 @@ public class DomainPanel extends UtilFieldsPanel {
 		 
 		SpringLayoutGenerator layout = new SpringLayoutGenerator();
 		
-		nlcdyearBox = new JComboBox(Constants.FERTYEARS);
+		nlcdyearBox = new JComboBox(Constants.NLCDYEARS);
+		nlcdyearBox.setToolTipText("Use 2001 if simYear<2006; Use 2006 for 2006<=simYear<2011; Use 2011 for simYear>=2011");
 		nlcdyearBox.setSelectedIndex(1);
 		
 		simuYear = new JTextField(40);

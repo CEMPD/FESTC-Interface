@@ -5,8 +5,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "gov.epa.festc.core.proj.Beld4DataGenFields")
 
-public class Beld4DataGenFields  extends PageFields{
-	private String nlcdYear;
+public class Beld4DataGenFields  extends DomainFields{
+	//private String nlcdYear;
 	private String nlcdFile;
 	private boolean nlcdDataSelected;
 	private boolean modisDataSelected;
@@ -15,12 +15,6 @@ public class Beld4DataGenFields  extends PageFields{
 		//NOTE: no-op
 	}
 	
-	public void setNLCDyear(String nlcdYear) {
-		this.nlcdYear = nlcdYear;
-	}
-	public String getNLCDyear() {
-		return nlcdYear;
-	}
 	public void setNLCDfile(String nlcdFile) {
 		this.nlcdFile = nlcdFile;
 	}

@@ -42,6 +42,7 @@ public class CreateSpinupManFilesPanel extends UtilFieldsPanel implements PlotEv
 	private MessageCenter msg;
 	 
 	private ManageSpinupFields fields;
+	//private DomainFields domain;
  
 	private CropSelectionPanel cropSelectionPanel;
 	
@@ -121,14 +122,14 @@ public class CreateSpinupManFilesPanel extends UtilFieldsPanel implements PlotEv
 		if ( fYear.trim().isEmpty() )
 			throw new Exception("Please select fertilizer year!");
 			 
-		String sFYear = app.getSFertYear();
+		String sFYear = domain.getCFertYear();
 		if (sFYear == null || sFYear.trim().isEmpty()) {
-			app.setSFertYear(fYear);
+			domain.setCFertYear(fYear);
 			sFYear = fYear;
 		}	
 		else if (sFYear != null && !sFYear.trim().isEmpty() 
 				&& !sFYear.endsWith(fYear) && app.allowDiffCheck()) 
-			throw new Exception("Current land use year is inconsistent with previous one (" + sFYear + ")");
+			throw new Exception("Current land use year " + fYear + " is inconsistent with previous one (" + sFYear + ")");
 		//System.out.println("sfYear: " + sFYear + " " + fYear);
 		String seCropsString = cropSelectionPanel.selectedItemTostring();
 		//System.out.println();
@@ -301,9 +302,13 @@ public class CreateSpinupManFilesPanel extends UtilFieldsPanel implements PlotEv
 
 	public void projectLoaded() {
 		fields = (ManageSpinupFields) app.getProject().getPage(fields.getName());
-		
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		if ( fields != null  ){
-			this.scenarioDir.setText(fields.getScenarioDir());
+			String scenloc = domain.getScenarioDir();
+			if (scenloc != null && scenloc.trim().length()>0 )
+				this.scenarioDir.setText(scenloc);
+			else 
+				this.scenarioDir.setText(fields.getScenarioDir());
 			fertYearSel.setSelectedItem(fields.getFertYear());
 			runMessages.setText(fields.getMessage());
 		}else{
@@ -312,6 +317,7 @@ public class CreateSpinupManFilesPanel extends UtilFieldsPanel implements PlotEv
 	}
 
 	public void saveProjectRequested() {
+		if ( scenarioDir != null ) domain.setScenarioDir(scenarioDir.getText());
 		if ( scenarioDir != null ) fields.setScenarioDir(scenarioDir.getText());
 		if ( fertYearSel != null)  fields.setFertYear((String)fertYearSel.getSelectedItem());
 		if ( runMessages != null ) fields.setMessage(runMessages.getText());		
@@ -319,7 +325,8 @@ public class CreateSpinupManFilesPanel extends UtilFieldsPanel implements PlotEv
 
 	@Override
 	public void newProjectCreated() {
-		DomainFields domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
+		
 		scenarioDir.setText(domain.getScenarioDir());	
 		runMessages.setText("");
 		if ( fields == null ) {

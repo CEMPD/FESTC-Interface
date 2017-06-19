@@ -1,16 +1,23 @@
 package gov.epa.festc.gui;
 
+import gov.epa.festc.core.FestcApplication;
+import gov.epa.festc.core.proj.DomainFields;
 import gov.epa.festc.util.Constants;
 import gov.epa.festc.util.SpringLayoutGenerator;
 
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.io.File;
 import java.text.NumberFormat;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -36,7 +43,9 @@ public class UtilFieldsPanel extends JPanel {
 	protected JTextField scenarioDir;
 	protected JPanel scenarioDirP = new JPanel();;
 	protected JComboBox fertYearSel;
+	protected DomainFields domain;
 	
+	protected FestcApplication app;
 	protected JTextArea runMessages;
 
 	protected String outMessages = "Job messages: \n";
@@ -260,6 +269,34 @@ public class UtilFieldsPanel extends JPanel {
 //		
 //	}
 
+//	protected Action browseDirAction(final String name, final JTextField text) {
+//		return new AbstractAction("Browse...") {
+//			private static final long serialVersionUID = 482845697751457179L;
+//
+//			public void actionPerformed(ActionEvent e) {
+//				JFileChooser chooser;
+//				File file = new File(text.getText());
+//
+//				if (file != null && file.isFile()) {
+//					chooser = new JFileChooser(file.getParentFile());
+//				} else if (file != null && file.isDirectory()) {
+//					chooser = new JFileChooser(file);
+//				} else
+//					chooser = new JFileChooser(app.getCurrentDir());
+//
+//				chooser.setDialogTitle("Please select the " + name);
+//				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+//
+//				int option = chooser.showDialog(UtilFieldsPanel.this,
+//						"Select");
+//				if (option == JFileChooser.APPROVE_OPTION) {
+//					File selected = chooser.getSelectedFile();
+//					text.setText("" + selected);
+//					app.setCurrentDir(selected);
+//				}
+//			}
+//		};
+//	}
 }
 
 

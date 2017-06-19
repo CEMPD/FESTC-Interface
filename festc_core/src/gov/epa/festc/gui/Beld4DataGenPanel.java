@@ -1,30 +1,11 @@
 package gov.epa.festc.gui;
 
-import gov.epa.festc.core.FestcApplication;
-import gov.epa.festc.core.proj.Beld4DataGenFields;
-import gov.epa.festc.core.proj.DomainFields;
-import gov.epa.festc.core.proj.Epic2CMAQFields;
-import gov.epa.festc.core.proj.EpicYearlyAverage2CMAQFields;
-import gov.epa.festc.core.proj.ManageSpinupFields;
-import gov.epa.festc.core.proj.Mcip2EpicFields;
-import gov.epa.festc.core.proj.SiteFilesFields;
-import gov.epa.festc.core.proj.SiteInfoGenFields;
-import gov.epa.festc.util.BrowseAction;
-import gov.epa.festc.util.Constants;
-import gov.epa.festc.util.FileRunner;
-import gov.epa.festc.util.SpringLayoutGenerator;
-
-import java.awt.BorderLayout;
-import java.awt.Checkbox;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -35,19 +16,20 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
+import gov.epa.festc.core.FestcApplication;
+import gov.epa.festc.core.proj.Beld4DataGenFields;
+import gov.epa.festc.core.proj.DomainFields;
+import gov.epa.festc.util.BrowseAction;
+import gov.epa.festc.util.Constants;
+import gov.epa.festc.util.FileRunner;
+import gov.epa.festc.util.SpringLayoutGenerator;
 import simphony.util.messages.MessageCenter;
 
 public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListener{
@@ -58,11 +40,14 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 	private static final long serialVersionUID = 1403169880186710184L;
 
 	private MessageCenter msg;
-	private FestcApplication app;
+//	private FestcApplication app;
 	private Beld4DataGenFields fields;
+	//private DomainFields domain;
 	private JCheckBox nlcdBox; 
 	private JCheckBox modisBox;
-	private JTextField nlcdYear;
+//	private JCheckBox beld4ncBox;    
+//	private JCheckBox nc2apiBox;   
+	private JComboBox nlcdYear;
 	private JTextField inputDir;
 	private JButton inputDirBrowser;
 	
@@ -109,19 +94,25 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		
 		JPanel dataPanel = new JPanel();
 		this.nlcdBox = new JCheckBox("NLCD ", true); 
-		this.modisBox = new JCheckBox("MODIS ", true); 
+		this.modisBox = new JCheckBox("MODIS ", true);
+//		this.beld4ncBox = new JCheckBox("Run_beld4nc", true);  
+//		this.nc2apiBox = new JCheckBox("Run_nc2api", true);
+		
 		dataPanel.add(this.nlcdBox);
 		dataPanel.add(this.modisBox);
+//		dataPanel.add(this.beld4ncBox);    
+//		dataPanel.add(this.nc2apiBox);   
 		
 		JPanel yearPanel = new JPanel( );
-		nlcdYear = new JTextField(40);
-		nlcdYear.setEditable(false);
+		nlcdYear = new JComboBox(Constants.NLCDYEARS);
+		//nlcdYear.setEditable(false);
 		yearPanel.add(nlcdYear);
  
 		JPanel inputDirPanel = new JPanel();
 		inputDir = new JTextField(40);
 		inputDir.setToolTipText("I.E. ../data/nlcd_modis_files_2006.txt");
-		inputDirBrowser = new JButton(BrowseAction.browseAction(this, app.getCurrentDir(), "input file", inputDir));
+		 
+		inputDirBrowser = new JButton(browseDirAction("NLCD/MODIS list file", inputDir)); 
 		inputDirPanel.add(inputDir);
 		inputDirPanel.add(inputDirBrowser);	
 
@@ -149,6 +140,35 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		panel.setBorder(BorderFactory.createEmptyBorder(30, 0, 10, 0));
 
 		return panel;
+	}
+	
+	private Action browseDirAction(final String name, final JTextField text) {
+		return new AbstractAction("Browse...") {
+			private static final long serialVersionUID = 482845697751457179L;
+
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser chooser;
+				File file = new File(text.getText());
+
+				if (file != null && file.isFile()) {
+					chooser = new JFileChooser(file.getParentFile());
+				} else if (file != null && file.isDirectory()) {
+					chooser = new JFileChooser(file);
+				} else
+					chooser = new JFileChooser(app.getCurrentDir());
+
+				chooser.setDialogTitle("Please select the " + name);
+				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+				int option = chooser.showDialog(Beld4DataGenPanel.this,
+						"Select");
+				if (option == JFileChooser.APPROVE_OPTION) {
+					File selected = chooser.getSelectedFile();
+					text.setText("" + selected);
+					app.setCurrentDir(selected);
+				}
+			}
+		};
 	}
 	
 	private Action runAction() {
@@ -181,7 +201,7 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		validateGrids();
 		 
 	    
-	    String dYear = this.nlcdYear.getText();
+	    String dYear = (String)this.nlcdYear.getSelectedItem();
 		if ( dYear.trim().isEmpty() )
 			throw new Exception("NLCD/MODIS data year is empty!");	 
 		
@@ -214,7 +234,7 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(now);
 		String file = scenarioDir.trim() + "/scripts/";
 		file = file.trim() + "generateBeld4Data_"+ gridName.getText().trim()+ "_" + timeStamp +".csh";
-		
+
 		StringBuilder sb = new StringBuilder();
 		
 		//String netcdfout = (netcdfFile.getText() == null || netcdfFile.getText().trim().isEmpty()) ? "NONE" : netcdfFile.getText().trim();
@@ -248,10 +268,14 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		
 		String nlcdYN = nlcdBox.isSelected()? "YES" : "NO";
 		String modisYN = modisBox.isSelected()? "YES" : "NO";
+//		String beld4nc = nlcdBox.isSelected()? "YES" : "NO";     
+//		String nc2ioapi = modisBox.isSelected()? "YES" : "NO";   
 		sb.append("# INCLUDE data selection  " + ls );
 		sb.append("setenv INCLUDE_NLCD    " + nlcdYN + ls );
 		sb.append("setenv INCLUDE_MODIS   " + modisYN + ls + ls);
-	 
+//	    sb.append("setenv BELD4NC_YN    " + beld4nc + ls );      
+//		sb.append("setenv BELD4IO_YN   " + nc2ioapi + ls + ls); 
+		
 		sb.append("# Define county shapefile " + ls );
 		sb.append("setenv COUNTY_SHAPEFILE     $SA_HOME/data/county_pophu02_48st.shp" + ls + ls);		
 		sb.append("setenv COUNTY_FIPS_ATTR     CNTYID" + ls + ls );
@@ -275,7 +299,7 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		sb.append("# Output files" + ls);
 		sb.append("setenv OUTPUT_LANDUSE_TEXT_FILE      $SCEN_DIR/share_data/beld4_" + gridN +"_"+ dYear +".txt" + ls);
 		sb.append("setenv OUTPUT_LANDUSE_NETCDF_FILE    $SCEN_DIR/share_data/beld4_" + gridN +"_"+ dYear + ".nc" + ls + ls);
-		sb.append("$SA_HOME/bin/64bits/computeGridLandUse_beld4.exe" + ls);
+		sb.append("time $SA_HOME/bin/64bits/computeGridLandUse_beld4.exe" + ls + ls);
 		
 		sb.append("   if ( $status == 0 ) then " + ls);
 		sb.append("      echo  ==== Finished Beld4 data generation. " + ls);
@@ -283,6 +307,25 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		sb.append("      echo  ==== Error in Beld4 data generation." + ls + ls);
 		sb.append("      echo " + ls );
 		sb.append("   endif " + ls);
+		 
+		 
+        sb.append("   setenv INFILE   ${OUTPUT_LANDUSE_NETCDF_FILE}" + ls ); 		
+        sb.append("   setenv OUTDIR   $SCEN_DIR/output4CMAQ/app/toCMAQ"+ ls +ls ); 	
+		
+        sb.append("   if ( ! -e $OUTDIR ) mkdir -p $OUTDIR" + ls ); 		
+        sb.append("   setenv OUTFILE   ${OUTDIR}/beld4_"+ gridN +"_"+ dYear + ".ncf " + ls ); 		
+		
+        sb.append("   if ( ! -e $INFILE ) then	" + ls ); 	
+        sb.append("      echo  $INFILE ' doesn't exist! '	" + ls ); 	
+        sb.append("      exit(1)	" + ls ); 
+        sb.append("   endif		    " + ls + ls ); 
+        //sb.append("   echo 'Output file name: ' $OUTFILE " + ls + ls ); 		
+		
+        sb.append("   time  $EPIC_DIR/util/misc/beld_nc2ioapi/Beld_nc2ioapi.exe	" + ls ); 	
+        sb.append("   if ( $status == 0 ) then " + ls );
+        sb.append("      echo  ==== Finished Beld4 to Ioapi transformation. " + ls );
+        sb.append("   endif" + ls ); 		
+		
 		sb.append("#===================================================================" + ls);
         
 		String mesg = "";
@@ -299,6 +342,16 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 	    } catch (IOException e) {
 	    	throw new Exception(e.getMessage());
 	    }
+		
+		 
+		String ncfile = scenarioDir.trim() + "/share_data/beld4_" + gridN +"_"+ dYear +".txt";
+		//String nctxtfile = scenarioDir.trim() + "/share_data/beld4_" + gridN +"_"+ dYear + ".nc";
+		String ioapifile = scenarioDir.trim() + "/output4CMAQ/app/toCMAQ/beld4_"+ gridN +"_"+ dYear + ".ncf "; 			
+			
+		outMessages += "Script file: " + file + ls;
+		outMessages += "Output netcdf file: " + ncfile + ls;
+		outMessages += "Output ioapi file: " + ioapifile + ls;
+		
 	    app.showMessage("Write script", mesg);
 		return file;
 	}
@@ -330,7 +383,9 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		sb.append("#     1. US county shapefile and ID attribute" + ls);
 		sb.append("#     2. CAN census division shapefile and ID attribute " + ls);
 		
-		sb.append("# Written by:   L. R., 2012-2013 updated " + ls);
+		sb.append("# Written by:   L. R., 2012-2013 " + ls);
+		sb.append("# Updated by:   D. Yang, 2017  " + ls);
+		sb.append("#     1. Transfer netcdf to ioapi " + ls);  
 		sb.append("#" + ls);
 		sb.append("# Call program: computeGridLandUse.exe" + ls);
 		sb.append("#               Needed environment variables included in the script file to run." + ls); 
@@ -342,10 +397,9 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 	}
 	
 	private void runScript(final String file) {
-		String log = file + ".log";
-		 
-		outMessages += "Script file: " + file + ls;
+		String log = file + ".log"; 
 		outMessages += "Log file: " + log + ls;
+		
 		runMessages.setText(outMessages);
 		runMessages.validate();
 		FileRunner.runScript(file, log, msg);
@@ -353,7 +407,7 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 	
 	@Override
 	public void newProjectCreated() {
-		DomainFields domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		rows.setValue(domain.getRows());
 		cols.setValue(domain.getCols());
 		xmin.setValue(domain.getXmin());
@@ -363,8 +417,8 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		proj4proj.setText(domain.getProj());
 		gridName.setText(domain.getGridName());
 		scenarioDir.setText(domain.getScenarioDir());
-		String nlcdY = domain.getNlcdYear()==null? "2006":domain.getNlcdYear();		
-		nlcdYear.setText(nlcdY);
+		String nlcdY = domain.getNlcdYear();		
+		nlcdYear.setSelectedItem(nlcdY);
 		String sahome = Constants.getProperty(Constants.SA_HOME, msg);	
 		inputDir.setText(sahome.trim() + "/data/nlcd_modis_files_" + nlcdY + ".txt");
 		
@@ -378,9 +432,13 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 	@Override
 	public void projectLoaded() {
 		fields = (Beld4DataGenFields) app.getProject().getPage(fields.getName());
+		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		if( fields != null ) {
-			this.scenarioDir.setText(fields.getScenarioDir());
-			 
+			String scenloc = domain.getScenarioDir();
+			if (scenloc != null && scenloc.trim().length()>0)
+				this.scenarioDir.setText(scenloc);
+			else 
+				this.scenarioDir.setText(fields.getScenarioDir());
 			this.runMessages.setText(fields.getMessage());
 			rows.setValue(fields.getRows());
 			cols.setValue(fields.getCols());
@@ -390,10 +448,11 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 			ySize.setValue(fields.getYcellSize());
 			proj4proj.setText(fields.getProj());
 			gridName.setText(fields.getGridName());	
-			nlcdYear.setText(fields.getNLCDyear());
+			nlcdYear.setSelectedItem(domain.getNlcdYear());
 			inputDir.setText(fields.getNLCDfile());
 			nlcdBox.setSelected(fields.isNlcdDataSelected());
 			modisBox.setSelected(fields.isModisDataSelected());
+			 
 		}else {		
 			newProjectCreated();
 		}	
@@ -402,9 +461,9 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 
 	@Override
 	public void saveProjectRequested() {
+		if ( scenarioDir != null ) domain.setScenarioDir(scenarioDir.getText());
 		if ( scenarioDir != null ) fields.setScenarioDir(scenarioDir.getText());
-		if ( rows != null ) fields.setRows(Integer.parseInt(rows.getText() == null? "0" : rows.getValue()+""));
-		 
+		if ( rows != null ) fields.setRows(Integer.parseInt(rows.getText() == null? "0" : rows.getValue()+""));	 
 		if ( cols != null ) fields.setCols(Integer.parseInt(cols.getText() == null? "0" : cols.getValue()+""));
 		if ( xSize != null ) fields.setXcellSize(Float.parseFloat(xSize.getText() == null? "0" : xSize.getValue()+""));
 		if ( ySize != null ) fields.setYcellSize(Float.parseFloat(ySize.getText() == null? "0" : ySize.getValue()+""));
@@ -417,8 +476,8 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		if ( modisBox != null ) fields.setModisDataSelected(modisBox.isSelected());
 		  
 		if ( nlcdYear != null ) {
-			String dYear = this.nlcdYear.getText();
-			fields.setNLCDyear(dYear);
+			String dYear = (String) this.nlcdYear.getSelectedItem();
+			domain.setNlcdYear(dYear);
 		}
 		if ( inputDir != null ) fields.setNLCDfile(inputDir.getText().trim());
 		

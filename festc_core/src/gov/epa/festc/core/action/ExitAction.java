@@ -22,10 +22,10 @@ public class ExitAction extends AbstractSAFAction<FestcApplication> {
 	public void actionPerformed(ActionEvent e) {
 		FestcApplication app = workspace.getApplicationMediator();
 		if ( app.getProjFile() != null ){
-			int option = JOptionPane.showConfirmDialog(null, "Do you want to save scenario? ", "Confirmation", JOptionPane.YES_NO_OPTION);
-			if ( option == 0 )
-				app.saveProject();
+			//			int option = JOptionPane.showConfirmDialog(null, "Do you want to save scenario? ", "Confirmation", JOptionPane.YES_NO_OPTION);
+			//			if ( option == 0 )
+			app.saveProject();
 		}
-	    System.exit(0);
+		System.exit(0);
 	}
 }

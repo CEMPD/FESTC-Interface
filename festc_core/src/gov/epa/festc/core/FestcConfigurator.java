@@ -33,8 +33,6 @@ import saf.core.ui.ISAFDisplay;
 import saf.core.ui.IWindowCustomizer;
 import saf.core.ui.dock.DefaultDockableFrame;
 import saf.core.ui.dock.DefaultDockingManager;
-import saf.core.ui.dock.DockableFrame;
-import saf.core.ui.dock.DockingManager;
 import saf.core.ui.dock.DockingManager.MinimizeLocation;
 
 /**
@@ -91,16 +89,16 @@ public class FestcConfigurator implements IAppConfigurator {
 		activeview.setTitle("Tools");
 		activeview.setToolTip("Tools");
 		DockingManager.addDockableToGroup(FestcConstants.PERSPECTIVE_ID, FestcConstants.TOOLS_GROUP, activeview);
-	    
+		
 		Beld4DataGenPanel beld4Gen = new Beld4DataGenPanel(festcApp);
-		DefaultDockableFrame view = (DefaultDockableFrame) DockingManager.createDockable(FestcConstants.BELD4_VIEW, 
+		DefaultDockableFrame fview = (DefaultDockableFrame) DockingManager.createDockable(FestcConstants.BELD4_VIEW, 
 				new JScrollPane(beld4Gen),MinimizeLocation.UNSPECIFIED, 2|4|8 );
-		view.setTitle("Beld4 Data...");
-		view.setToolTip("BELD4 Data Generation");
-		DockingManager.addDockableToGroup(FestcConstants.PERSPECTIVE_ID, FestcConstants.MAIN_GROUP_ID, view);
+		fview.setTitle("Beld4 Data...");
+		fview.setToolTip("BELD4 Data Generation");
+		DockingManager.addDockableToGroup(FestcConstants.PERSPECTIVE_ID, FestcConstants.MAIN_GROUP_ID, fview);
 		
 		CreateSiteInfoPanel siteInfo = new CreateSiteInfoPanel(festcApp);
-		view = (DefaultDockableFrame) DockingManager.createDockable(FestcConstants.SITE_INFO_VIEW, 
+		DefaultDockableFrame view = (DefaultDockableFrame) DockingManager.createDockable(FestcConstants.SITE_INFO_VIEW, 
 				new JScrollPane(siteInfo), MinimizeLocation.UNSPECIFIED, 2|4|8);
 		view.setTitle("Crop Site Info...");
 		view.setToolTip("Site Utilities");
@@ -173,13 +171,20 @@ public class FestcConfigurator implements IAppConfigurator {
 		view.setToolTip("Visualization");
 		DockingManager.addDockableToGroup(FestcConstants.PERSPECTIVE_ID, FestcConstants.MAIN_GROUP_ID, view);
 		
+//		Beld4DataGenPanel beld4Gen = new Beld4DataGenPanel(festcApp);
+//		DefaultDockableFrame fview = (DefaultDockableFrame) DockingManager.createDockable(FestcConstants.BELD4_VIEW, 
+//				new JScrollPane(beld4Gen),MinimizeLocation.UNSPECIFIED, 2|4|8 );
+//		fview.setTitle("Beld4 Data...");
+//		fview.setToolTip("BELD4 Data Generation");
+//		DockingManager.addDockableToGroup(FestcConstants.PERSPECTIVE_ID, FestcConstants.MAIN_GROUP_ID, fview);
+//		
 		festcApp.init(new FestcGUI(DockingManager));
 		managePanel.setParent(festcApp.getGui());
 		//epicSuPanel.setParent(festcApp.getGui());
-		toolsPanel.requestFocusInWindow();
 		//System.out.println(activeview.getID());
-		festcApp.getGui().setActive(activeview.getID());
-		//DockingManager.setgetDockable(activeview.getID()));
+		festcApp.showTab(fview.getID());
+		toolsPanel.requestFocusInWindow();
+		//DockingManager.setActiveDockable(fview.getID());
 	}
 
 	public void setStatusOneText(String text) {
@@ -247,8 +252,8 @@ public class FestcConfigurator implements IAppConfigurator {
 	 */
 	public boolean preWindowClose() {	
 		if ( festcApp.getProjFile() != null ){
-			int option = JOptionPane.showConfirmDialog(null, "Do you want to save scenario? ", "Confirmation", JOptionPane.YES_NO_OPTION);
-			if ( option == 0 )
+//			int option = JOptionPane.showConfirmDialog(null, "Do you want to save scenario? ", "Confirmation", JOptionPane.YES_NO_OPTION);
+//			if ( option == 0 )
 				festcApp.saveProject();
 		}
 		return festcApp.exit();
@@ -281,7 +286,7 @@ public class FestcConfigurator implements IAppConfigurator {
 		customizer.useSavedLayout(); 
 		customizer.setTitle(
 				//"FEST-C"
-				"Fertilizer Emission Scenario Tool for CMAQ (FEST-C v1.2)"
+				"Fertilizer Emission Scenario Tool for CMAQ (FEST-C v1.3)"
 				);
 		return true;
 	}

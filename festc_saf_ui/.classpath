@@ -14,8 +14,8 @@
 	<classpathentry kind="lib" path="/festc_bootstrap/lib/log4j-core-2.0-rc1.jar"/>
 	<classpathentry kind="lib" path="/festc_bootstrap/lib/jpf-boot.jar"/>
 	<classpathentry kind="lib" path="/festc_bootstrap/lib/jpf.jar"/>
-	<classpathentry exported="true" kind="lib" path="/festc_bootstrap/lib/saf.core.runtime.jar"/>
 	<classpathentry kind="lib" path="lib/AppleJavaExtensions.jar"/>
 	<classpathentry kind="lib" path="lib/osx.jar"/>
+	<classpathentry kind="lib" path="/festc_bootstrap/lib/saf.core.runtime.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
