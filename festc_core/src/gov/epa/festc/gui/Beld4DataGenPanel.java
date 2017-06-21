@@ -373,10 +373,10 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		sb.append("#     MODIS land cover tiles (e.g. MCD12Q1) can be downloaded from:" + ls); 
 		sb.append("#         http://ladsweb.nascom.nasa.gov/data/search.html" + ls + ls); 
 		
-		sb.append("#     Crop and FIA data used for more crop and tree classes" + ls); 
+		sb.append("#     Crop and FIA data used for more crop and tree classes " + ls); 
 		sb.append("#     1. US FIA tree species fractions at county (from census data) " + ls);
-		sb.append("#     2. US NASS crop fractions at county" + ls);
-		sb.append("#     3. CAN crop fractions at crop divisions" + ls);
+		sb.append("#     2. US NASS crop fractions at county " + ls);
+		sb.append("#     3. CAN crop fractions at crop divisions " + ls);
 		sb.append("#     4. Class names for all crops and trees " + ls +ls);
 		
 		sb.append("#     Shapefiles used:" + ls); 
