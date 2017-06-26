@@ -7,7 +7,7 @@ FEST-C version 1.3 Public Release June 2017
 --------------
 
 Description 
-"release of the Spatial Allocator (SA v4.3.1) Raster Tools system”
+"release of the FEST-C version 1.3 fertilizer emissions scenario tool for CMAQ”
 
 UPDATES in Version 1.3
 
