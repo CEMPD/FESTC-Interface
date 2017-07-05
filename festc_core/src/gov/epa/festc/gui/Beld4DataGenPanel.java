@@ -112,7 +112,7 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		inputDir = new JTextField(40);
 		inputDir.setToolTipText("I.E. ../data/nlcd_modis_files_2006.txt");
 		 
-		inputDirBrowser = new JButton(browseDirAction("NLCD/MODIS list file", inputDir)); 
+		inputDirBrowser = new JButton(BrowseAction.browseAction(this, app.getCurrentDir(),"NLCD/MODIS list file", inputDir)); 
 		inputDirPanel.add(inputDir);
 		inputDirPanel.add(inputDirBrowser);	
 
@@ -140,36 +140,7 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		panel.setBorder(BorderFactory.createEmptyBorder(30, 0, 10, 0));
 
 		return panel;
-	}
-	
-	private Action browseDirAction(final String name, final JTextField text) {
-		return new AbstractAction("Browse...") {
-			private static final long serialVersionUID = 482845697751457179L;
-
-			public void actionPerformed(ActionEvent e) {
-				JFileChooser chooser;
-				File file = new File(text.getText());
-
-				if (file != null && file.isFile()) {
-					chooser = new JFileChooser(file.getParentFile());
-				} else if (file != null && file.isDirectory()) {
-					chooser = new JFileChooser(file);
-				} else
-					chooser = new JFileChooser(app.getCurrentDir());
-
-				chooser.setDialogTitle("Please select the " + name);
-				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-				int option = chooser.showDialog(Beld4DataGenPanel.this,
-						"Select");
-				if (option == JFileChooser.APPROVE_OPTION) {
-					File selected = chooser.getSelectedFile();
-					text.setText("" + selected);
-					app.setCurrentDir(selected);
-				}
-			}
-		};
-	}
+	}	
 	
 	private Action runAction() {
 		return new AbstractAction("Run") {
