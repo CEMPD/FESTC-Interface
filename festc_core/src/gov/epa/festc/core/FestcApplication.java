@@ -287,7 +287,7 @@ public class FestcApplication implements ListSelectionListener,
 				currentDir = file.getParentFile();
 				firePlotEvent(ProjectEvent.OPENED);
 			} catch (Exception e) {
-				msg.error("Error while loading project", e);
+				msg.error("Error while loading project: ", e);
 			}
 		}
 	}

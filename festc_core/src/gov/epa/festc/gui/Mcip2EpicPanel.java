@@ -427,7 +427,7 @@ public class Mcip2EpicPanel extends UtilFieldsPanel implements PlotEventListener
 			xmin.setValue(fields.getXmin());
 			ymin.setValue(fields.getYmin());
 			proj4proj.setText(fields.getProj());
-			if ( fields.getScenarioDir() != null ) this.scenarioDir.setText(fields.getScenarioDir());
+			 
 			if ( fields.getGridName() != null )  this.gridName.setText(fields.getGridName());
 			try {
 				startDate.setValue(NumberFormat.getNumberInstance().parse(fields.getStartdate()==null? "":fields.getStartdate()));
