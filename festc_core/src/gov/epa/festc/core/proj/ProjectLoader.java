@@ -34,10 +34,12 @@ public class ProjectLoader {
 		// EpicSpinupFields : Epic runs for spinup 
 		// EpicYearlyAverage2CMAQFields: EPIC Yearly Output
 		// Epic2CMAQFields: 
+		// Epic2SWATFields: 
 	    context = JAXBContext.newInstance(Project.class, Beld4DataGenFields.class, Mcip2EpicFields.class, SiteFilesFields.class, 
 	    		SoilFilesFields.class, ManageSpinupFields.class, ManFileModFields.class, EpicSpinupFields.class, 
 	    		EpicYearlyAverage2CMAQFields.class, ManageAppFields.class, EpicAppFields.class, 
-	    		Epic2CMAQFields.class, VisualizationFields.class, SiteInfoGenFields.class, DomainFields.class);
+	    		VisualizationFields.class, SiteInfoGenFields.class, Epic2CMAQFields.class,
+	    		Epic2SWATFields.class,DomainFields.class);
 	    m = context.createMarshaller();
 	    m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 	    um = context.createUnmarshaller();

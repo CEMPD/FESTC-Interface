@@ -20,6 +20,7 @@ import gov.epa.festc.gui.CreateSiteInfoPanel;
 import gov.epa.festc.gui.CreateSoilFilesPanel;
 import gov.epa.festc.gui.CreateSpinupManFilesPanel;
 import gov.epa.festc.gui.Epic2CMAQPanel;
+import gov.epa.festc.gui.Epic2SWATPanel;
 import gov.epa.festc.gui.EpicRunAppPanel;
 import gov.epa.festc.gui.EpicSpinupPanel;
 import gov.epa.festc.gui.EpicYearlyAverage2CMAQPanel;
@@ -165,6 +166,12 @@ public class FestcConfigurator implements IAppConfigurator {
 		view.setToolTip("EPIC to CMAQ");
 		DockingManager.addDockableToGroup(FestcConstants.PERSPECTIVE_ID, FestcConstants.MAIN_GROUP_ID, view);
 
+		Epic2SWATPanel epic2swatPanel = new Epic2SWATPanel(festcApp);
+		view = (DefaultDockableFrame) DockingManager.createDockable(FestcConstants.EPIC2SWAT_VIEW, new JScrollPane(epic2swatPanel) );
+		view.setTitle("EPIC to SWAT");
+		view.setToolTip("EPIC to SWAT");
+		DockingManager.addDockableToGroup(FestcConstants.PERSPECTIVE_ID, FestcConstants.MAIN_GROUP_ID, view);
+
 		VisualizationPanel visPanel = new VisualizationPanel(festcApp);
 		view = (DefaultDockableFrame) DockingManager.createDockable(FestcConstants.VISUALIZE_VIEW, new JScrollPane(visPanel) );
 		view.setTitle("Visualization");
@@ -286,7 +293,7 @@ public class FestcConfigurator implements IAppConfigurator {
 		customizer.useSavedLayout(); 
 		customizer.setTitle(
 				//"FEST-C"
-				"Fertilizer Emission Scenario Tool for CMAQ (FEST-C v1.3)"
+				"Fertilizer Emission Scenario Tool for CMAQ (FEST-C v2.0)"
 				);
 		return true;
 	}

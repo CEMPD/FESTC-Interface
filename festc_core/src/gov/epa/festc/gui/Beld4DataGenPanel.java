@@ -120,7 +120,7 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
 		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDirP, panel);
 		layout.addLabelWidgetPair("NLCD/MODIS Data Year:", yearPanel, panel);
 		layout.addLabelWidgetPair("NLCD/MODIS List File:", inputDirPanel, panel);
-		layout.addLabelWidgetPair("Data selection:", dataPanel, panel);
+		layout.addLabelWidgetPair("Data Selection:", dataPanel, panel);
 		//layout.addLabelWidgetPair("   ", new JLabel("   "), panel);
 
 		layout.makeCompactGrid(panel, 5, 2, // number of rows and cols

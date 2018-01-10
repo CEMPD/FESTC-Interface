@@ -29,6 +29,7 @@ public interface FestcConstants {
 	String EPIC_VIEW = "gov.epa.festc.core.epic_view";
 	String PROCESS_EPIC_SPINUP_VIEW = "gov.epa.festc.core.proc_spinup_view";
 	String EPIC2CMAQ_VIEW = "gov.epa.festc.core.epic2cmaq_view";
+	String EPIC2SWAT_VIEW = "gov.epa.festc.core.epic2swat_view";
 	String EPIC_YEARLY_AVERAGE2CMAQ_VIEW = "gov.epa.festc.core.epic_yearly_average2cmaq_view";
 	String VISUALIZE_VIEW = "gov.epa.festc.core.visualize_view";
 }

@@ -24,6 +24,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -49,10 +50,11 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
 	private JTextField beld4Dir;
 	private JButton beld4DirBrowser;
 	private String ls = "\n";
+	//private JCheckBox swatDayBox;
 	
 	public EpicYearlyAverage2CMAQPanel(FestcApplication festcApp) {
 		app = festcApp;
-		msg = FestcApplication.getMessageCenter();
+		msg = app.getMessageCenter();
 		fields = new EpicYearlyAverage2CMAQFields();
 		app.getProject().addPage(fields);
 		app.addPlotListener(this);
@@ -106,19 +108,20 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
 		JPanel panel = new JPanel(new SpringLayout());
 		SpringLayoutGenerator layout = new SpringLayoutGenerator();
 		
-//		JPanel scenPanel = new JPanel();
-//		scenPanel.add(scenarioDir);
+//		JPanel swatPanel = new JPanel();
+//		this.swatDayBox = new JCheckBox("Daily", true); 
+//		swatPanel.add(this.swatDayBox);
  
 		layout.addLabelWidgetPair("Grid Description:", getGridDescPanel(false), panel);
 		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDirP, panel);
 		layout.addLabelWidgetPair("BELD4 NetCDF File: ", beld4DirPanel, panel);
-		layout.addLabelWidgetPair("   ", new JLabel("   "), panel);
+		//layout.addLabelWidgetPair("   ", new JLabel("   "), panel);
 		layout.addLabelWidgetPair(indent + "Output Type:", spinupPanel, panel);
-		layout.addLabelWidgetPair("   ", new JLabel("   "), panel);
-		//layout.addLabelWidgetPair("Output NetCDF File:", netcdfFilePanel, panel);
-		//layout.addLabelWidgetPair("Message Box:", messageScroll, panel);
+		//layout.addLabelWidgetPair("   ", new JLabel("   "), panel);
+		//layout.addLabelWidgetPair("  For Swat Inputs:", swatPanel, panel);
+		//layout.addLabelWidgetPair("   ", new JLabel("   "), panel);
 
-		layout.makeCompactGrid(panel, 6, 2, // number of rows and cols
+		layout.makeCompactGrid(panel, 4, 2, // number of rows and cols
 				10, 10, // initial X and Y
 				5, 5); // x and y pading
 
@@ -200,7 +203,7 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
         outMessages += "Epic base: " + baseDir + ls;
 		outMessages += "SA home: " + sahome + ls;
 		
-		final String file = writeRunScriptScript(baseDir, scenarioDir, sahome);		
+		final String file = writeRunScript(baseDir, scenarioDir, sahome);		
 		Thread populateThread = new Thread(new Runnable() {
 			public void run() {
 				runScript(file);
@@ -209,7 +212,7 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
 		populateThread.start();
 	}
 
-	protected String writeRunScriptScript(
+	protected String writeRunScript(
 			String baseDir, 
 			String scenarioDir, 
 			String sahome ) throws Exception {
@@ -225,7 +228,7 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
 		
 		StringBuilder sb = new StringBuilder();
 		 
-		sb.append(getScirptHeader() + ls);
+		sb.append(getScriptHeader() + ls);
 		sb.append("#" + ls + "# Set up runtime environment" + ls + "#" + ls);
 		sb.append("setenv    EPIC_DIR " + baseDir + ls);
 		sb.append("setenv    SCEN_DIR " + scenarioDir + ls);
@@ -273,6 +276,11 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
 				+ "# run the EPIC output processing program:" + ls 
 				+ "#" + ls);
 		sb.append("$SA_HOME/bin/64bits/extractEPICYearlyAverage2CMAQ.exe" + ls + ls);
+		
+//		Boolean swatDayYN = swatDayBox.isSelected()? true : false;
+//		System.out.println(swatDayYN);
+//		if (swatDayYN) sb.append(getScriptDaySwat());
+		
 		sb.append("#===================================================================" + ls);
 		String mesg = "";
 		try {
@@ -292,7 +300,7 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
 		return file;
 	}
 	
-	private String getScirptHeader() {
+	private String getScriptHeader() {
 		StringBuilder sb = new StringBuilder();
 		String ls = "\n";
 		sb.append("#!/bin/csh -f" + ls);
@@ -310,6 +318,48 @@ public class EpicYearlyAverage2CMAQPanel extends UtilFieldsPanel implements Plot
 		sb.append("#" + ls);        
 		sb.append("#***************************************************************************************" + ls + ls);
 		
+		return sb.toString();
+	}
+	
+	private String getScriptDaySwat() {
+		StringBuilder sb = new StringBuilder();
+		String ls = "\n";
+		sb.append("#**************************************************************************************" + ls);
+		sb.append("# Purpose: Prepare inputs for SWAT by summarizing data to regions" + ls); 
+		sb.append("#           from the extracted EPIC *NCD output file:" + ls); 
+		sb.append("#" + ls);        
+		sb.append("#***************************************************************************************" + ls + ls);
+		
+		sb.append("#" + ls);
+		sb.append("# Define output type and simulation year" + ls);
+		sb.append("#" + ls);
+		
+		String year =  domain.getSimYear();
+		if ( spinup )
+		 	sb.append("setenv TYPE   \"spinup\"" +ls );
+		else
+			sb.append("setenv TYPE   \"app\"" +ls); 
+		sb.append("setenv YEAR   "+ year +ls +ls); 
+		
+		sb.append("setenv DATA_DIR   $SCEN_DIR/output4CMAQ/$TYPE/daily/" + ls +ls );
+		 
+		sb.append("# Crop fraction data" +ls );
+		sb.append("setenv  SITEFILE   ${SCEN_DIR}/share_data/EPICSites_Info.csv" +ls );
+		 
+		sb.append("# set crops in the summary" +ls );
+		sb.append("#setenv CROPS  \"BARLEY\"" +ls );
+		sb.append("setenv CROPS \"ALL\"" +ls +ls);
+		 
+		sb.append("# set output file" +ls );
+		sb.append("if ( ! -e $DATA_DIR/swat ) mkdir -p $DATA_DIR/swat" +ls );
+		sb.append("setenv  OUTFILE   $DATA_DIR/swat/HUC8_" +ls +ls);
+
+		sb.append("echo \"Run daily summary for swat: \"  ${SCEN_DIR}" +ls );
+
+		sb.append("R CMD BATCH --no-save --slave "
+				+ "$EPIC_DIR/util/misc/swat/epic2swat_daily_HUC8.R "
+				+ "${SCEN_DIR}/scripts/epic2swat_daily_HUC8.log" +ls +ls);
+
 		return sb.toString();
 	}
 	

@@ -51,11 +51,15 @@ public class Constants {
 	public static final String[] SU_NDEPS = new String[] {"EPIC parameter input file", 
         "2002-2006 5-year CMAQ average",
         "2006-2010 5-year CMAQ average"};
+	public static final String[] SWAT_NDEPS = new String[] {"dailyNDep_2004",
+	        "dailyNDep_2008"};
+	public static final String[] HUCS = new String[] {"HUC8","HUC6","HUC2"};
 	public static final String EPIC_SPINUP = "EPIC Runs for Spinup";
 	public static final String MAN_APP = "Management File Generation for Application";
 	public static final String EPIC_APP = "EPIC Runs for Application";
 	public static final String EPIC_YEAR = "EPIC Yearly Extraction";	
 	public static final String EPIC2CMAQ = "EPIC to CMAQ";
+	public static final String EPIC2SWAT = "EPIC to SWAT";
 	public static final String VISU = "Visualization";
 	
 	// Crop list

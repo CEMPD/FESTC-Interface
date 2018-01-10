@@ -2,7 +2,7 @@ package gov.epa.festc.core.proj;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import gov.epa.festc.gui.Epic2CMAQPanel;
+//import gov.epa.festc.gui.Epic2CMAQPanel;
 
 @XmlRootElement(name = "gov.epa.festc.core.proj.Epic2CMAQFields")
 public class Epic2CMAQFields extends PageFields{
@@ -43,7 +43,7 @@ public class Epic2CMAQFields extends PageFields{
 
 	@Override
 	public String getName() {
-		return Epic2CMAQPanel.class.getCanonicalName();
+		return Epic2CMAQFields.class.getCanonicalName();
 	}
 	
 	

@@ -20,12 +20,12 @@ public class BrowseAction {
 				File file = new File(text.getText());
 
 				if (file != null && file.isFile())
-					chooser = new JFileChooser(file.getParentFile());
+					chooser = new JFileChooser(file.getParent());
 				else if (file != null && file.isDirectory())
 					chooser = new JFileChooser(file);
 				else
 					chooser = new JFileChooser(currentDir);
-
+                 
 				chooser.setDialogTitle("Please select the " + name);
 
 				int option = chooser.showDialog(parent, "Select");

@@ -38,6 +38,7 @@ public class Project {
 	
 	public void addPage(PageFields page) {
 		pageList.add(page);
+		//System.out.print("Add field:" +page.getName() + "\n");
 	}
 	
 	public PageFields getPage(String name) {
@@ -45,8 +46,10 @@ public class Project {
 			return null;
 		
 		for (PageFields page : pageList) {
-			if (page.getName() != null && page.getName().equalsIgnoreCase(name))
+			if (page.getName() != null && page.getName().equalsIgnoreCase(name)){
+				//System.out.print("field:" +page.getName() + "\n");
 				return page;
+			}
 		}
 		
 		return null;

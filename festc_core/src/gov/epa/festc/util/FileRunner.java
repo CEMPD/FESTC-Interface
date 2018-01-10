@@ -18,7 +18,7 @@ public class FileRunner { // TODO: change this to a cross-platform launcher
 		String qbigmem = Constants.getProperty(Constants.QUEUE_BMEM, msg);
 		String workdir = Constants.getProperty(Constants.WORK_DIR, msg);
 		boolean useBigMem = false;
-		if (file.contains("epic2CMAQ_"))  useBigMem = true;
+		if (file.contains("epic2CMAQ_") || file.contains("epic2swat_"))  useBigMem = true;
 		
 		if (workdir == null || workdir.trim().isEmpty())
 			workdir = Constants.getProperty(Constants.USER_HOME, msg);

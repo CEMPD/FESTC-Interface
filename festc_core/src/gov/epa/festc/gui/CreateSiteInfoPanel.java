@@ -379,7 +379,7 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 				this.scenarioDir.setText(fields.getScenarioDir());
 			String scenDir = domain.getScenarioDir().trim();
 			String  gridNames = domain.getGridName().trim();
-			String year = domain.getNlcdYear().trim();
+			String year = domain.getNlcdYear()==null?"":domain.getNlcdYear().trim();
 			String beld4file = fields.getBeld4ncf();
 			if ( beld4file == null || beld4file.trim().isEmpty() )
 				beld4file = scenDir + "/share_data/beld4_" + gridName + "_" + year +".nc";			
@@ -394,7 +394,7 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 			proj4proj.setText(domain.getProj());
 			gridName.setText(gridNames);	
 			minAcreas.setText(fields.getMinAcres()==null? "40.0":fields.getMinAcres());
-			domain.setCMinAcres(null);
+			domain.setCMinAcres(domain.getCMinAcres());
 		}else {
 			newProjectCreated();
 		}	
@@ -417,7 +417,7 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 		if ( runMessages != null ) fields.setMessage(runMessages.getText());
 		if ( minAcreas != null)  fields.setMinAcres(minAcreas.getText());
 		fields.setBeld4ncf(beld4Dir.getText().trim());
-		domain.setCMinAcres(null);
+		domain.setCMinAcres(minAcreas.getText());
 	}
 	
 }

@@ -90,6 +90,8 @@ public class ToolsPanel extends JPanel {
 				 Color.getHSBColor(230f / 360, 0.40f, 0.95f));
 		JGradientButton e2cbutton = new JGradientButton(buttonAction(Constants.EPIC2CMAQ, FestcConstants.EPIC2CMAQ_VIEW), 
 				 Color.getHSBColor(230f / 360, 0.40f, 0.95f));
+		JGradientButton e2wbutton = new JGradientButton(buttonAction(Constants.EPIC2SWAT, FestcConstants.EPIC2SWAT_VIEW), 
+				 Color.getHSBColor(230f / 360, 0.40f, 0.95f));
 		JButton visbutton = new JGradientButton(buttonAction(Constants.VISU, FestcConstants.VISUALIZE_VIEW), 
 				Color.getHSBColor(230f / 360, 0.40f, 0.95f));
 				
@@ -105,6 +107,7 @@ public class ToolsPanel extends JPanel {
 		manfileappbutton.setPreferredSize(new Dimension(340, 40));
 		epicappbutton.setPreferredSize(new Dimension(340, 40));
 		e2cbutton.setPreferredSize(new Dimension(340, 40));
+		e2wbutton.setPreferredSize(new Dimension(340, 40));
 		visbutton.setPreferredSize(new Dimension(340, 40));
 		
 		landUsebutton.setFont(new Font("Default", Font.BOLD, 14));
@@ -119,6 +122,7 @@ public class ToolsPanel extends JPanel {
 		manfileappbutton.setFont(new Font("Default", Font.BOLD, 14));
 		epicappbutton.setFont(new Font("Default", Font.BOLD, 14));
 		e2cbutton.setFont(new Font("Default", Font.BOLD, 14));
+		e2wbutton.setFont(new Font("Default", Font.BOLD, 14));
 		visbutton.setFont(new Font("Default", Font.BOLD, 14));
 			
 		layout.addLabelWidgetPair("", landUsebutton, panel);
@@ -133,9 +137,10 @@ public class ToolsPanel extends JPanel {
 		layout.addLabelWidgetPair("", epicappbutton, panel);
 		layout.addLabelWidgetPair("", eya2cbutton, panel);
 		layout.addLabelWidgetPair("", e2cbutton, panel);
+		layout.addLabelWidgetPair("", e2wbutton, panel);
 		layout.addLabelWidgetPair("", visbutton, panel);
 		
-		layout.makeCompactGrid(panel, 13, 2, // number of rows and cols
+		layout.makeCompactGrid(panel, 14, 2, // number of rows and cols
 				1, 1, // initial X and Y
 				1, 1); // x and y pading
 
