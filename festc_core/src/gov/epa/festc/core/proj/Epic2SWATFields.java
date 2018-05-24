@@ -11,6 +11,7 @@ public class Epic2SWATFields extends PageFields{
 	private String metdep;
 	private String nDepSelection;
 	private String hucSelection;
+	private String ratioFile;
 	private String outfileprefix;
 	
 	public Epic2SWATFields() {
@@ -33,13 +34,13 @@ public class Epic2SWATFields extends PageFields{
 		this.hucSelection = hucSelection;
 	}
 
-//	public String getWeathPath() {
-//		return weathPath;
-//	}
-//
-//	public void setWeathPath(String weathPath) {
-//		this.weathPath = weathPath;
-//	}
+	public String getRatioFile() {
+		return ratioFile;
+	}
+
+	public void setRatioFile(String ratioFile) {
+		this.ratioFile = ratioFile;
+	}
 	
 	public void setBeld4ncf(String beld4ncf) {
 		this.beld4ncf = beld4ncf;

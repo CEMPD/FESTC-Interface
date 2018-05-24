@@ -36,17 +36,19 @@ import simphony.util.messages.MessageCenter;
 public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener {
 	private static final long serialVersionUID = 4247819754945274135L;
 	private JTextField beld4Dir;
-	private JButton beld4DirBrowser;
-	private JButton weathPathBrowser;
- 
-	private JTextField filesPrefix;
+	private JButton beld4FileBrowser;
+	private JButton ratioFileBrowser;
+	private JButton weathFileBrowser;
+
+	// private JTextField filesPrefix;
 	private MessageCenter msg;
 	private JTextField metdepFile;
-	private JTextField depPath;
+	private JTextField depFile;
+	private JTextField ratioFile;
 	private JComboBox nDepSel;
 	private JComboBox hucSel;
 	private JFormattedTextField simYear;
-	 	
+
 	private FestcApplication app;
 	private Epic2SWATFields fields;
 
@@ -58,10 +60,10 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 		app.addPlotListener(this);
 		add(createPanel());
 	}
-	
+
 	private JPanel createPanel() {
 		init();
-		JPanel mainPanel = new JPanel();		
+		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 		mainPanel.add(getNorthPanel());
 		mainPanel.add(getCenterPanel());
@@ -69,7 +71,7 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 		mainPanel.add(messageBox());
 		return mainPanel;
 	}
-	
+
 	private JPanel getNorthPanel() {
 		JPanel panel = new JPanel();
 		JLabel title = new JLabel(Constants.EPIC2SWAT, SwingConstants.CENTER);
@@ -86,9 +88,11 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 		JButton runDaily = new JButton(runDailyAction());
 		panel.add(runDaily);
 		JButton runNDep = new JButton(runNDepAction());
-		panel.add(runNDep);	
+		panel.add(runNDep);
 		JButton runWeather = new JButton(runWeatAction());
-		panel.add(runWeather);	
+		panel.add(runWeather);
+		JButton runSWATin = new JButton(runSWATAction());
+		panel.add(runSWATin);
 
 		panel.setBorder(BorderFactory.createEmptyBorder(30, 0, 10, 0));
 
@@ -102,40 +106,52 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 		JPanel beld4DirPanel = new JPanel();
 		beld4Dir = new JTextField(40);
 		beld4Dir.setToolTipText("I.E. share_data/beld4_cmaq12km_2001.nc");
-		beld4DirBrowser = new JButton(BrowseAction.browseAction(this, app.getCurrentDir(), "BELD4 file", beld4Dir));
+		beld4FileBrowser = new JButton(BrowseAction.browseAction(this, app.getCurrentDir(), "BELD4 file", beld4Dir));
 		beld4DirPanel.add(beld4Dir);
-		beld4DirPanel.add(beld4DirBrowser);	
-		
+		beld4DirPanel.add(beld4FileBrowser);
+
 		JPanel weatherPanel = new JPanel();
 		metdepFile = new JTextField(40);
 		metdepFile.setToolTipText("Select Site_weather_dep* file");
-		weathPathBrowser = new JButton(BrowseAction.browseAction(this, app.getCurrentDir(), "WETDEP file", metdepFile));
+		weathFileBrowser = new JButton(BrowseAction.browseAction(this, app.getCurrentDir(), "WETDEP file", metdepFile));
 		weatherPanel.add(metdepFile);
-		weatherPanel.add(weathPathBrowser);	
-		 
+		weatherPanel.add(weathFileBrowser);
+
+		JPanel ratioPanel = new JPanel();
+		ratioFile = new JTextField(40);
+		ratioFile.setToolTipText("Huc8 Delivery Ratio file");
+		ratioFileBrowser = new JButton(
+				BrowseAction.browseAction(this, app.getCurrentDir(), "HUC8 Ratio file", ratioFile));
+		ratioPanel.add(ratioFile);
+		ratioPanel.add(ratioFileBrowser);
+
 		nDepSel = new JComboBox(Constants.SWAT_NDEPS);
 		nDepSel.setSelectedIndex(1);
 		nDepSel.setToolTipText("Select CMAQ deposition. ");
-		hucSel = new JComboBox(Constants.HUCS);
+		hucSel = new JComboBox(Constants.AREAS);
 		hucSel.setSelectedIndex(1);
 		hucSel.setToolTipText("Select HUC. ");
-		
-		JPanel filesPrefixPanel = new JPanel();
-		filesPrefix = new JTextField(40);
-		filesPrefixPanel.add(filesPrefix);
-		
-		
-		JPanel depPanel = new JPanel();
-		depPath = new JTextField(40);
-		depPanel.add(depPath);
 
-//		JPanel startDatePanel = new JPanel();
-//		NumberFormat snf = NumberFormat.getNumberInstance();
-//		snf.setGroupingUsed(false);
-//		startDate = new JFormattedTextField(snf);
-//		startDate.setColumns(40);
-//		startDatePanel.add(startDate);
-		
+		JPanel filesPrefixPanel = new JPanel();
+		// filesPrefix = new JTextField(40);
+		// filesPrefixPanel.add(filesPrefix);
+		//
+
+		// JPanel depField = new JPanel();
+		// depFile = new JTextField(40);
+		// depField.add(depFile);
+		//
+		// JPanel ratioField = new JPanel();
+		// ratioFile = new JTextField(40);
+		// ratioField.add(ratioFile);
+
+		// JPanel startDatePanel = new JPanel();
+		// NumberFormat snf = NumberFormat.getNumberInstance();
+		// snf.setGroupingUsed(false);
+		// startDate = new JFormattedTextField(snf);
+		// startDate.setColumns(40);
+		// startDatePanel.add(startDate);
+
 		JPanel simYearPanel = new JPanel();
 		NumberFormat enf = NumberFormat.getNumberInstance();
 		enf.setGroupingUsed(false);
@@ -143,34 +159,37 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 		simYear.setColumns(20);
 		simYearPanel.add(simYear);
 		simYear.setEditable(false);
-	
-		//layout.addLabelWidgetPair("Grid Description:", getGridDescPanel(false), panel);
+
+		// layout.addLabelWidgetPair("Grid Description:",
+		// getGridDescPanel(false), panel);
 		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDirP, panel);
-		layout.addLabelWidgetPair("BELD4 NetCDF File: ", beld4DirPanel, panel);	
-		layout.addLabelWidgetPair("Met dep file:", weatherPanel, panel);
-		layout.addLabelWidgetPair("Simulation Year:", simYearPanel, panel);	
-		 
+		layout.addLabelWidgetPair("BELD4 NetCDF File: ", beld4DirPanel, panel);
+		layout.addLabelWidgetPair("Met dep File:", weatherPanel, panel);
+		layout.addLabelWidgetPair("HUC8 Delivery Ratio File:", ratioPanel, panel);
+		layout.addLabelWidgetPair("Simulation Year:", simYearPanel, panel);
+
 		layout.addLabelWidgetPair("Daily Average N Deposition: ", nDepSel, panel);
-		layout.addLabelWidgetPair("HUC Selection: ", hucSel, panel);
-		layout.addLabelWidgetPair("EPIC extraction Prefix:", filesPrefixPanel, panel);
-		
+		layout.addLabelWidgetPair("Area Selection: ", hucSel, panel);
+		// layout.addLabelWidgetPair("EPIC extraction Prefix:",
+		// filesPrefixPanel, panel);
+
 		layout.makeCompactGrid(panel, 7, 2, // number of rows and cols
 				10, 10, // initial X and Y
 				5, 5); // x and y pading
 
 		return panel;
 	}
-	
 
 	private Action runDailyAction() {
-		return new AbstractAction("Run Daily") {
+		return new AbstractAction("EPIC") {
 			private static final long serialVersionUID = 5806383737068197305L;
 
 			public void actionPerformed(ActionEvent e) {
 				try {
 					validateFields();
-					final String file = writeEpicScript();;
-					
+					final String file = writeEpicScript();
+					;
+
 					Thread populateThread = new Thread(new Runnable() {
 						public void run() {
 							runScript(file);
@@ -183,16 +202,16 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 			}
 		};
 	}
-	
+
 	private Action runNDepAction() {
-		return new AbstractAction("Run NDep") {
+		return new AbstractAction("NDEP") {
 			private static final long serialVersionUID = 5806383737068197305L;
 
 			public void actionPerformed(ActionEvent e) {
 				try {
 					validateFields();
 					final String file = writeNDepScript();
-					
+
 					Thread populateThread = new Thread(new Runnable() {
 						public void run() {
 							runScript(file);
@@ -205,16 +224,16 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 			}
 		};
 	}
-	
+
 	private Action runWeatAction() {
-		return new AbstractAction("Run DailyWETH") {
+		return new AbstractAction("DailyWETH") {
 			private static final long serialVersionUID = 5806383737068197305L;
 
 			public void actionPerformed(ActionEvent e) {
 				try {
 					validateFields();
 					final String file = writeWeatScript();
-					
+
 					Thread populateThread = new Thread(new Runnable() {
 						public void run() {
 							runScript(file);
@@ -227,72 +246,100 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 			}
 		};
 	}
-	
-	private void validateFields() throws Exception  {
-		
-		String sahome = Constants.getProperty(Constants.SA_HOME, msg);	
-		if (sahome == null || sahome.trim().isEmpty() || !(new File(sahome).exists()))
-			throw new Exception("Error loading spacial allocator home:"+ sahome + " doesn't exist");
-			
-		String scenarioDir = this.scenarioDir.getText();
-		if ( scenarioDir == null || scenarioDir.isEmpty()) 
-			throw new Exception("Please select scenario dir first!");
+
+	private Action runSWATAction() {
+		return new AbstractAction("SWAT INPUTS") {
+			private static final long serialVersionUID = 5806383737068197305L;
+
+			public void actionPerformed(ActionEvent e) {
+				try {
+					validateFields();
+					final String file = writeSWATScript();
+
+					Thread populateThread = new Thread(new Runnable() {
+						public void run() {
+							runScript(file);
+						}
+					});
+					populateThread.start();
+				} catch (Exception exc) {
+					app.showMessage("Run script", exc.getMessage());
+				}
+			}
+		};
 	}
-	
+
+	private void validateFields() throws Exception {
+
+		String sahome = Constants.getProperty(Constants.SA_HOME, msg);
+		if (sahome == null || sahome.trim().isEmpty() || !(new File(sahome).exists()))
+			throw new Exception("Error loading spacial allocator home:" + sahome + " doesn't exist");
+
+		String scenarioDir = this.scenarioDir.getText();
+		if (scenarioDir == null || scenarioDir.isEmpty())
+			throw new Exception("Please select scenario dir first!");
+
+		String sYear = simYear.getText();
+		if (sYear == null || sYear.trim().isEmpty())
+			throw new Exception("Simulation Year field is empty.");
+	}
+
 	private String writeEpicScript() throws Exception {
-		Date now = new Date(); // java.util.Date, NOT java.sql.Date or java.sql.Timestamp!		
-		String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(now); 
-		
+		Date now = new Date(); // java.util.Date, NOT java.sql.Date or
+								// java.sql.Timestamp!
+		String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(now);
+
 		String baseDir = Constants.getProperty(Constants.EPIC_HOME, msg);
 		String scenarioDir = this.scenarioDir.getText();
 		File beld4F = new File(this.beld4Dir.getText());
-		if (beld4F == null || beld4F.isDirectory() || ! beld4F.exists()) 
-			throw new Exception("Beld4 file is not existing!");	
-		
-        outMessages += "Epic base: " + baseDir + ls;
-		  
-		String file = scenarioDir.trim() + "/scripts";	 
-		 
+		if (beld4F == null || beld4F.isDirectory() || !beld4F.exists())
+			throw new Exception("Beld4 file is not existing!");
+
+		outMessages += "Epic base: " + baseDir + ls;
+
+		String file = scenarioDir.trim() + "/scripts";
+
 		file = file.trim() + "/epic2swat_extract_dailyEpic_" + timeStamp + ".csh";
-		//outMessages += file + ls;
+		// outMessages += file + ls;
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(getEpicScriptHeader());
 		String ls = "\n";
-		 
+
 		sb.append("#" + ls);
 		sb.append("# Set up runtime environment" + ls);
 		sb.append("#" + ls);
-		
-		sb.append("setenv    EPIC_DIR  " + baseDir +ls); 
-		sb.append("setenv    SCEN_DIR  "+ scenarioDir + ls); 
-		sb.append("setenv    SHARE_DIR  "+ scenarioDir +"/share_data" + ls ); 
-		sb.append("setenv    SIM_YEAR  "+ simYear.getText() + ls +ls); 
-		
+
+		sb.append("setenv    EPIC_DIR  " + baseDir + ls);
+		sb.append("setenv    SCEN_DIR  " + scenarioDir + ls);
+		sb.append("setenv    SHARE_DIR  " + scenarioDir + "/share_data" + ls);
+		sb.append("setenv    SIM_YEAR  " + simYear.getText() + ls + ls);
+
 		sb.append("# Get site infomation" + ls);
 		sb.append("setenv    SITE_FILE   ${SHARE_DIR}/EPICSites_Info.csv" + ls + ls);
 		sb.append("# Define BELD4 input file, get crop fractions " + ls);
 		sb.append("setenv DOMAIN_BELD4_NETCDF " + beld4Dir.getText() + ls + ls);
-		 
+
 		sb.append("# EPIC input location" + ls);
-		sb.append("setenv DAY_DIR   $SCEN_DIR/output4CMAQ/app/daily" + ls + ls); 
+		sb.append("setenv DAY_DIR   $SCEN_DIR/output4CMAQ/app/daily" + ls + ls);
 		sb.append("# SWAT output location" + ls);
-		sb.append("setenv OUTDIR   $SCEN_DIR/output4CMAQ/app/toSWAT/dailyEPIC" + ls);  
-		sb.append("if ( ! -e $OUTDIR ) mkdir -p $OUTDIR" + ls + ls);  
-		
-		sb.append("setenv  OUTFILE_PREFIX   $OUTDIR/" + filesPrefix.getText() + ls + ls);  
-		 
-		sb.append("# set crops in the summary" + ls);
-		sb.append("setenv CROPS   ALL" + ls);
-		 
-		sb.append("setenv REGION " + hucSel.getSelectedItem() + ls + ls);	
-		
-		sb.append("cd     $EPIC_DIR/util/swat/" + ls );	
+		sb.append("setenv OUTDIR   $SCEN_DIR/output4SWAT/dailyEPIC" + ls);
+		sb.append("if ( ! -e $OUTDIR/county ) mkdir -p $OUTDIR/county" + ls);
+		sb.append("if ( ! -e $OUTDIR/state ) mkdir -p $OUTDIR/state" + ls);
+		sb.append("if ( ! -e $OUTDIR/domain ) mkdir -p $OUTDIR/domain" + ls);
+		sb.append("if ( ! -e $OUTDIR/HUC8 ) mkdir -p $OUTDIR/HUC8" + ls);
+		sb.append("if ( ! -e $OUTDIR/HUC6 ) mkdir -p $OUTDIR/HUC6" + ls);
+		sb.append("if ( ! -e $OUTDIR/HUC2 ) mkdir -p $OUTDIR/HUC2" + ls + ls);
+
+		// sb.append("setenv OUTFILE_PREFIX $OUTDIR/" + filesPrefix.getText() +
+		// ls + ls);
+		sb.append("setenv REGION " + hucSel.getSelectedItem() + ls + ls);
+
+		// sb.append("cd $EPIC_DIR/util/swat/" + ls );
 		sb.append("echo 'Run EPIC daily summary for swat: ' " + scenarioDir + ls);
-		 		 
-		sb.append("R CMD BATCH --no-save --slave "
-				+ "$EPIC_DIR/util/swat/epic2swat_extract_daily_epic.R "
-				+ "${SCEN_DIR}/scripts/epic2swat_extract_daily_epic.log" +ls +ls);
+
+		sb.append("R CMD BATCH --no-save --slave " + "$EPIC_DIR/util/swat/epic2swat_extract_dailyEPIC.R "
+				+ "${SCEN_DIR}/scripts/epic2swat_extract_dailyEPIC.log" + ls + ls);
 
 		String mesg = "";
 		try {
@@ -311,58 +358,71 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 		app.showMessage("Write script", mesg);
 		return file;
 	}
-	
-	
+
 	private String writeNDepScript() throws Exception {
-		Date now = new Date(); // java.util.Date, NOT java.sql.Date or java.sql.Timestamp!		
-		String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(now); 
-		
+		Date now = new Date(); // java.util.Date, NOT java.sql.Date or
+								// java.sql.Timestamp!
+		String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(now);
+
 		String baseDir = Constants.getProperty(Constants.EPIC_HOME, msg);
 		String scenarioDir = this.scenarioDir.getText();
+
+		String ndepSelection = (String) nDepSel.getSelectedItem();
+		String ndepType = ndepSelection;
+		if (ndepSelection.contains("2002"))
+			ndepType = "dailyNDep_2004";
+		else if (ndepSelection.contains("2010"))
+			ndepType = "dailyNDep_2008";
+
 		File beld4F = new File(this.beld4Dir.getText());
-		if (beld4F == null || beld4F.isDirectory() || ! beld4F.exists()) 
-			throw new Exception("Beld4 file is not existing!");	
-		
-        outMessages += "Epic base: " + baseDir + ls;
-		  
-		String file = scenarioDir.trim() + "/scripts";	 
-		//String year =  domain.getSimYear();
-		
-		file = file.trim() + "/epic2swat_extract_daily_ndep" + timeStamp + ".csh";
-		//outMessages += file + ls;
+		if (beld4F == null || beld4F.isDirectory() || !beld4F.exists())
+			throw new Exception("Beld4 file is not existing!");
+
+		outMessages += "Epic base: " + baseDir + ls;
+
+		String file = scenarioDir.trim() + "/scripts";
+		// String year = domain.getSimYear();
+
+		file = file.trim() + "/epic2swat_extract_NDEP_" + timeStamp + ".csh";
+		// outMessages += file + ls;
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(getNdepScriptHeader());
 		String ls = "\n";
-		 
+
 		sb.append("#" + ls);
 		sb.append("# Set up runtime environment" + ls);
 		sb.append("#" + ls);
-		
-		sb.append("setenv    EPIC_DIR  " + baseDir +ls); 
-		sb.append("setenv    SCEN_DIR  "+ scenarioDir + ls); 
-		sb.append("setenv    SHARE_DIR  "+ scenarioDir +"/share_data" + ls +ls); 
+
+		sb.append("setenv    EPIC_DIR  " + baseDir + ls);
+		sb.append("setenv    SCEN_DIR  " + scenarioDir + ls);
+		sb.append("setenv    SHARE_DIR  " + scenarioDir + "/share_data" + ls + ls);
 		sb.append("# Get site infomation" + ls);
 		sb.append("setenv    SITE_FILE   ${SHARE_DIR}/EPICSites_Info.csv" + ls + ls);
-  
-		sb.append("# Yearly file location" + ls);
-		sb.append("setenv    YEAR_FILE  ${SCEN_DIR}/output4CMAQ/app/toCMAQ/epic2cmaq_year.nc" + ls + ls); 
+
+		sb.append("# Define BELD4 input file" + ls);
+		sb.append("setenv DOMAIN_BELD4_NETCDF " + beld4Dir.getText() + ls + ls);
 		sb.append("# Location of deposition files " + ls);
-		
-		sb.append("setenv    NDEP " + nDepSel.getSelectedItem() + ls);
-		sb.append("setenv    NDEP_DIR     ${EPIC_DIR}/common_data/EPIC_model/$NDEP" + ls + ls); 
-		
+
+		sb.append("setenv    NDEP_TYPE " + ndepType + ls);
+		sb.append("setenv    NDEP_FILE     " + metdepFile.getText() + ls);
+
 		sb.append("# output location" + ls);
-		sb.append("setenv OUTDIR   SCEN_DIR/output4CMAQ/app/toSWAT/dailyNDEP" + ls);  
-		sb.append("if ( ! -e $OUTDIR) mkdir -p $OUTDIR" + ls + ls);  
-		  
-		sb.append("setenv REGION " + hucSel.getSelectedItem() + ls);
-		sb.append("cd     $EPIC_DIR/util/swat/" + ls );	 
-		sb.append("echo 'Extract daily depositon 2004/2008: '" + scenarioDir + ls);
-		sb.append("R CMD BATCH --no-save --slave "
-				+ "$EPIC_DIR/util/swat/epic2swat_extract_daily_ndep.R "
-				+ "${SCEN_DIR}/scripts/epic2swat_extract_daily_ndep.log" +ls +ls);
-		
+		sb.append("setenv OUTDIR   $SCEN_DIR/output4SWAT/NDEP/" + ndepType + ls);
+		sb.append("if ( ! -e $OUTDIR) mkdir -p $OUTDIR" + ls);
+		sb.append("if ( ! -e $OUTDIR/county ) mkdir -p $OUTDIR/county" + ls);
+		sb.append("if ( ! -e $OUTDIR/state ) mkdir -p $OUTDIR/state" + ls);
+		sb.append("if ( ! -e $OUTDIR/domain ) mkdir -p $OUTDIR/domain" + ls);
+		sb.append("if ( ! -e $OUTDIR/HUC8 ) mkdir -p $OUTDIR/HUC8" + ls);
+		sb.append("if ( ! -e $OUTDIR/HUC6 ) mkdir -p $OUTDIR/HUC6" + ls);
+		sb.append("if ( ! -e $OUTDIR/HUC2 ) mkdir -p $OUTDIR/HUC2" + ls + ls);
+
+		// sb.append("setenv REGION " + hucSel.getSelectedItem() + ls);
+		// sb.append("cd $EPIC_DIR/util/swat/" + ls );
+		sb.append("echo 'Extract daily depositon from yearly CMAQ or 2004/2008 averaged ndep: '" + scenarioDir + ls);
+		sb.append("R CMD BATCH --no-save --slave " + "$EPIC_DIR/util/swat/epic2swat_extract_daily_ndepCMAQ.R "
+				+ "${SCEN_DIR}/scripts/epic2swat_extract_daily_ndepCMAQ.log" + ls + ls);
+
 		String mesg = "";
 		try {
 			File script = new File(file);
@@ -380,56 +440,151 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 		app.showMessage("Write script", mesg);
 		return file;
 	}
-	
+
+	private String writeSWATScript() throws Exception {
+		Date now = new Date(); // java.util.Date, NOT java.sql.Date or
+								// java.sql.Timestamp!
+		String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(now);
+
+		String baseDir = Constants.getProperty(Constants.EPIC_HOME, msg);
+		String scenarioDir = this.scenarioDir.getText();
+
+		String ndepSelection = (String) nDepSel.getSelectedItem();
+		String ndepType = ndepSelection;
+		if (ndepSelection.contains("2002"))
+			ndepType = "dailyNDep_2004";
+		else if (ndepSelection.contains("2010"))
+			ndepType = "dailyNDep_2008";
+
+		File ratioF = new File(this.ratioFile.getText());
+		if (ratioF == null || ratioF.isDirectory() || !ratioF.exists())
+			throw new Exception("Ratio file is not existing!");
+		File beld4F = new File(this.beld4Dir.getText());
+		if (beld4F == null || beld4F.isDirectory() || !beld4F.exists())
+			throw new Exception("Beld4 file is not existing!");
+
+		outMessages += "Epic base: " + baseDir + ls;
+
+		String file = scenarioDir.trim() + "/scripts";
+		// String year = domain.getSimYear();
+
+		file = file.trim() + "/extract_swatInputs_" + timeStamp + ".csh";
+		// outMessages += file + ls;
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(getSWATScriptHeader());
+		String ls = "\n";
+
+		sb.append("#" + ls);
+		sb.append("# Set up runtime environment" + ls);
+		sb.append("#" + ls);
+
+		sb.append("setenv    EPIC_DIR   " + baseDir + ls);
+		sb.append("setenv    SCEN_DIR   " + scenarioDir + ls);
+		sb.append("setenv    SHARE_DIR  " + scenarioDir + "/share_data" + ls + ls);
+		sb.append("setenv    NDEP_TYPE  " + ndepType + ls);
+		sb.append("setenv    RUN_dailyEPIC  YES" + ls);
+		sb.append("setenv    RUN_MET   YES" + ls);
+		sb.append("setenv    RUN_NDEP  YES" + ls);
+
+		sb.append("# Get site infomation" + ls);
+		sb.append("setenv    SITE_FILE   ${SHARE_DIR}/EPICSites_Info.csv" + ls + ls);
+		sb.append("# Define ratio input file" + ls);
+		sb.append("setenv    RATIO_FILE  " + ratioF + ls + ls);
+
+		sb.append("# output location" + ls);
+		sb.append("setenv OUTDIR   $SCEN_DIR/output4SWAT" + ls);
+		sb.append("setenv SWAT_OUTDIR   $SCEN_DIR/output4SWAT/swat_inputs" + ls);
+		sb.append("if ( ! -e $OUTDIR) mkdir -p $OUTDIR" + ls);
+		sb.append("if ( ! -e $SWAT_OUTDIR ) mkdir -p $SWAT_OUTDIR" + ls);
+		sb.append("if ( ! -e $SWAT_OUTDIR/dailydep ) mkdir -p $SWAT_OUTDIR/dailydep" + ls);
+		sb.append("if ( ! -e $SWAT_OUTDIR/dailyweath ) mkdir -p $SWAT_OUTDIR/dailyweath" + ls);
+		sb.append("if ( ! -e $SWAT_OUTDIR/EPICinputPoint ) mkdir -p $SWAT_OUTDIR/EPICinputPoint" + ls);
+
+		sb.append("echo  'Extract swat inputs:  ' $SCEN_DIR" + ls);
+		sb.append("R CMD BATCH --no-save --slave " + "$EPIC_DIR/util/swat/extract_swatInputs.R "
+				+ "${SCEN_DIR}/scripts/extract_swatInputs_"+ ndepType + ".log" + ls + ls);
+
+		String mesg = "";
+		try {
+			File script = new File(file);
+			Runtime.getRuntime().exec("chmod 755 " + script.getAbsolutePath());
+			BufferedWriter out = new BufferedWriter(new FileWriter(script));
+			out.write(sb.toString());
+			out.close();
+			mesg += "Created a script file: " + file + "\n";
+			boolean ok = script.setExecutable(true, false);
+			mesg += "Set the script file to be executable: ";
+			mesg += ok ? "ok." : "failed.";
+		} catch (IOException e) {
+			throw new Exception(e.getMessage());
+		}
+		app.showMessage("Write script", mesg);
+		return file;
+	}
+
 	private String writeWeatScript() throws Exception {
-		Date now = new Date(); // java.util.Date, NOT java.sql.Date or java.sql.Timestamp!		
-		String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(now); 
-		
+		Date now = new Date(); // java.util.Date, NOT java.sql.Date or
+								// java.sql.Timestamp!
+		String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(now);
+
 		String baseDir = Constants.getProperty(Constants.EPIC_HOME, msg);
 		String scenarioDir = this.scenarioDir.getText();
 		File beld4F = new File(this.beld4Dir.getText());
-		if (beld4F == null || beld4F.isDirectory() || ! beld4F.exists()) 
-			throw new Exception("Beld4 file is not existing!");	
-		
-        outMessages += "Epic base: " + baseDir + ls;
-		  
-		String file = scenarioDir.trim() + "/scripts";	 
-		//String year =  domain.getSimYear();
-		
-		file = file.trim() + "/epic2swat_daily_depWETHnc" + timeStamp + ".csh";
-		//outMessages += file + ls;
+		if (beld4F == null || beld4F.isDirectory() || !beld4F.exists())
+			throw new Exception("Beld4 file is not existing!");
+
+		String ndepSelection = (String) nDepSel.getSelectedItem();
+		String ndepType = ndepSelection;
+		if (ndepSelection.contains("2002"))
+			ndepType = "dailyNDep_2004";
+		else if (ndepSelection.contains("2010"))
+			ndepType = "dailyNDep_2008";
+
+		outMessages += "Epic base: " + baseDir + ls;
+
+		String file = scenarioDir.trim() + "/scripts";
+		// String year = domain.getSimYear();
+
+		file = file.trim() + "/epic2swat_daily_metCMAQ_" + timeStamp + ".csh";
+		// outMessages += file + ls;
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(getWeatScriptHeader());
 		String ls = "\n";
-		 
+
 		sb.append("#" + ls);
 		sb.append("# Set up runtime environment" + ls);
 		sb.append("#" + ls);
-		
-		sb.append("setenv    EPIC_DIR  " + baseDir +ls); 
-		sb.append("setenv    SCEN_DIR  "+ scenarioDir + ls); 
-		sb.append("setenv    SHARE_DIR  "+ scenarioDir +"/share_data" + ls +ls); 
+
+		sb.append("setenv    EPIC_DIR  " + baseDir + ls);
+		sb.append("setenv    SCEN_DIR  " + scenarioDir + ls);
+		sb.append("setenv    SHARE_DIR  " + scenarioDir + "/share_data" + ls + ls);
 		sb.append("# Get site infomation" + ls);
 		sb.append("setenv    SITE_FILE   ${SHARE_DIR}/EPICSites_Info.csv" + ls + ls);
 		sb.append("# Define BELD4 input file, get crop fractions " + ls);
 		sb.append("setenv DOMAIN_BELD4_NETCDF " + beld4Dir.getText() + ls + ls);
 
 		sb.append("# met yearly file location" + ls);
-		sb.append("setenv    DEPMET_FILE  " + metdepFile.getText() + ls + ls); 
-		
+		sb.append("setenv    NDEP_TYPE " + ndepType + ls);
+		sb.append("setenv    DEPMET_FILE  " + metdepFile.getText() + ls + ls);
+
 		sb.append("# output location" + ls);
-		sb.append("setenv OUTDIR   $SCEN_DIR/output4CMAQ/app/toSWAT/dailyWETH" + ls);  
-		sb.append("if ( ! -e $OUTDIR/met ) mkdir -p $OUTDIR/met" + ls );  
-		sb.append("if ( ! -e $OUTDIR/dep ) mkdir -p $OUTDIR/dep" + ls + ls); 
-		
-	 	sb.append("setenv REGION " + hucSel.getSelectedItem() + ls + ls);	
-	 	sb.append("cd     $EPIC_DIR/util/swat/" + ls );	
-		sb.append("echo 'Extract daily met/dep for SWAT from ' " + scenarioDir + ls);	 
-		sb.append("R CMD BATCH --no-save --slave "
-				+ "$EPIC_DIR/util/swat/epic2swat_daily_depWETHnc.R "
-				+ "${SCEN_DIR}/scripts/epic2swat_daily_depWETHnc.log" +ls +ls);
-		
+		sb.append("setenv OUTDIR   $SCEN_DIR/output4SWAT/dailyWETH/" + ndepType + ls);
+		sb.append("if ( ! -e $OUTDIR) mkdir -p $OUTDIR" + ls);
+		sb.append("if ( ! -e $OUTDIR/county ) mkdir -p $OUTDIR/county" + ls);
+		sb.append("if ( ! -e $OUTDIR/state ) mkdir -p $OUTDIR/state" + ls);
+		sb.append("if ( ! -e $OUTDIR/domain ) mkdir -p $OUTDIR/domain" + ls);
+		sb.append("if ( ! -e $OUTDIR/HUC8 ) mkdir -p $OUTDIR/HUC8" + ls);
+		sb.append("if ( ! -e $OUTDIR/HUC6 ) mkdir -p $OUTDIR/HUC6" + ls);
+		sb.append("if ( ! -e $OUTDIR/HUC2 ) mkdir -p $OUTDIR/HUC2" + ls + ls);
+
+		sb.append("setenv REGION " + hucSel.getSelectedItem() + ls + ls);
+		// sb.append("cd $EPIC_DIR/util/swat/" + ls );
+		sb.append("echo 'Extract daily met/dep for SWAT from ' " + scenarioDir + ls);
+		sb.append("R CMD BATCH --no-save --slave " + "$EPIC_DIR/util/swat/epic2swat_extract_daily_metCMAQ.R "
+				+ "${SCEN_DIR}/scripts/epic2swat_extract_daily_metCMAQ.log" + ls + ls);
+
 		String mesg = "";
 		try {
 			File script = new File(file);
@@ -453,27 +608,28 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 		String ls = "\n";
 		sb.append("#!/bin/csh -f" + ls);
 		sb.append("#**************************************************************************************" + ls);
-		sb.append("# Purpose:   Prepare runoff inputs for SWAT by extracting " + ls); 
-		sb.append("#           EPIC daily output files  output4CMAQ/app/daily/*NCD " + ls); 
+		sb.append("# Purpose:   Prepare runoff inputs for SWAT by extracting " + ls);
+		sb.append("#           EPIC daily output files  output4CMAQ/app/daily/*NCD " + ls);
 		sb.append("#" + ls);
 		sb.append("#" + ls);
 		sb.append("# Developed by: UNC Institute for the Environment" + ls);
-		sb.append("# Date: 10/30/2017" + ls);
+		sb.append("# Date: 10/30/2018" + ls);
 		sb.append("#" + ls);
 		sb.append("# Program: $EPIC_DIR/util/swat/epic2swat_extract_daily_epic.R" + ls);
 		sb.append("#" + ls);
 		sb.append("#***************************************************************************************" + ls + ls);
-		  
+
 		return sb.toString();
 	}
-	
+
 	private String getNdepScriptHeader() {
 		StringBuilder sb = new StringBuilder();
 		String ls = "\n";
 		sb.append("#!/bin/csh -f" + ls);
 		sb.append("#**************************************************************************************" + ls);
-		sb.append("# Purpose:   repare N Deposition inputs for SWAT by summarizing met data,  " + ls); 
-		sb.append("#           $COMMON_data/EPIC_model/dailyNDep_200? "+ ls); 
+		sb.append("# Purpose:   repare N Deposition inputs for SWAT by summarizing met data,  " + ls);
+		sb.append("#           netcdf weather data under ${SHAREDIR}/ " + ls);
+		sb.append("#           $COMMON_data/EPIC_model/dailyNDep_200? " + ls);
 		sb.append("#" + ls);
 		sb.append("#" + ls);
 		sb.append("# Developed by: UNC Institute for the Environment" + ls);
@@ -485,14 +641,15 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 
 		return sb.toString();
 	}
-	
+
 	private String getWeatScriptHeader() {
 		StringBuilder sb = new StringBuilder();
 		String ls = "\n";
 		sb.append("#!/bin/csh -f" + ls);
 		sb.append("#**************************************************************************************" + ls);
-		sb.append("# Purpose:   Prepare N Deposition and weather inputs for SWAT by summarizing  " + ls); 
-		sb.append("#           netcdf weather data under ${SHAREDIR}/"+ ls); 
+		sb.append("# Purpose:   Prepare N Deposition and weather inputs for SWAT by summarizing  " + ls);
+		sb.append("#           netcdf weather data under ${SHAREDIR}/ " + ls);
+		sb.append("#           $COMMON_data/EPIC_model/dailyNDep_200?/ " + ls);
 		sb.append("#" + ls);
 		sb.append("#" + ls);
 		sb.append("# Developed by: UNC Institute for the Environment" + ls);
@@ -501,52 +658,69 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 		sb.append("# Program: $EPIC_DIR/util/swat/epic2swat_daily_depWETHnc.R" + ls);
 		sb.append("#" + ls);
 		sb.append("#***************************************************************************************" + ls + ls);
-		 
+
 		return sb.toString();
 	}
 
+	private String getSWATScriptHeader() {
+		StringBuilder sb = new StringBuilder();
+		String ls = "\n";
+		sb.append("#!/bin/csh -f" + ls);
+		sb.append("#**************************************************************************************" + ls);
+		sb.append("# Purpose:   Prepare swat inputs: dailyEPIC, NDEP, and weather" + ls);
+		sb.append("#" + ls);
+		sb.append("# Developed by: UNC Institute for the Environment" + ls);
+		sb.append("# Date: 10/30/2017" + ls);
+		sb.append("#" + ls);
+		sb.append("# Program: $EPIC_DIR/util/swat/extract_swatInputs.R" + ls);
+		sb.append("#" + ls);
+		sb.append("#***************************************************************************************" + ls + ls);
 
+		return sb.toString();
+	}
 
 	private void runScript(final String file) {
-		String log = file + ".log"; 
+		String log = file + ".log";
 		outMessages += "Script file: " + file + ls;
 		outMessages += "Log file: " + log + ls;
 		runMessages.setText(outMessages);
 		runMessages.validate();
 		FileRunner.runScript(file, log, msg);
 	}
-	
 
 	@Override
 	public void projectLoaded() {
 		fields = (Epic2SWATFields)app.getProject().getPage(fields.getName());
 		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
-		if ( app.getProject().getPage(fields.getName()) != null ) {
-			fields = (Epic2SWATFields)app.getProject().getPage(fields.getName());
+		if (fields != null) {
+			fields = (Epic2SWATFields) app.getProject().getPage(fields.getName());
 			String scenloc = domain.getScenarioDir();
-			if (scenloc != null && scenloc.trim().length()>0 )
+			if (scenloc != null && scenloc.trim().length() > 0)
 				this.scenarioDir.setText(scenloc);
-			else 
+			else
 				this.scenarioDir.setText(fields.getScenarioDir());
-//			 
+			//
 			try {
-				simYear.setValue(NumberFormat.getNumberInstance().parse(domain.getSimYear()==null? "":domain.getSimYear()));
-				 
+				simYear.setValue(
+						NumberFormat.getNumberInstance().parse(domain.getSimYear() == null ? "" : domain.getSimYear()));
+
 			} catch (ParseException e) {
 				simYear.setValue(0);
 			}
 			String year = simYear.getText();
-			if (fields.getMetdep()==null){
-				String	depmet = domain.getScenarioDir().trim() + "/share_data/site_weather_dep_" + year + "0101" +"_to_" + year +"1231" +".nc";			
+			if (fields.getMetdep() == null) {
+				String depmet = domain.getScenarioDir().trim() + "/share_data/site_weather_dep_" + year + "0101"
+						+ "_to_" + year + "1231" + ".nc";
 				this.metdepFile.setText(depmet);
-			}
-			else
+			} else
 				this.metdepFile.setText(fields.getMetdep());
 			beld4Dir.setText(fields.getBeld4ncf());
 			hucSel.setSelectedItem(fields.getHucSelection());
-			filesPrefix.setText(fields.getOutfileprefix());	
+			nDepSel.setSelectedItem(fields.getNDepSelection() );
+			ratioFile.setText(fields.getRatioFile());
+			// filesPrefix.setText(fields.getOutfileprefix());
 			runMessages.setText(fields.getMessage());
-		}else{
+		} else {
 			newProjectCreated();
 		}
 	}
@@ -555,11 +729,13 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 	public void saveProjectRequested() {
 		fields.setBeld4ncf(beld4Dir.getText());
 		fields.setMetdep(metdepFile.getText());
-		fields.setHucSelection((String)hucSel.getSelectedItem());
-		fields.setNDepSelection((String)nDepSel.getSelectedItem());
+		fields.setHucSelection((String) hucSel.getSelectedItem());
+		fields.setNDepSelection((String) nDepSel.getSelectedItem());
 		fields.setScenarioDir(scenarioDir.getText());
-		if (filesPrefix != null) fields.setOutfileprefix(filesPrefix.getText()== null? "" : filesPrefix.getText());
-		if ( runMessages != null ) fields.setMessage(runMessages.getText());
+		if (ratioFile != null)
+			fields.setRatioFile(ratioFile.getText() == null ? "" : ratioFile.getText());
+		if (runMessages != null)
+			fields.setMessage(runMessages.getText());
 	}
 
 	@Override
@@ -568,29 +744,30 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 		String scenDir = domain.getScenarioDir().trim();
 		scenarioDir.setText(domain.getScenarioDir());
 		String year = domain.getNlcdYear().trim();
-//		simYear.setValue(year);	
-		filesPrefix.setText("");
-		//String beld4file = fields.getBeld4ncf();
-		//if ( beld4file == null || beld4file.trim().isEmpty() )
-		String	beld4file = scenDir + "/share_data/beld4_" + domain.getGridName() + "_" + year +".nc";			
+		// simYear.setValue(year);
+		// filesPrefix.setText("");
+		// String beld4file = fields.getBeld4ncf();
+		// if ( beld4file == null || beld4file.trim().isEmpty() )
+		String beld4file = scenDir + "/share_data/beld4_" + domain.getGridName() + "_" + year + ".nc";
 		this.beld4Dir.setText(beld4file);
-		String	depmet = scenDir + "/share_data/site_weather_dep_" + year + "0101" +"_to_" +year +"1231" +".nc";			
+		String depmet = scenDir + "/share_data/site_weather_dep_" + year + "0101" + "_to_" + year + "1231" + ".nc";
 		this.metdepFile.setText(depmet);
 		nDepSel.setSelectedIndex(0);
 		hucSel.setSelectedIndex(0);
-		
+
 		runMessages.setText("");
-		filesPrefix.setText("");
+		ratioFile.setText("");
+		// filesPrefix.setText("");
 		try {
-			simYear.setValue(NumberFormat.getNumberInstance().parse(year==null? "":domain.getSimYear()));
+			simYear.setValue(NumberFormat.getNumberInstance().parse(year == null ? "" : domain.getSimYear()));
 		} catch (ParseException e) {
 			simYear.setValue(0);
 		}
 
-		if ( fields == null ) {
-			fields = new Epic2SWATFields();
-			app.getProject().addPage(fields);
-		}
+		// if ( fields == null ) {
+		// fields = new Epic2SWATFields();
+		app.getProject().addPage(fields);
+		// }
 	}
-	
+
 }

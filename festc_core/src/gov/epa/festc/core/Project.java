@@ -39,6 +39,7 @@ public class Project {
 	public void addPage(PageFields page) {
 		pageList.add(page);
 		//System.out.print("Add field:" +page.getName() + "\n");
+		
 	}
 	
 	public PageFields getPage(String name) {

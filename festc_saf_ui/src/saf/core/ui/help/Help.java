@@ -83,9 +83,9 @@ public class Help {
 	public static void main(String[] args) {
 		try {
 			//Help help = new Help(Help.class.getClassLoader(), new File("C:\\jars\\jh2.0\\demos\\hs\\merge\\Master.hs"));
-			Help help = new Help(Help.class.getClassLoader(), new File("C:\\jars\\jh2.0\\demos\\hsjar\\animals.jar").toURL());
+			Help help = new Help(Help.class.getClassLoader(), new File("C:\\jars\\jh1.4\\demos\\hsjar\\animals.jar").toURL());
 			help.displayHelp(new javax.swing.JPanel());
-			help.addHelpSet(Help.class.getClassLoader(), new File("C:\\jars\\jh2.0\\demos\\hsjar\\invertebrates.jar").toURL());
+			help.addHelpSet(Help.class.getClassLoader(), new File("C:\\jars\\jh1.4\\demos\\hsjar\\invertebrates.jar").toURL());
 
 		} catch (IOException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

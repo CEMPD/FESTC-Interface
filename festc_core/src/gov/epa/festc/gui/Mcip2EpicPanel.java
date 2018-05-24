@@ -1,14 +1,5 @@
 package gov.epa.festc.gui;
 
-import gov.epa.festc.core.FestcApplication;
-import gov.epa.festc.core.proj.DomainFields;
-import gov.epa.festc.core.proj.Epic2CMAQFields;
-import gov.epa.festc.core.proj.Mcip2EpicFields;
-import gov.epa.festc.util.Constants;
-import gov.epa.festc.util.FileRunner;
-import gov.epa.festc.util.SpringLayoutGenerator;
-
-import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.io.BufferedWriter;
@@ -26,16 +17,20 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
+import gov.epa.festc.core.FestcApplication;
+import gov.epa.festc.core.proj.DomainFields;
+import gov.epa.festc.core.proj.Mcip2EpicFields;
+import gov.epa.festc.util.Constants;
+import gov.epa.festc.util.FileRunner;
+import gov.epa.festc.util.SpringLayoutGenerator;
 import simphony.util.messages.MessageCenter;
 
 public class Mcip2EpicPanel extends UtilFieldsPanel implements PlotEventListener {

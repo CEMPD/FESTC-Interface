@@ -1,24 +1,11 @@
 package gov.epa.festc.gui;
 
-import gov.epa.festc.core.FestcApplication;
-import gov.epa.festc.core.proj.DomainFields;
-import gov.epa.festc.core.proj.Epic2CMAQFields;
-import gov.epa.festc.core.proj.SiteInfoGenFields;
-import gov.epa.festc.util.Constants;
-import gov.epa.festc.util.DateFormat;
-import gov.epa.festc.util.FileRunner;
-import gov.epa.festc.util.SpringLayoutGenerator;
-
-import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,18 +17,20 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
+import gov.epa.festc.core.FestcApplication;
+import gov.epa.festc.core.proj.DomainFields;
+import gov.epa.festc.core.proj.Epic2CMAQFields;
+import gov.epa.festc.util.Constants;
+import gov.epa.festc.util.FileRunner;
+import gov.epa.festc.util.SpringLayoutGenerator;
 import simphony.util.messages.MessageCenter;
 
 public class Epic2CMAQPanel extends UtilFieldsPanel implements PlotEventListener {

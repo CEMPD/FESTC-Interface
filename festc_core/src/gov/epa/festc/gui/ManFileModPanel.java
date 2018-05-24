@@ -1,22 +1,10 @@
 package gov.epa.festc.gui;
 
-import gov.epa.festc.core.FestcApplication;
-import gov.epa.festc.core.FestcGUI;
- 
-import gov.epa.festc.core.proj.DomainFields;
-import gov.epa.festc.core.proj.Epic2CMAQFields;
-import gov.epa.festc.core.proj.ManFileModFields;
-import gov.epa.festc.util.BrowseAction;
-import gov.epa.festc.util.Constants;
-import gov.epa.festc.util.SpringLayoutGenerator;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -24,18 +12,21 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
+import gov.epa.festc.core.FestcApplication;
+import gov.epa.festc.core.FestcGUI;
+import gov.epa.festc.core.proj.DomainFields;
+import gov.epa.festc.core.proj.ManFileModFields;
+import gov.epa.festc.util.Constants;
+import gov.epa.festc.util.SpringLayoutGenerator;
 import simphony.util.messages.MessageCenter;
 
 public class ManFileModPanel extends UtilFieldsPanel implements PlotEventListener {
@@ -170,7 +161,7 @@ public class ManFileModPanel extends UtilFieldsPanel implements PlotEventListene
 		rainPanel.add(erainButton);
 		
 		layout.addLabelWidgetPair("EPICCONT.DAT", contPanel, rightPanel);
-		layout.addLabelWidgetPair("PARM1102.DAT", paramPanel, rightPanel);
+		layout.addLabelWidgetPair("PARM0509.DAT", paramPanel, rightPanel);
 		layout.addLabelWidgetPair("EPICFILE.DAT", filePanel, rightPanel);
 		 
 		layout.addLabelWidgetPair("RAINFED EPICRUNFILE", rainPanel, rightPanel);
@@ -270,7 +261,7 @@ public class ManFileModPanel extends UtilFieldsPanel implements PlotEventListene
 			contFile = scenDir + "/share_data/EPICCONT.DAT"; 
 		
 		
-		paramFile = baseDir + "/common_data/EPIC_model/" + type + "/PARM1102.DAT";
+		paramFile = baseDir + "/common_data/EPIC_model/" + type + "/PARM0509.DAT";
 		fileFile = baseDir + "/common_data/EPIC_model/" + type + "/EPICFILE.DAT";
 		if  (type.equalsIgnoreCase("spinup")) {
 			irrFile = scenDir + "/" + selCrop + "/" + type + "/manage/EPICRUNFILEIRR.DAT";
