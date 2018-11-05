@@ -300,15 +300,15 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		sb.append("setenv    RUN_TD   " +  (String)runTiledrain.getSelectedItem()  + ls);
 		 
 		//ndepValue = "RFN0";
-		if ( ndepValue.contains("CMAQ") )  ndepValue = "CMAQ";
-		else if ( ndepValue.contains("2002") )  ndepValue = "dailyNDep_2004";
+		if ( ndepValue.contains("2002") )  ndepValue = "dailyNDep_2004";
 		else if ( ndepValue.contains("2010") )  ndepValue = "dailyNDep_2008";
 		else if ( ndepValue.contains("EPIC") )  ndepValue = "RFN0";
+		else if (ndepValue.contains("CMAQ") )  ndepValue = "CMAQ";
 
 		if ( ndepValue.length() == 4) 
 			sb.append("setenv    NDEP_DIR   " + ndepValue + ls);
 		else
-			sb.append("setenv NDEP_DIR $COMM_DIR/EPIC_model/" 
+			sb.append("setenv    NDEP_DIR $COMM_DIR/EPIC_model/" 
 					+ ndepValue + ls);
 		System.out.println(sb);
 		sb.append("setenv    SHARE_DIR $SCEN_DIR/share_data" + ls);

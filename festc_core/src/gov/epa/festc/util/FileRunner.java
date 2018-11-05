@@ -14,7 +14,7 @@ public class FileRunner { // TODO: change this to a cross-platform launcher
 	public static void runScript(final String file, final String logText, final MessageCenter msg) {
 		String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg);
 		String qopt = Constants.getProperty(Constants.QUEUE_OPT, msg);
-		String qname = Constants.getProperty(Constants.QUEUE_NAME, msg);
+		//String qname = Constants.getProperty(Constants.QUEUE_NAME, msg);
 		String qbigmem = Constants.getProperty(Constants.QUEUE_BMEM, msg);
 		String workdir = Constants.getProperty(Constants.WORK_DIR, msg);
 		boolean useBigMem = false;
@@ -40,20 +40,20 @@ public class FileRunner { // TODO: change this to a cross-platform launcher
 		String cmd = "cd " + scriptDir+ "\n";
 
 		//if ( qcmd != null && qcmd !="" )
-		cmd = cmd + qcmd + " -q " + qname;
+		cmd = cmd + qcmd;
 
 		//System.out.println("qcmd="+qcmd + qname);
-		if (qcmd != null && qcmd.equalsIgnoreCase("qsub")) {
-			qopt += " -j oe ";
-			cmd = cmd + " " + qopt;
-		}
+//		if (qcmd != null && qcmd.equalsIgnoreCase("qsub")) {
+//			qopt += " -j oe ";
+//			cmd = cmd + " " + qopt;
+//		}
 
 		if (useBigMem) 
-			cmd = cmd + " " + qbigmem + " -o " + log + " " + script.getAbsolutePath();
+			cmd = cmd + " " + qbigmem + " " + qopt + " " + log + " " + script.getAbsolutePath();
 		else
-			cmd = cmd + " -o " + log + " " + script.getAbsolutePath();
+			cmd = cmd + " " +qopt + " " + log + " " + script.getAbsolutePath();
 
-		if ((qcmd == null || qcmd.trim().isEmpty()) || (qname == null || qname.trim().isEmpty()))
+		if ((qcmd == null || qcmd.trim().isEmpty()) || (qcmd == null || qcmd.trim().isEmpty()))
 			cmd = "cd " + scriptDir+ "\n" + script.getAbsolutePath() + " > " + log + " & " ;
 
 		cmd = cmd + "\ncd - \n";

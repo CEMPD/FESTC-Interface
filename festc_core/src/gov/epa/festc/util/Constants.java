@@ -21,6 +21,7 @@ public class Constants {
 	public static final String EPIC_HOME = "epic.home";
 	public static final String QUEUE_NAME = "queue.name";
 	public static final String QUEUE_BMEM = "queue.bigmem";
+	//public static final String QUEUE_PRELOG = "queue.prelog";
 	public static final String QUEUE_OPT = "queue.option";
 	public static final String QUEUE_CMD = "queue.cmd";
 	public static final String WORK_DIR = "work.dir";
@@ -109,8 +110,9 @@ public class Constants {
 
 		File file = new File(System.getProperty(USER_HOME) + PROPERTY_FILE);
 		try {
-			if (!file.exists()) {
+			if (!file.exists()) {			
 				msg.warn("Error loading config properties", new Exception("File " + file + " doesn't exist."));
+				System.out.println("File " + file + " doesn't exist.");
 				System.exit(1);
 			}
 			
@@ -119,7 +121,7 @@ public class Constants {
 				propertiesLoaded = true;
 				System.out.println("Config file " + file + " loaded at: " + new Date());
 			}
-			
+			 
 			if ( System.getProperty("debug") == null) {
 				DEBUG = false;
 			} else {

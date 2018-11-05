@@ -247,7 +247,7 @@ public class Epic2CMAQPanel extends UtilFieldsPanel implements PlotEventListener
 		String ls = "\n";
 		sb.append(getScirptHeader() + ls);
 		sb.append("#" + ls + "# Set up runtime environment" + ls + "#" + ls);
-		sb.append("#source " + sahome.trim() + Constants.SA_SETUP_FILE + ls + ls);
+		sb.append("source " + sahome.trim() + Constants.SA_SETUP_FILE + ls + ls);
 		sb.append("setenv    SCEN_DIR " + scenario + ls);
 		sb.append("setenv    SA_HOME " + sahome + ls);
 		sb.append("#" + ls + "# Define domain grids" + ls + "#" + ls);

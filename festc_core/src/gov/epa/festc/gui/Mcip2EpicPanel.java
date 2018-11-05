@@ -273,11 +273,12 @@ public class Mcip2EpicPanel extends UtilFieldsPanel implements PlotEventListener
 		
 		sb.append(getScriptHeader() + ls);
 		sb.append("#" + ls + "# Set up runtime environment" + ls + "#" + ls);
+		sb.append("source " + sahome.trim() + Constants.SA_SETUP_FILE + ls + ls);
 		 
 		sb.append("setenv    EPIC_DIR " + baseDir + ls);
 		sb.append("setenv    SCEN_DIR " + scenarioDir + ls);
 		sb.append("setenv    SA_HOME " + sahome +ls);
-		sb.append("#source $SA_HOME/"+ Constants.SA_SETUP_FILE + ls + ls);
+		sb.append("source $SA_HOME/"+ Constants.SA_SETUP_FILE + ls + ls);
 		
 		sb.append("#" + ls + "# Define MCIP domain grid information" + ls + "#" + ls);
 		sb.append("setenv GRID_PROJ \"" + proj4proj.getText().trim() + "\"" + ls + ls);
@@ -311,7 +312,7 @@ public class Mcip2EpicPanel extends UtilFieldsPanel implements PlotEventListener
 		sb.append("setenv START_DATE  " + startDate.getText() + ls);
 		sb.append("setenv END_DATE    " + endDate.getText() + ls + ls);
 		sb.append("#" + ls + "#Set input EPIC site data file in ascii csv format as:  site_name,longitude,latitude" + ls + "#" + ls);
-		sb.append("setenv EPIC_SITE_FILE  \"$SCEN_DIR/share_data/EPICSites_Info.csv" + "\"" + ls + ls);
+		sb.append("setenv EPIC_SITE_FILE  \"$SCEN_DIR/share_data/allSites_Info.csv" + "\"" + ls + ls);
 		sb.append("#" + ls + "# Set output directory which will store created EPIC site daily weather files:" + ls
 				+ "#   1. \"site_name\".dly   2. WXPMRUN.DAT " + ls + "#" + ls);
 		

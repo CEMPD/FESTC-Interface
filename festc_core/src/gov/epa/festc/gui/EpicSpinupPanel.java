@@ -296,7 +296,7 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		if ( ndepValue.length() == 4) 
 			sb.append("setenv    NDEP_DIR   " + ndepValue + ls);
 		else
-			sb.append("setenv  NDEP_DIR $COMM_DIR/EPIC_model/" 
+			sb.append("setenv    NDEP_DIR $COMM_DIR/EPIC_model/" 
 					+ ndepValue + ls);
 
 		sb.append("setenv    SHARE_DIR $SCEN_DIR/share_data" + ls);

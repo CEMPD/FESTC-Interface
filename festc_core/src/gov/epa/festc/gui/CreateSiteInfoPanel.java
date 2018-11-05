@@ -212,7 +212,7 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 		//String netcdfout = (netcdfFile.getText() == null || netcdfFile.getText().trim().isEmpty()) ? "NONE" : netcdfFile.getText().trim();
 		sb.append(getScriptHeader() + ls);
 		sb.append("#" + ls + "# Set up runtime environment variables" + ls + "#" + ls);
-		sb.append("#source " + sahome.trim() + Constants.SA_SETUP_FILE + ls + ls);
+		sb.append("source " + sahome.trim() + Constants.SA_SETUP_FILE + ls + ls);
 		
 		sb.append(ls + "#" + ls);
 		sb.append("# Define environment variables" + ls);
@@ -262,8 +262,9 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 		
 		sb.append("#" + ls);
 		sb.append("# Output files" + ls);
-		sb.append("setenv OUTPUT_TEXT_FILE $SCEN_DIR/share_data/EPICSites_Info.csv" + ls + ls);
-		sb.append("setenv OUTPUT_TEXT_FILE2 $SCEN_DIR/share_data/EPICSites_Crop.csv" + ls + ls);
+		sb.append("setenv OUTPUT_TEXT_FILE $SCEN_DIR/share_data/EPICSites_Info.csv" + ls );
+		sb.append("setenv OUTPUT_TEXT_FILE2 $SCEN_DIR/share_data/EPICSites_Crop.csv" + ls);
+		sb.append("setenv OUTPUT_TEXT_FILE3 $SCEN_DIR/share_data/allSites_Info.csv" + ls + ls);
 		
 		sb.append("# Run the tool" + ls);
 		sb.append("$SA_HOME/bin/64bits/compute_EPICSiteData.exe" + ls + ls);
@@ -277,6 +278,7 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 		sb.append("#===================================================================" + ls);
         outMessages += "OUTPUT_TEXT_FILE $SCEN_DIR/share_data/EPICSite_Info.csv" +ls;
         outMessages += "OUTPUT_TEXT_FILE2 $SCEN_DIR/share_data/EPICSite_Crop.csv" +ls;
+        outMessages += "OUTPUT_TEXT_FILE3 $SCEN_DIR/share_data/allSite_Info.csv" +ls;
 		String mesg = "";
 		try {
 			File script = new File(file);

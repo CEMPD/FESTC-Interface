@@ -18,11 +18,18 @@ public class BrowseAction {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooser;
 				File file = new File(text.getText());
-
+				File dfile = null;
+				if ( file != null && file.getParent() != null )
+					dfile=new File(file.getParent());
+				else
+					dfile=currentDir;
+				
 				if (file != null && file.isFile())
 					chooser = new JFileChooser(file.getParent());
 				else if (file != null && file.isDirectory())
 					chooser = new JFileChooser(file);
+				else if (dfile != null && dfile.isDirectory())
+					chooser = new JFileChooser(dfile);
 				else
 					chooser = new JFileChooser(currentDir);
                  

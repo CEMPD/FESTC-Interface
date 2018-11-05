@@ -398,7 +398,7 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 		sb.append("setenv    SCEN_DIR  " + scenarioDir + ls);
 		sb.append("setenv    SHARE_DIR  " + scenarioDir + "/share_data" + ls + ls);
 		sb.append("# Get site infomation" + ls);
-		sb.append("setenv    SITE_FILE   ${SHARE_DIR}/EPICSites_Info.csv" + ls + ls);
+		sb.append("setenv    SITE_FILE   ${SHARE_DIR}/allSites_Info.csv" + ls + ls);
 
 		sb.append("# Define BELD4 input file" + ls);
 		sb.append("setenv DOMAIN_BELD4_NETCDF " + beld4Dir.getText() + ls + ls);
@@ -483,12 +483,13 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 		sb.append("setenv    SCEN_DIR   " + scenarioDir + ls);
 		sb.append("setenv    SHARE_DIR  " + scenarioDir + "/share_data" + ls + ls);
 		sb.append("setenv    NDEP_TYPE  " + ndepType + ls);
+		sb.append("setenv    SIM_YEAR  " + simYear.getText() + ls + ls);
 		sb.append("setenv    RUN_dailyEPIC  YES" + ls);
 		sb.append("setenv    RUN_MET   YES" + ls);
 		sb.append("setenv    RUN_NDEP  YES" + ls);
 
 		sb.append("# Get site infomation" + ls);
-		sb.append("setenv    SITE_FILE   ${SHARE_DIR}/EPICSites_Info.csv" + ls + ls);
+		sb.append("setenv    SITE_FILE   ${SHARE_DIR}/AllSites_Info.csv" + ls + ls);
 		sb.append("# Define ratio input file" + ls);
 		sb.append("setenv    RATIO_FILE  " + ratioF + ls + ls);
 
@@ -561,7 +562,7 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 		sb.append("setenv    SCEN_DIR  " + scenarioDir + ls);
 		sb.append("setenv    SHARE_DIR  " + scenarioDir + "/share_data" + ls + ls);
 		sb.append("# Get site infomation" + ls);
-		sb.append("setenv    SITE_FILE   ${SHARE_DIR}/EPICSites_Info.csv" + ls + ls);
+		sb.append("setenv    SITE_FILE   ${SHARE_DIR}/allSites_Info.csv" + ls + ls);
 		sb.append("# Define BELD4 input file, get crop fractions " + ls);
 		sb.append("setenv DOMAIN_BELD4_NETCDF " + beld4Dir.getText() + ls + ls);
 
