@@ -15,10 +15,57 @@ public class FileRunner { // TODO: change this to a cross-platform launcher
 		String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg);
 		String qopt = Constants.getProperty(Constants.QUEUE_OPT, msg);
 		//String qname = Constants.getProperty(Constants.QUEUE_NAME, msg);
-		String qbigmem = Constants.getProperty(Constants.QUEUE_BMEM, msg);
+//		String qbigmem = Constants.getProperty(Constants.QUEUE_BMEM, msg);
 		String workdir = Constants.getProperty(Constants.WORK_DIR, msg);
-		boolean useBigMem = false;
-		if (file.contains("epic2CMAQ_") || file.contains("epic2swat_"))  useBigMem = true;
+		
+		String qbeld4 = Constants.getProperty(Constants.QUEUE_BELD4_CMD, msg);
+		String qSiteInfo = Constants.getProperty(Constants.QUEUE_SITE_INFO, msg);
+		String qMc2Epic = Constants.getProperty(Constants.QUEUE_MC2EPIC, msg);
+		String qEpicSite = Constants.getProperty(Constants.QUEUE_EPIC_SITE, msg);
+		String qSoilMatch = Constants.getProperty(Constants.QUEUE_SOIL_MATCH, msg);
+		String qManSpinup = Constants.getProperty(Constants.QUEUE_MAN_SPINUP, msg);
+		String qEpicSpinup = Constants.getProperty(Constants.QUEUE_EPIC_SPINUP, msg);
+		String qManApp = Constants.getProperty(Constants.QUEUE_MAN_APP, msg);
+		String qEpicApp = Constants.getProperty(Constants.QUEUE_EPIC_APP, msg);
+		String qYearlyExt = Constants.getProperty(Constants.QUEUE_YEARLY_EXT, msg);
+		String qEpic2Cmaq = Constants.getProperty(Constants.QUEUE_EPIC2CMAQ, msg);
+		String qEpic2Swat = Constants.getProperty(Constants.QUEUE_EPIC2SWAT, msg);
+		String qOption = "";
+		
+//		boolean useBigMem = false;
+//		if (file.contains("epic2CMAQ_") || file.contains("epic2swat_"))  useBigMem = true;
+		
+		//choose option based on script file name
+		if (file.contains("generateBeld4Data")){
+			qOption = qbeld4;
+		} else if (file.contains("generateSiteInfo")){
+			qOption = qSiteInfo;
+		} else if (file.contains("generateEPICsiteDailyWeather")){
+			qOption = qMc2Epic;
+		} else if (file.contains("generateEpicSiteFile")){
+			qOption = qEpicSite;
+		} else if (file.contains("runEpicSoilMatch")){
+			qOption = qSoilMatch;
+		} else if (file.contains("runEpicManSpinup")){
+			qOption = qManSpinup;
+		} else if (file.contains("runEpicSpinup")){
+			qOption = qEpicSpinup;
+		} else if (file.contains("runEPICManApp")){
+			qOption = qManApp;
+		} else if (file.contains("runEpicApp")){
+			qOption = qEpicApp;
+		} else if (file.contains("epicYearlyAverage")){
+			qOption = qYearlyExt;
+		} else if (file.contains("epic2CMAQ")){
+			qOption = qEpic2Cmaq;
+		} else if (file.contains("epic2SWAT")){
+			qOption = qEpic2Swat;
+		} 
+						
+		// ensure qOption is not null (Constants.getProperty returns null if property is missing)
+		if (qOption == null){
+			qOption = "";
+		}
 		
 		if (workdir == null || workdir.trim().isEmpty())
 			workdir = Constants.getProperty(Constants.USER_HOME, msg);
@@ -48,12 +95,14 @@ public class FileRunner { // TODO: change this to a cross-platform launcher
 //			cmd = cmd + " " + qopt;
 //		}
 
-		if (useBigMem) 
-			cmd = cmd + " " + qbigmem + " " + qopt + " " + log + " " + script.getAbsolutePath();
-		else
-			cmd = cmd + " " +qopt + " " + log + " " + script.getAbsolutePath();
+//		if (useBigMem) 
+//			cmd = cmd + " " + qbigmem + " " + qopt + " " + log + " " + script.getAbsolutePath();
+//		else
+//			cmd = cmd + " " +qopt + " " + log + " " + script.getAbsolutePath();
+		
+		cmd = cmd + " " + qOption + " " + qopt + " " + log + " " + script.getAbsolutePath();
 
-		if ((qcmd == null || qcmd.trim().isEmpty()) || (qcmd == null || qcmd.trim().isEmpty()))
+		if (qcmd == null || qcmd.trim().isEmpty())
 			cmd = "cd " + scriptDir+ "\n" + script.getAbsolutePath() + " > " + log + " & " ;
 
 		cmd = cmd + "\ncd - \n";

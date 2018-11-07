@@ -217,8 +217,8 @@ public class UtilGenerateSoilMatchPanel extends UtilFieldsPanel implements PlotE
 		sb.append("set CROPS = " + cropNames + ls);
 		sb.append("foreach crop ($CROPS) " + ls);
 		sb.append("   setenv CROP_NAME $crop " + ls);
-		sb.append("   rm -rf $SCEN_DIR/$CROP_NAME/NONRISOIL*.DAT " + ls );
-		sb.append("   rm -rf $SCEN_DIR/$CROP_NAME/SOILSKM*.LOC " + ls +ls);
+		sb.append("   rm -rf $SCEN_DIR/$CROP_NAME/NONRISOIL*.DAT >& /dev/null " + ls );
+		sb.append("   rm -rf $SCEN_DIR/$CROP_NAME/SOILSKM*.LOC >& /dev/null" + ls +ls);
 		sb.append("   echo ==== Begin soil match run for crop $CROP_NAME." +ls);
 		sb.append("   echo ==== Running step 1 .... " + ls);
 		sb.append("   time $EXEC_DIR/SOILMATCH1ST.exe" + ls ); 

@@ -327,6 +327,11 @@ public class Mcip2EpicPanel extends UtilFieldsPanel implements PlotEventListener
 		
 		sb.append("   if ( $status == 0 ) then " + ls);
 		sb.append("      echo  ==== Finished MCIP/CMAQ to EPIC run. " + ls);
+		
+		sb.append("      cp $OUTPUT_NETCDF_FILE $SCEN_DIR/share_data/site_weather_dep.nc" + ls);
+		sb.append("      echo  ==== Consolidating dly files. " + ls);
+		sb.append("      (cd $SCEN_DIR/share_data/dailyWETH && tar -czf dly_${START_DATE}_to_${END_DATE}.tar.gz *.dly --remove-files)" + ls );	
+		
 		sb.append("   else " + ls);
 		sb.append("      echo  ==== Error in MCIP/CMAQ to EPIC runs." + ls + ls);
 		sb.append("      echo " + ls );
