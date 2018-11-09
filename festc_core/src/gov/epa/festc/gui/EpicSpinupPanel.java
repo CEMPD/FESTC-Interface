@@ -289,15 +289,24 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		sb.append("setenv    RUN_TD   " +  (String)runTiledrain.getSelectedItem()  + ls);
 		
 		//ndepValue = "RFN0";
-		if ( ndepValue.contains("2002") )  ndepValue = "dailyNDep_2004";
-		else if ( ndepValue.contains("2010") )  ndepValue = "dailyNDep_2008";
+		String ndepFile = "";
+		if ( ndepValue.contains("2002") )  {
+			ndepValue = "dailyNDep_2004";
+			ndepFile = "ndep_5yrAver_20040101_to_20041231.nc";
+		}
+		else if ( ndepValue.contains("2010") )  {
+			ndepValue = "dailyNDep_2008";
+			ndepFile = "ndep_5yrAver_20080101_to_20081231.nc";
+		}
 		else if ( ndepValue.contains("EPIC") )  ndepValue = "RFN0";
 
 		if ( ndepValue.length() == 4) 
 			sb.append("setenv    NDEP_DIR   " + ndepValue + ls);
-		else
+		else {
 			sb.append("setenv    NDEP_DIR $COMM_DIR/EPIC_model/" 
 					+ ndepValue + ls);
+			sb.append("setenv    NDEP_INPUT_FILE  " + ndepFile + ls);
+		}
 
 		sb.append("setenv    SHARE_DIR $SCEN_DIR/share_data" + ls);
 		 
