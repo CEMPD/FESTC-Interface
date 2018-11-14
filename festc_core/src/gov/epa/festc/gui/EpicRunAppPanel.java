@@ -300,16 +300,25 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		sb.append("setenv    RUN_TD   " +  (String)runTiledrain.getSelectedItem()  + ls);
 		 
 		//ndepValue = "RFN0";
-		if ( ndepValue.contains("2002") )  ndepValue = "dailyNDep_2004";
-		else if ( ndepValue.contains("2010") )  ndepValue = "dailyNDep_2008";
-		else if ( ndepValue.contains("EPIC") )  ndepValue = "RFN0";
+		String ndepFile = "";
+		if ( ndepValue.contains("2002") )  {
+			ndepValue = "dailyNDep_2004";
+			ndepFile = "ndep_5yrAver_20040101_to_20041231.nc";
+		} else if ( ndepValue.contains("2010") )  {
+			ndepValue = "dailyNDep_2008";
+			ndepFile = "ndep_5yrAver_20080101_to_20081231.nc";
+		} else if ( ndepValue.contains("EPIC") )  ndepValue = "RFN0";
 		else if (ndepValue.contains("CMAQ") )  ndepValue = "CMAQ";
 
 		if ( ndepValue.length() == 4) 
 			sb.append("setenv    NDEP_DIR   " + ndepValue + ls);
-		else
+		else {
+//			sb.append("setenv    NDEP_DIR $COMM_DIR/EPIC_model/" 
+//					+ ndepValue + ls);
 			sb.append("setenv    NDEP_DIR $COMM_DIR/EPIC_model/" 
-					+ ndepValue + ls);
+					+ ls);
+			sb.append("setenv    NDEP_INPUT_FILE  " + ndepFile + ls);
+		}
 		System.out.println(sb);
 		sb.append("setenv    SHARE_DIR $SCEN_DIR/share_data" + ls);
 		sb.append("setenv    WEAT_DIR  $COMM_DIR/statWeath" + ls);

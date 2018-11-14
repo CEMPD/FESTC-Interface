@@ -303,8 +303,10 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		if ( ndepValue.length() == 4) 
 			sb.append("setenv    NDEP_DIR   " + ndepValue + ls);
 		else {
+//			sb.append("setenv    NDEP_DIR $COMM_DIR/EPIC_model/" 
+//					+ ndepValue + ls);
 			sb.append("setenv    NDEP_DIR $COMM_DIR/EPIC_model/" 
-					+ ndepValue + ls);
+					+ ls);
 			sb.append("setenv    NDEP_INPUT_FILE  " + ndepFile + ls);
 		}
 
