@@ -66,6 +66,9 @@ public class FileRunner { // TODO: change this to a cross-platform launcher
 		if (qOption == null){
 			qOption = "";
 		}
+		if (qopt == null){
+			qopt = "";
+		}
 		
 		if (workdir == null || workdir.trim().isEmpty())
 			workdir = Constants.getProperty(Constants.USER_HOME, msg);
@@ -100,7 +103,7 @@ public class FileRunner { // TODO: change this to a cross-platform launcher
 //		else
 //			cmd = cmd + " " +qopt + " " + log + " " + script.getAbsolutePath();
 		
-		cmd = cmd + " " + qOption + " " + qopt + " " + log + " " + script.getAbsolutePath();
+		cmd = cmd + " " + qOption + " " + qopt + " -o " + log + " " + script.getAbsolutePath();
 
 		if (qcmd == null || qcmd.trim().isEmpty())
 			cmd = "cd " + scriptDir+ "\n" + script.getAbsolutePath() + " > " + log + " & " ;
