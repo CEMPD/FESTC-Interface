@@ -16,6 +16,7 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
@@ -45,6 +46,8 @@ public class Mcip2EpicPanel extends UtilFieldsPanel implements PlotEventListener
 	private JComboBox depositionSel;
 	private JTextField depositionDir;
 	private JButton depositionDirBrowser;
+	
+	private JCheckBox dlyBox;
 
 	private FestcApplication app;
 	private Mcip2EpicFields fields;
@@ -126,6 +129,10 @@ public class Mcip2EpicPanel extends UtilFieldsPanel implements PlotEventListener
 		endDate.setColumns(40);
 		endDatePanel.add(endDate);
 		
+		JPanel dlyPanel = new JPanel();
+		this.dlyBox = new JCheckBox("", false);
+		dlyPanel.add(this.dlyBox);
+		
 		layout.addLabelWidgetPair("Grid Description:", getGridDescPanel(false), panel);
 		layout.addLabelWidgetPair(Constants.LABEL_EPIC_SCENARIO, scenarioDirP, panel);
 		layout.addLabelWidgetPair("Start Date (YYYYMMDD):", startDatePanel, panel);
@@ -133,8 +140,9 @@ public class Mcip2EpicPanel extends UtilFieldsPanel implements PlotEventListener
 		layout.addLabelWidgetPair("MCIP Data Directory:", dataDirPanel, panel);
 		layout.addLabelWidgetPair("Deposition Selection: ", deposSPanel, panel);
 		layout.addLabelWidgetPair("CMAQ Deposition Directory:", deposDirPanel, panel);
+		layout.addLabelWidgetPair("Output DLY Files:", dlyPanel, panel);
 		
-		layout.makeCompactGrid(panel, 7, 2, // number of rows and cols
+		layout.makeCompactGrid(panel, 8, 2, // number of rows and cols
 				10, 10, // initial X and Y
 				5, 5); // x and y pading
 
@@ -323,14 +331,22 @@ public class Mcip2EpicPanel extends UtilFieldsPanel implements PlotEventListener
 				+ "# Otherwise, set it to NONE for no NetCDF file output" + ls
 				+ "#" + ls);
 		sb.append("setenv OUTPUT_NETCDF_FILE  $SCEN_DIR/share_data/site_weather_dep_${START_DATE}_to_${END_DATE}.nc"+ ls + ls);
+	
+		String dlyYN = dlyBox.isSelected()? "YES" : "NO";
+		sb.append("setenv WRITE_DLY    " + dlyYN + ls );
+		
 		sb.append("$SA_HOME/bin/64bits/computeSiteDailyWeather.exe" + ls + ls);
 		
 		sb.append("   if ( $status == 0 ) then " + ls);
 		sb.append("      echo  ==== Finished MCIP/CMAQ to EPIC run. " + ls);
 		
 		sb.append("      cp $OUTPUT_NETCDF_FILE $SCEN_DIR/share_data/site_weather_dep.nc" + ls);
-		sb.append("      echo  ==== Consolidating dly files. " + ls);
-		sb.append("      (cd $SCEN_DIR/share_data/dailyWETH && tar -czf dly_${START_DATE}_to_${END_DATE}.tar.gz *.dly --remove-files)" + ls );	
+		
+		if (dlyBox.isSelected()) {
+			sb.append("      echo  ==== Consolidating dly files. " + ls);
+			sb.append("      (cd $SCEN_DIR/share_data/dailyWETH && tar -czf dly_${START_DATE}_to_${END_DATE}.tar.gz *.dly --remove-files)" + ls );
+		}
+		// end if statement
 		
 		sb.append("   else " + ls);
 		sb.append("      echo  ==== Error in MCIP/CMAQ to EPIC runs." + ls + ls);
