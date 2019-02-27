@@ -202,10 +202,16 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		
 		final String file = writeRunScript(baseDir, scenarioDir, 
 				seCropsString, cropIDs, ndepValue);
+		String cropNums = getChosenCropNums();
+		String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg);
 
 		Thread populateThread = new Thread(new Runnable() {
 			public void run() {
-				runScript(file);
+				if (qcmd == null || qcmd.trim().isEmpty()) {
+					runScript(file);
+				} else {
+					runScriptwArray(file, cropNums);
+				}
 			}
 		});
 		populateThread.start();
@@ -213,7 +219,7 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 
 	
 	protected String writeRunScript( String baseDir, String scenarioDir, 
-			String cropNames, String cropIDs, String ndepValue) {
+			String cropNames, String cropIDs, String ndepValue) throws Exception {
 		
 		Date now = new Date(); // java.util.Date, NOT java.sql.Date or java.sql.Timestamp!
 		String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(now);
@@ -224,18 +230,38 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		file += "runEpicSpinup_" + timeStamp + ".csh";
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append(getScirptHeader());
-		sb.append(getEnvironmentDef(baseDir, scenarioDir, ndepValue));
-		sb.append(getRunDef(cropNames, cropIDs));
-		 
 		
+		//scriptContent contains all run instructions for direct submit, or job array 
+		// submit instructions if using a workload manager 
+		String scriptContent = null;
+		String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg);
+		if (qcmd == null || qcmd.trim().isEmpty()){
+			//no batch system - generate script using legacy code
+			sb.append(getScirptHeader());
+			sb.append(getEnvironmentDef(baseDir, scenarioDir, ndepValue));
+			sb.append(getRunDef(cropNames, cropIDs));
+			scriptContent = sb.toString();
+		} else {
+			//assume batch system that supports job arrays (SLURM, PBS, LSF, etc.)
+			//create job array script
+			scriptContent = createArrayTaskScript(baseDir, scenarioDir, ndepValue);
+		}
+		
+		writeScriptFile(file, scriptContent);
+	    
+		return file;
+	}
+	
+	//This is legacy code that has been moved to it's own method
+	protected void writeScriptFile( String file, String content) {
+			
 		String mesg = "";
 		
 		try {
 			File script = new File(file);
 			
 	        BufferedWriter out = new BufferedWriter(new FileWriter(script));
-	        out.write(sb.toString());
+	        out.write(content);
 	        out.close();
 	        
 	        mesg += "Script file: " + file + ls;
@@ -250,9 +276,101 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 	    } 
 		
 	    app.showMessage("Write script", mesg);
-	    
-		return file;
 	}
+	
+	// returns comma separated list of chosen crop numbers to run
+	private String getChosenCropNums() throws Exception{
+		String[] seCrops = cropSelectionPanel.getSelectedCrops();
+		if ( seCrops == null || seCrops.length == 0) 
+			throw new Exception( "Please select crop(s) first!");
+		String crop = null;
+		String cropIDs = "";
+		for (int i=0; i<seCrops.length; i++) {
+			crop = seCrops[i];
+			Integer cropID = Constants.CROPS.get(crop);
+			if ( cropID == null || cropID <= 0 )
+				throw new Exception( "crop id is null for crop " + crop);
+			Integer cropIrID = cropID +1;
+
+			if (i!=0){
+				cropIDs += "," + cropID;
+			} else {
+				cropIDs = "" + cropID;
+			}
+			cropIDs += "," + cropIrID;
+		}
+		
+		return cropIDs;
+	}
+	
+	private String createArrayTaskScript(String baseDir, String scenarioDir, 
+			String ndepValue){
+		
+		StringBuilder sb = new StringBuilder();
+		 
+		//header
+		sb.append("#!/bin/csh -f" + ls);
+		sb.append("#**************************************************************************************" + ls);
+		sb.append("# Purpose:  to run EPIC spinup model job array task" + ls); 
+		sb.append("#" + ls);
+		sb.append("# Written by: Fortran by Benson, Original Script by IE. 2012" + ls);
+		sb.append("# Modified by: EMVL " + ls); 
+		sb.append("#" + ls);
+		sb.append("# Program: EPICsu.exe" + ls);
+		sb.append("#       Needed environment variables included in the script file to run." + ls);        
+		sb.append("# " + ls);
+		sb.append("#***************************************************************************************" + ls + ls);
+		
+		//environmental variables
+		sb.append(getEnvironmentDef(baseDir, scenarioDir, ndepValue));
+		
+		//		
+		sb.append("set CROPS = (HAY ALFALFA OTHGRASS BARLEY EBEANS CORNG CORNS COTTON OATS PEANUTS POTATOES RICE RYE)" + ls);
+		sb.append("set CROPS = ($CROPS SORGHUMG SORGHUMS SOYBEANS SWHEAT WWHEAT OTHER CANOLA BEANS)" + ls);
+		
+		
+		sb.append("setenv type 'spinup'" + ls);
+		sb.append("# Set output dir" + ls);
+		sb.append("setenv EPIC_CMAQ_OUTPUT $SCEN_DIR/output4CMAQ/$type" + ls);
+		sb.append("if ( ! -e $EPIC_CMAQ_OUTPUT  ) mkdir -p $EPIC_CMAQ_OUTPUT" + ls);
+		sb.append("if ( ! -e $EPIC_CMAQ_OUTPUT/5years  ) mkdir -p $EPIC_CMAQ_OUTPUT/5years" + ls);
+		sb.append("if ( ! -e $EPIC_CMAQ_OUTPUT/daily  ) mkdir -p $EPIC_CMAQ_OUTPUT/daily"  + ls);
+		sb.append("if ( ! -e $EPIC_CMAQ_OUTPUT/toCMAQ  ) mkdir -p $EPIC_CMAQ_OUTPUT/toCMAQ" + ls + ls);
+		
+		sb.append("setenv CROP_NUM $SLURM_ARRAY_TASK_ID" + ls);
+		sb.append("@ rem = $CROP_NUM % 2" + ls);
+		sb.append("@ ind  = ($CROP_NUM + $rem) / 2" + ls);
+		sb.append("setenv CROP_NAME $CROPS[$ind]" + ls);
+		sb.append("setenv CROP_DIR $SCEN_DIR/$CROPS[$ind]" + ls);
+		
+		sb.append("if ( $CROP_NUM != 0) then" + ls);
+		sb.append("  if ( $rem == 1 ) then" + ls);
+		sb.append("    set waterSrc = 'rainf'" + ls);
+//		sb.append("    set WORK_DIR = $CROP_DIR/$type/rainf" + ls);
+		sb.append("  else" + ls);
+		sb.append("    set waterSrc = 'irr'" + ls);
+//		sb.append("    set WORK_DIR = $CROP_DIR/$type/irr" + ls);
+		sb.append("  endif" + ls);
+		sb.append("  setenv WORK_DIR  $CROP_DIR/$type/$waterSrc" + ls);
+		sb.append("  foreach out ( \"NCM\" \"NCS\" \"DFA\" \"OUT\" \"SOL\" \"TNA\" \"TNS\" )" + ls);
+		sb.append("    if ( ! -e $WORK_DIR/$out ) mkdir -p $WORK_DIR/$out" + ls);
+		sb.append("  end" + ls);
+		sb.append("endif" + ls);
+		sb.append(""+ls);
+		
+		sb.append("echo =======Running Crop $CROP_NAME" + ls);
+		sb.append("time $EXEC_DIR/EPICsu.exe" + ls);
+		sb.append("if ( $status == 0 ) then" + ls);
+		sb.append("   echo  ==== Finished EPIC spinup run of CROP: $CROP_NAME-$waterSrc-$SLURM_ARRAY_TASK_ID" + ls);
+		sb.append("else" + ls);
+		sb.append("   echo  ==== Error in EPIC spinup run of CROP: $CROP_NAME-$waterSrc-$SLURM_ARRAY_TASK_ID" + ls);
+		sb.append("echo" + ls);
+		sb.append("endif" + ls);
+		
+		return sb.toString();
+
+	}
+	
 
 	private String getScirptHeader() {
 		StringBuilder sb = new StringBuilder();
@@ -399,6 +517,21 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		runMessages.setText(outMessages);
 		runMessages.validate();
 		FileRunner.runScript(file, log, msg);
+	}
+	
+	private void runScriptwArray(final String file, final String chosenCrops) {
+		String log = file + ".log";
+
+		outMessages += "Script file: " + file + ls;
+		outMessages += "Log file: " + log + ls;
+		runMessages.setText(outMessages);
+		runMessages.validate();
+		
+		StringBuilder sb = new StringBuilder();
+		String qEpicSpinup = Constants.getProperty(Constants.QUEUE_EPIC_SPINUP, msg);
+		sb.append("sbatch --job-name=EPICSpinupArrayJob --output=submitEPICSpinup_JobArray_%A_%a.out --array=" + chosenCrops + " " + qEpicSpinup + " " + file +ls);
+		
+		FileRunner.runScriptwCmd(file, log, msg, sb.toString());
 	}
 
 

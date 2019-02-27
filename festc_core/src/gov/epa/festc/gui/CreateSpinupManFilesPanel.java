@@ -141,12 +141,27 @@ public class CreateSpinupManFilesPanel extends UtilFieldsPanel implements PlotEv
 		outMessages += "Scen directory: " + scenarioDir + ls;
 		outMessages += "Fertlizer year: " + fYear + ls;
 		final String file = writeRunScript(baseDir, scenarioDir, seCropsString, fYear);
+		
+		String cropNums = getChosenCropNums();
+		String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg);
+
 		Thread populateThread = new Thread(new Runnable() {
 			public void run() {
-				runScript(file);
+				if (qcmd == null || qcmd.trim().isEmpty()) {
+					runScript(file);
+				} else {
+					runScriptwArray(file, cropNums);
+				}
 			}
 		});
 		populateThread.start();
+		
+//		Thread populateThread = new Thread(new Runnable() {
+//			public void run() {
+//				runScript(file);
+//			}
+//		});
+//		populateThread.start();
 	}
 	
 	private void runScript(final String file) {
@@ -157,6 +172,21 @@ public class CreateSpinupManFilesPanel extends UtilFieldsPanel implements PlotEv
 		runMessages.setText(outMessages);
 		runMessages.validate();
 		FileRunner.runScript(file, log, msg);
+	}
+	
+	private void runScriptwArray(final String file, final String chosenCrops) {
+		String log = file + ".log";
+
+		outMessages += "Script file: " + file + ls;
+		outMessages += "Log file: " + log + ls;
+		runMessages.setText(outMessages);
+		runMessages.validate();
+		
+		StringBuilder sb = new StringBuilder();
+		String qManSpinup = Constants.getProperty(Constants.QUEUE_MAN_SPINUP, msg);
+		sb.append("sbatch --job-name=EPICManSpinupArrayJob --output=submitEPICManSpinup_JobArray_%A_%a.out --array=" + chosenCrops + " " + qManSpinup + " " + file +ls);
+		
+		FileRunner.runScriptwCmd(file, log, msg, sb.toString());
 	}
 	
 	private String writeRunScript( 
@@ -172,35 +202,170 @@ public class CreateSpinupManFilesPanel extends UtilFieldsPanel implements PlotEv
 		if ( !file.endsWith(System.getProperty("file.separator"))) 
 				file += System.getProperty("file.separator");
 		file += "runEpicManSpinup_" + timeStamp + ".csh";
-		String mesg = "";
-		try {
-			StringBuilder sb = new StringBuilder();
+		
+		StringBuilder sb = new StringBuilder();
+		
+		//scriptContent contains all run instructions for direct submit, or job array 
+		// submit instructions if using a workload manager 
+		String scriptContent = null;
+		String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg);
+		if (qcmd == null || qcmd.trim().isEmpty()){
+			//no batch system - generate script using legacy code
 			sb.append(getScriptHeader());
 			sb.append(getEnvironmentDef(baseDir, scenarioDir, fYear));
 			sb.append(getManSu(cropNames));	
-			 
 			sb.append(getRunTD(baseDir));
-
+			scriptContent = sb.toString();
+		} else {
+			//assume batch system that supports job arrays (SLURM, PBS, LSF, etc.)
+			//create job array script
+			scriptContent = createArrayTaskScript(baseDir, scenarioDir, fYear);
+		}
+		
+		writeScriptFile(file, scriptContent);
+//		String mesg = "";
+//		try {
+//			StringBuilder sb = new StringBuilder();
+//			sb.append(getScriptHeader());
+//			sb.append(getEnvironmentDef(baseDir, scenarioDir, fYear));
+//			sb.append(getManSu(cropNames));	
+//			 
+//			sb.append(getRunTD(baseDir));
+//
+//			File script = new File(file);
+//
+//	        BufferedWriter out = new BufferedWriter(new FileWriter(script));
+//	        out.write(sb.toString());
+//	        out.close();
+//	        
+//	        mesg += "Script file: " + file + "\n";
+//	        boolean ok = script.setExecutable(true, false);
+//	        mesg += "Set the script file to be executable: ";
+//	        mesg += ok ? "ok." : "failed.";
+//	         
+//	    } catch (IOException e) {
+//	    	//e.printStackTrace();
+//	    	//msg.error("Error generating EPIC script file", e);
+//	    	throw new Exception(e.getMessage());
+//	    } 
+//		
+//	    app.showMessage("Write script", mesg);
+	    
+		return file;
+	}
+	
+	//This is legacy code that has been moved to it's own method
+	protected void writeScriptFile( String file, String content) {
+				
+		String mesg = "";
+		
+		try {
 			File script = new File(file);
-
+			
 	        BufferedWriter out = new BufferedWriter(new FileWriter(script));
-	        out.write(sb.toString());
+	        out.write(content);
 	        out.close();
-	        
-	        mesg += "Script file: " + file + "\n";
+		        
+	        mesg += "Script file: " + file + ls;
 	        boolean ok = script.setExecutable(true, false);
 	        mesg += "Set the script file to be executable: ";
 	        mesg += ok ? "ok." : "failed.";
-	         
+	        
 	    } catch (IOException e) {
-	    	//e.printStackTrace();
-	    	//msg.error("Error generating EPIC script file", e);
-	    	throw new Exception(e.getMessage());
+	    	//printStackTrace();
+	    	//g.error("Error generating EPIC script file", e);
+	    	app.showMessage("Write script", e.getMessage());
 	    } 
 		
 	    app.showMessage("Write script", mesg);
-	    
-		return file;
+	}
+	
+	// returns comma separated list of chosen crop numbers to run
+	private String getChosenCropNums() throws Exception{
+		String[] seCrops = cropSelectionPanel.getSelectedCrops();
+		if ( seCrops == null || seCrops.length == 0) 
+			throw new Exception( "Please select crop(s) first!");
+		String crop = null;
+		String cropIDs = "";
+		for (int i=0; i<seCrops.length; i++) {
+			crop = seCrops[i];
+			Integer cropID = Constants.CROPS.get(crop);
+			if ( cropID == null || cropID <= 0 )
+				throw new Exception( "crop id is null for crop " + crop);
+//			Integer cropIrID = cropID +1;
+			if (i!=0){
+				cropIDs += "," + cropID;
+			} else {
+				cropIDs = "" + cropID;
+			}
+//			cropIDs += "," + cropIrID;
+		}
+			
+		return cropIDs;
+	}
+	
+	
+	private String createArrayTaskScript(String baseDir, String scenarioDir, 
+			String fYear){
+		
+		StringBuilder sb = new StringBuilder();
+		 
+		//header
+		sb.append("#!/bin/csh -f" + ls);
+		sb.append("#**************************************************************************************" + ls);
+		sb.append("# Purpose:  to run management spinup utility job array task" + ls); 
+		sb.append("#" + ls);
+		sb.append("# Written by: Fortran by Benson, Original Script by IE. 2012" + ls);
+		sb.append("# Modified by: EMVL " + ls); 
+		sb.append("#" + ls);
+		sb.append("# Program: ManGenSU.exe" + ls);        
+		sb.append("# " + ls);
+		sb.append("#***************************************************************************************" + ls + ls);
+		
+		sb.append(getEnvironmentDef(baseDir, scenarioDir, fYear));
+		
+		sb.append("set CROPS = (HAY ALFALFA OTHGRASS BARLEY EBEANS CORNG CORNS COTTON OATS PEANUTS POTATOES RICE RYE)" + ls );
+		sb.append("set CROPS = ($CROPS SORGHUMG SORGHUMS SOYBEANS SWHEAT WWHEAT OTHER CANOLA BEANS)" + ls + ls);
+
+		sb.append("# Set output dir" + ls);
+        
+		sb.append("setenv CROP_NUM $SLURM_ARRAY_TASK_ID" + ls);
+		sb.append("@ rem = $CROP_NUM % 2" + ls);
+		sb.append("@ ind  = ($CROP_NUM + $rem) / 2" + ls);
+		sb.append("setenv CROP_NAME $CROPS[$ind]" + ls);
+		sb.append("if ( ! -e $SCEN_DIR/$CROP_NAME/spinup/manage/OPC )  mkdir -p $SCEN_DIR/$CROP_NAME/spinup/manage/OPC" + ls);
+
+
+		sb.append("#" + ls);
+		sb.append("##  Generate management spinup files" + ls);
+		sb.append("#" + ls);
+		sb.append("#" + ls);
+		sb.append("echo ==== Begin EPIC management spinup run of CROP: $CROP_NAME" + ls);
+		sb.append("time $EXEC_DIR/ManGenSU.exe" + ls);
+		sb.append("if ( $status == 0 ) then" + ls);
+		sb.append("  echo ==== Finished EPIC management spinup run of CROP: $CROP_NAME" + ls);
+		sb.append("else" + ls);
+		sb.append("  echo ==== Error in EPIC management spinup run of CROP: $CROP_NAME" + ls);
+		sb.append("endif" + ls);
+
+		sb.append("#" + ls);
+		sb.append("## Run tile drain" + ls);
+
+		sb.append("setenv   WORK_DIR $SCEN_DIR/work_dir" + ls);
+		sb.append("setenv   COMM_DIR $EPIC_DIR/common_data" + ls);
+		sb.append("setenv   TYPE_NAME spinup" + ls);
+		sb.append("if ( ! -e $SCEN_DIR/$CROP_NAME/spinup/manage/tileDrain )  mkdir -p $SCEN_DIR/$CROP_NAME/spinup/manage/tileDrain" + ls);
+		sb.append("time $EXEC_DIR/soilDrain.exe" + ls);
+		sb.append("  if ( $status == 0 ) then" + ls);
+		sb.append("    echo  ==== Finished soil drain run for crop $CROP_NAME." + ls);
+		sb.append("  else" + ls);
+		sb.append("    echo  ==status== Error in soil drain run for crop $CROP_NAME." + ls);
+		sb.append("    exit 1" + ls);
+		sb.append("  endif" + ls);
+		sb.append("mv $SCEN_DIR/$CROP_NAME/spinup/manage/tileDrain/SOILLISTALLSU.DAT  $SCEN_DIR/$CROP_NAME/spinup/manage/tileDrain/SOILLIST.DAT" + ls);
+
+		return sb.toString();
+
 	}
 	
 	private String getScriptHeader() {

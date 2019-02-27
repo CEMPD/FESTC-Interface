@@ -105,10 +105,92 @@ public class FileRunner { // TODO: change this to a cross-platform launcher
 		
 		cmd = cmd + " " + qOption + " " + qopt + " -o " + log + " " + script.getAbsolutePath();
 
+		//Always use direct submission if spinup or app (for compatibility with job array submission)
 		if (qcmd == null || qcmd.trim().isEmpty())
 			cmd = "cd " + scriptDir+ "\n" + script.getAbsolutePath() + " > " + log + " & " ;
 
 		cmd = cmd + "\ncd - \n";
+		if (Constants.DEBUG) {
+			System.out.println("Command = " + cmd);
+			msg.info("Command = " + cmd);
+		}
+		
+		ProcessBuilder pb = new ProcessBuilder("cmd", "/C", cmd);
+		
+		String osName = System.getProperty("os.name" );
+		
+        if(osName.equals("Linux"))
+        	pb = new ProcessBuilder("csh", "-c", cmd);
+
+		// set up the working directory.
+		pb.directory(script.getParentFile());
+
+		// merge child's error and normal output streams.
+		pb.redirectErrorStream(true);
+
+		Process p = null;
+
+		if (Constants.DEBUG) {
+			System.out.println("Starting a new process to run the script file...");
+			msg.info("Starting a new process to run the script file...");
+		}
+
+		try {
+			p = pb.start();
+			final InputStream es = p.getErrorStream();
+			final InputStream is = p.getInputStream();
+
+			// spawn two threads to handle I/O with child while we wait for it
+			// to complete.
+			Thread esthread = new Thread(new Runnable() {
+				public void run() {
+					readMsg(msg, es, "ERROR");
+				}
+			});
+			esthread.start();
+			
+			Thread isthread = new Thread(new Runnable() {
+				public void run() {
+					readMsg(msg, is, "INPUT");
+				}
+			});
+			isthread.start();
+
+
+			if (Constants.DEBUG) {
+				System.out.println("Process started: " + p.toString());
+				msg.info("Process started: " + p.toString());
+			}
+
+			p.waitFor();
+			es.close();
+			is.close();
+			
+			if (Constants.DEBUG) {
+				System.out.println("Job submitted.");
+				msg.info("Job submitted.");
+			}
+			
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		} catch (IOException e) {
+			//
+		} finally {
+			if (p != null) {
+				try {
+					p.getErrorStream().close();
+				} catch (IOException e) {
+					//
+				}
+			}
+		}
+	}
+	
+	
+	public static void runScriptwCmd(final String file, final String logText, final MessageCenter msg, final String cmd) {
+						
+		File script = new File(file.replaceAll("\\\\", "\\\\\\\\"));
+	
 		if (Constants.DEBUG) {
 			System.out.println("Command = " + cmd);
 			msg.info("Command = " + cmd);
