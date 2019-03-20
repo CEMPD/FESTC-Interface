@@ -194,9 +194,18 @@ public class CreateAppManFilesPanel extends UtilFieldsPanel implements PlotEvent
 		runMessages.setText(outMessages);
 		runMessages.validate();
 		
+		String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg).toLowerCase();
 		StringBuilder sb = new StringBuilder();
 		String qManApp = Constants.getProperty(Constants.QUEUE_MAN_APP, msg);
-		sb.append("sbatch --job-name=EPICManAppArrayJob --output=submitEPICManApp_JobArray_%A_%a.out --array=" + chosenCrops + " " + qManApp + " " + file +ls);
+		if (qcmd.contains("sbatch")){
+			sb.append(qcmd + " --job-name=EPICManAppArrayJob --output=submitEPICManApp_JobArray_%A_%a.out --array=" + chosenCrops + " " + qManApp + " " + file +ls);
+		} else if (qcmd.contains("qsub")){
+			//PBS
+			sb.append(qcmd + " -N EPICManAppArrayJob -t " + chosenCrops + " " + qManApp + " " + file + ls);
+		} else if (qcmd.contains("bsub")){
+			//LSF
+			sb.append(qcmd + " -J EPICManAppArrayJob[" + chosenCrops + "] " + qManApp + " " + file + ls);
+		}
 		
 		FileRunner.runScriptwCmd(file, log, msg, sb.toString());
 	}
@@ -321,12 +330,30 @@ public class CreateAppManFilesPanel extends UtilFieldsPanel implements PlotEvent
 	private String createArrayTaskScript(String baseDir, String scenarioDir, 
 			String fYear){
 		
+		String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg).toLowerCase();
+		String arrayIdEnvVar = "";
+		
+		if (qcmd.contains("sbatch")){
+			//SLURM
+			arrayIdEnvVar = "$SLURM_ARRAY_TASK_ID";
+		} else if (qcmd.contains("qsub")){
+			//PBS
+			arrayIdEnvVar = "$PBS_ARRAYID";
+		} else if (qcmd.contains("bsub")){
+			//LSF
+			arrayIdEnvVar = "$LSB_JOBINDEX";
+		}
+		
 		StringBuilder sb = new StringBuilder();
 		 
 		//header
 		sb.append("#!/bin/csh -f" + ls);
 		sb.append("#**************************************************************************************" + ls);
 		sb.append("# Purpose:  to run management app utility job array task" + ls); 
+		sb.append("#   SLURM example cmd:" + ls);
+		sb.append("#     sbatch --job-name=EPICManAppArrayJob --output=submitEPICManApp_JobArray_%A_%a.out --array=1,31 --time=2:00:00" + ls);
+		sb.append("#       /PATH_TO_SCRIPT/runEPICManApp_TIMESTAMP.csh" + ls);
+		sb.append("#     where 1,31 are rainfed (odd) crop numbers only" + ls);
 		sb.append("#" + ls);
 		sb.append("# Written by: Fortran by Benson, Original Script by IE. 2012" + ls);
 		sb.append("# Modified by: EMVL " + ls); 
@@ -343,10 +370,14 @@ public class CreateAppManFilesPanel extends UtilFieldsPanel implements PlotEvent
 		sb.append("setenv EPIC_CMAQ_OUTPUT $SCEN_DIR/output4CMAQ/spinup" + ls + ls);
 		sb.append("# Set input variables" + ls);
 
-		sb.append("@ rem = $SLURM_ARRAY_TASK_ID % 2" + ls);
-		sb.append("@ ind  = ($SLURM_ARRAY_TASK_ID + $rem) / 2" + ls);
-		sb.append("@ cropRF = $SLURM_ARRAY_TASK_ID" + ls);
-		sb.append("@ cropIR = $SLURM_ARRAY_TASK_ID + 1" + ls);
+//		sb.append("@ rem = $SLURM_ARRAY_TASK_ID % 2" + ls);
+		sb.append("@ rem = " + arrayIdEnvVar + " % 2" + ls);
+//		sb.append("@ ind  = ($SLURM_ARRAY_TASK_ID + $rem) / 2" + ls);
+		sb.append("@ ind  = (" + arrayIdEnvVar+ " + $rem) / 2" + ls);
+//		sb.append("@ cropRF = $SLURM_ARRAY_TASK_ID" + ls);
+		sb.append("@ cropRF = " + arrayIdEnvVar + ls);
+//		sb.append("@ cropIR = $SLURM_ARRAY_TASK_ID + 1" + ls);
+		sb.append("@ cropIR = " + arrayIdEnvVar + " + 1" + ls);
 		sb.append("setenv CROP_NAME $CROPS[$ind]" + ls);
 		sb.append("setenv CROP_NUM_RF $cropRF" + ls);
 		sb.append("setenv CROP_NUM_IR $cropIR" + ls);

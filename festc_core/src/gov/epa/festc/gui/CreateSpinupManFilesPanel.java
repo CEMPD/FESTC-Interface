@@ -182,9 +182,20 @@ public class CreateSpinupManFilesPanel extends UtilFieldsPanel implements PlotEv
 		runMessages.setText(outMessages);
 		runMessages.validate();
 		
+		String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg).toLowerCase();
 		StringBuilder sb = new StringBuilder();
 		String qManSpinup = Constants.getProperty(Constants.QUEUE_MAN_SPINUP, msg);
-		sb.append("sbatch --job-name=EPICManSpinupArrayJob --output=submitEPICManSpinup_JobArray_%A_%a.out --array=" + chosenCrops + " " + qManSpinup + " " + file +ls);
+		if (qcmd.contains("sbatch")){
+			//SLURM
+			sb.append("sbatch --job-name=EPICManSpinupArrayJob --output=submitEPICManSpinup_JobArray_%A_%a.out --array=" + chosenCrops + " " + qManSpinup + " " + file +ls);
+		} else if (qcmd.contains("qsub")){
+			//PBS
+			sb.append("qsub -N EPICManSpinupArrayJob -t " + chosenCrops + " " + qManSpinup + " " + file +ls);
+		} else if (qcmd.contains("bsub")){
+			//LSF
+			sb.append("bsub -J EPICManSpinupArrayJob[" + chosenCrops + "] " + qManSpinup + " " + file +ls);
+		}
+		
 		
 		FileRunner.runScriptwCmd(file, log, msg, sb.toString());
 	}
@@ -308,12 +319,30 @@ public class CreateSpinupManFilesPanel extends UtilFieldsPanel implements PlotEv
 	private String createArrayTaskScript(String baseDir, String scenarioDir, 
 			String fYear){
 		
+		String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg).toLowerCase();
+		String arrayIdEnvVar = "";
+		
+		if (qcmd.contains("sbatch")){
+			//SLURM
+			arrayIdEnvVar = "$SLURM_ARRAY_TASK_ID";
+		} else if (qcmd.contains("qsub")){
+			//PBS
+			arrayIdEnvVar = "$PBS_ARRAYID";
+		} else if (qcmd.contains("bsub")){
+			//LSF
+			arrayIdEnvVar = "$LSB_JOBINDEX";
+		}
+		
 		StringBuilder sb = new StringBuilder();
 		 
 		//header
 		sb.append("#!/bin/csh -f" + ls);
 		sb.append("#**************************************************************************************" + ls);
 		sb.append("# Purpose:  to run management spinup utility job array task" + ls); 
+		sb.append("#   SLURM example cmd:" + ls);
+		sb.append("#     sbatch --job-name=EPICManSpinupArrayJob --output=submitEPICManSpinup_JobArray_%A_%a.out --array=1,31 --time=2:00:00" + ls);
+		sb.append("#       /PATH_TO_SCRIPT/runEpicManSpinup_TIMESTAMP.csh" + ls);
+		sb.append("#     where 1,31 are rainfed (odd) crop numbers only" + ls);
 		sb.append("#" + ls);
 		sb.append("# Written by: Fortran by Benson, Original Script by IE. 2012" + ls);
 		sb.append("# Modified by: EMVL " + ls); 
@@ -329,7 +358,8 @@ public class CreateSpinupManFilesPanel extends UtilFieldsPanel implements PlotEv
 
 		sb.append("# Set output dir" + ls);
         
-		sb.append("setenv CROP_NUM $SLURM_ARRAY_TASK_ID" + ls);
+//		sb.append("setenv CROP_NUM $SLURM_ARRAY_TASK_ID" + ls);
+		sb.append("setenv CROP_NUM " + arrayIdEnvVar + ls);
 		sb.append("@ rem = $CROP_NUM % 2" + ls);
 		sb.append("@ ind  = ($CROP_NUM + $rem) / 2" + ls);
 		sb.append("setenv CROP_NAME $CROPS[$ind]" + ls);

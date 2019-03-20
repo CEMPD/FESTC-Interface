@@ -142,9 +142,20 @@ public class UtilGenerateSoilMatchPanel extends UtilFieldsPanel implements PlotE
 		runMessages.setText(outMessages);
 		runMessages.validate();
 		
+		String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg).toLowerCase();
 		StringBuilder sb = new StringBuilder();
 		String qEpicSoilMatch = Constants.getProperty(Constants.QUEUE_SOIL_MATCH, msg);
-		sb.append("sbatch --job-name=EPICSoilMatchArrayJob --output=submitEPICSoilMatch_JobArray_%A_%a.out --array=" + chosenCrops + " " + qEpicSoilMatch + " " + file +ls);
+		if (qcmd.contains("sbatch")){
+			//SLURM
+			sb.append("sbatch --job-name=EPICSoilMatchArrayJob --output=submitEPICSoilMatch_JobArray_%A_%a.out --array=" + chosenCrops + " " + qEpicSoilMatch + " " + file +ls);
+		} else if (qcmd.contains("qsub")){
+			//PBS
+			sb.append("qsub -N EPICSoilMatchArrayJob -t " + chosenCrops + " " + qEpicSoilMatch + " " + file +ls);
+		} else if (qcmd.contains("bsub")){
+			//LSF
+			sb.append("bsub -J EPICSoilMatchArrayJob[" + chosenCrops + "] " + qEpicSoilMatch + " " + file +ls);
+		}
+		
 		
 		FileRunner.runScriptwCmd(file, log, msg, sb.toString());
 	}
@@ -214,12 +225,30 @@ public class UtilGenerateSoilMatchPanel extends UtilFieldsPanel implements PlotE
 	
 	private String createArrayTaskScript(String baseDir, String scenarioDir) throws Exception{
 		
+		String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg).toLowerCase();
+		String arrayIdEnvVar = "";
+		
+		if (qcmd.contains("sbatch")){
+			//SLURM
+			arrayIdEnvVar = "$SLURM_ARRAY_TASK_ID";
+		} else if (qcmd.contains("qsub")){
+			//PBS
+			arrayIdEnvVar = "$PBS_ARRAYID";
+		} else if (qcmd.contains("bsub")){
+			//LSF
+			arrayIdEnvVar = "$LSB_JOBINDEX";
+		}
+		
 		StringBuilder sb = new StringBuilder();
 		 
 		//header
 		sb.append("#!/bin/csh -f" + ls);
 		sb.append("#**************************************************************************************" + ls);
 		sb.append("# Purpose:  to run Soil Match Utility" + ls); 
+		sb.append("#   SLURM example cmd:" + ls);
+		sb.append("#     sbatch --job-name=EPICSoilMatchArrayJob --output=submitEPICSoilMatch_JobArray_%A_%a.out --array=1,31 --time=2:00:00" + ls);
+		sb.append("#       /PATH_TO_SCRIPT/runEpicSoilMatch_TIMESTAMP.csh" + ls);
+		sb.append("#     where 1,31 are rainfed (odd) crop numbers only" + ls);
 		sb.append("#" + ls);
 		sb.append("# Written by: Fortran by Benson, Original Script by IE. 2010" + ls);
 		sb.append("# Modified by: EMVL " + ls); 
@@ -239,8 +268,10 @@ public class UtilGenerateSoilMatchPanel extends UtilFieldsPanel implements PlotE
 		sb.append("# Generate soil match files" + ls + ls);
 		sb.append("# set input variables" + ls + ls);
 		
-		sb.append("@ rem = $SLURM_ARRAY_TASK_ID % 2" + ls);
-		sb.append("@ ind = ($SLURM_ARRAY_TASK_ID + $rem) / 2" + ls + ls);
+//		sb.append("@ rem = $SLURM_ARRAY_TASK_ID % 2" + ls);
+		sb.append("@ rem = " + arrayIdEnvVar + " % 2" + ls);
+//		sb.append("@ ind = ($SLURM_ARRAY_TASK_ID + $rem) / 2" + ls + ls);
+		sb.append("@ ind = (" + arrayIdEnvVar + " + $rem) / 2" + ls + ls);
 
 		sb.append("setenv CROP_NAME $CROPS[$ind]" + ls + ls);
 		

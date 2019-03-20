@@ -318,12 +318,30 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 	private String createArrayTaskScript(String baseDir, String scenarioDir, String simY,
 			String ndepValue){
 		
+		String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg).toLowerCase();
+		String arrayIdEnvVar = "";
+		
+		if (qcmd.contains("sbatch")){
+			//SLURM
+			arrayIdEnvVar = "$SLURM_ARRAY_TASK_ID";
+		} else if (qcmd.contains("qsub")){
+			//PBS
+			arrayIdEnvVar = "$PBS_ARRAYID";
+		} else if (qcmd.contains("bsub")){
+			//LSF
+			arrayIdEnvVar = "$LSB_JOBINDEX";
+		}
+		
 		StringBuilder sb = new StringBuilder();
 		 
 		//header
 		sb.append("#!/bin/csh -f" + ls);
 		sb.append("#**************************************************************************************" + ls);
 		sb.append("# Purpose:  to run EPIC app model job array task" + ls); 
+		sb.append("#   SLURM example cmd:" + ls);
+		sb.append("#     sbatch --job-name=EPICAppArrayJob --output=submitEPICApp_JobArray_%A_%a.out --array=1,2,31,32 --time=4:00:00" + ls);
+		sb.append("#       /PATH_TO_SCRIPT/runEpicApp_TIMESTAMP.csh" + ls);
+		sb.append("#     where 1,2,31,32 are crop numbers" + ls);
 		sb.append("#" + ls);
 		sb.append("# Written by: Fortran by Benson, Original Script by IE. 2012" + ls);
 		sb.append("# Modified by: EMVL " + ls); 
@@ -357,7 +375,8 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		sb.append(""+ls);
 		
 		
-		sb.append("setenv CROP_NUM $SLURM_ARRAY_TASK_ID" + ls);
+//		sb.append("setenv CROP_NUM $SLURM_ARRAY_TASK_ID" + ls);
+		sb.append("setenv CROP_NUM " + arrayIdEnvVar + ls);
 		sb.append("@ rem = $CROP_NUM % 2" + ls);
 		sb.append("@ ind  = ($CROP_NUM + $rem) / 2" + ls);
 		sb.append("setenv CROP_NAME $CROPS[$ind]" + ls);
@@ -380,9 +399,9 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		sb.append("echo =======Running Crop $CROP_NAME" + ls);
 		sb.append("time $EXEC_DIR/EPICapp.exe" + ls);
 		sb.append("if ( $status == 0 ) then" + ls);
-		sb.append("   echo  ==== Finished EPIC app run of CROP: $CROP_NAME-$waterSrc-$SLURM_ARRAY_TASK_ID" + ls);
+		sb.append("   echo  ==== Finished EPIC app run of CROP: $CROP_NAME-$waterSrc-" + arrayIdEnvVar + ls);
 		sb.append("else" + ls);
-		sb.append("   echo  ==== Error in EPIC app run of CROP: $CROP_NAME-$waterSrc-$SLURM_ARRAY_TASK_ID" + ls);
+		sb.append("   echo  ==== Error in EPIC app run of CROP: $CROP_NAME-$waterSrc-" + arrayIdEnvVar + ls);
 		sb.append("echo" + ls);
 		sb.append("endif" + ls);
 		
@@ -492,9 +511,9 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		sb.append("      end " + ls);
 		sb.append("      time $EXEC_DIR/EPICapp.exe " + ls);
 		sb.append("      if ( $status == 0 ) then " + ls);
-		sb.append("         echo  ==== Finished EPIC app run of CROP: $CROP_NAME, rainf $cropN" + ls);
+		sb.append("         echo  ==== Finished launching EPIC app run of CROP: $CROP_NAME, rainf $cropN" + ls);
 		sb.append("      else " + ls);
-		sb.append("         echo  ==== Error in EPIC app run of CROP: $CROP_NAME, rainf $cropN" + ls + ls);
+		sb.append("         echo  ==== Error in launching EPIC app run of CROP: $CROP_NAME, rainf $cropN" + ls + ls);
 		sb.append("         echo " + ls );
 		sb.append("      endif " + ls);
 		sb.append("   endif " + ls);
@@ -512,11 +531,12 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		sb.append("      foreach out ( \"NCM\" \"NCS\" \"DFA\" \"OUT\" \"SOL\" \"TNA\" \"TNS\" )" + ls); 
 		sb.append("        if ( ! -e $WORK_DIR/$out  ) mkdir -p $WORK_DIR/$out" + ls); 
 		sb.append("      end" + ls); 
-		sb.append("      time $EXEC_DIR/EPICapp.exe" + ls); 
+		sb.append("      time $EXEC_DIR/EPICapp.exe" + ls);
+		sb.append("      sleep 5s" + ls);
 		sb.append("      if ( $status == 0 ) then " + ls);
-		sb.append("         echo  ==== Finished EPIC app run of CROP: $CROP_NAME, irr $cropN" + ls);
+		sb.append("         echo  ==== Finished launching EPIC app run of CROP: $CROP_NAME, irr $cropN" + ls);
 		sb.append("      else " + ls);
-		sb.append("         echo  ==== Error in EPIC app run of CROP: $CROP_NAME, irr $cropN" + ls + ls);
+		sb.append("         echo  ==== Error in launching EPIC app run of CROP: $CROP_NAME, irr $cropN" + ls + ls);
 		sb.append("         echo " + ls );
 		sb.append("      endif " + ls);
 		sb.append("   endif" + ls); 
@@ -546,9 +566,20 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		runMessages.setText(outMessages);
 		runMessages.validate();
 		
+		String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg).toLowerCase();
 		StringBuilder sb = new StringBuilder();
-		String qEpicSpinup = Constants.getProperty(Constants.QUEUE_EPIC_SPINUP, msg);
-		sb.append("sbatch --job-name=EPICAppArrayJob --output=submitEPICApp_JobArray_%A_%a.out --array=" + chosenCrops + " " + qEpicSpinup + " " + file +ls);
+		String qEpicApp = Constants.getProperty(Constants.QUEUE_EPIC_APP, msg);
+		
+		if (qcmd.contains("sbatch")){
+			//SLURM
+			sb.append("sbatch --job-name=EPICAppArrayJob --output=submitEPICApp_JobArray_%A_%a.out --array=" + chosenCrops + " " + qEpicApp + " " + file +ls);
+		} else if (qcmd.contains("qsub")){
+			//PBS
+			sb.append("qsub -N EPICAppArrayJob -t " + chosenCrops + " " + qEpicApp + " " + file +ls);
+		} else if (qcmd.contains("bsub")){
+			//LSF
+			sb.append("bsub -J EPICAppArrayJob[" + chosenCrops + "] " + qEpicApp + " " + file + ls);
+		}
 		
 		FileRunner.runScriptwCmd(file, log, msg, sb.toString());
 	}
