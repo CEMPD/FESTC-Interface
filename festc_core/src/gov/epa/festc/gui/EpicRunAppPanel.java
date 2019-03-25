@@ -252,6 +252,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 			sb.append(getScirptHeader());
 			sb.append(getEnvironmentDef(baseDir, scenarioDir, simY,ndepValue));
 			sb.append(getRunDef(cropNames, cropIDs));
+			scriptContent = sb.toString();
 		} else {
 			//assume batch system that supports job arrays (SLURM, PBS, LSF, etc)			
 			//create job array script
