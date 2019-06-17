@@ -152,17 +152,24 @@ public class CreateAppManFilesPanel extends UtilFieldsPanel implements PlotEvent
 		outMessages += ls + "Epic base: " + baseDir + ls;
 		outMessages += "Fertlizer year: " + fYear + ls;
 		
-		final String file = writeRunScript(baseDir, scenarioDir, seCropsString, cropIDs, fYear);
+		final String jobFile = writeRunScript(baseDir, scenarioDir, seCropsString, cropIDs, fYear);
 		
 		String cropNums = getChosenCropNums();
 		String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg);
+		
+		final String batchFile;
+		if (qcmd != null && !qcmd.trim().isEmpty()) {
+			batchFile = writeBatchFile(jobFile, scenarioDir);
+		} else {
+			batchFile = null;
+		}
 
 		Thread populateThread = new Thread(new Runnable() {
 			public void run() {
 				if (qcmd == null || qcmd.trim().isEmpty()) {
-					runScript(file);
+					runScript(jobFile);
 				} else {
-					runScriptwArray(file, cropNums);
+					runBatchScript(batchFile, jobFile, cropNums);
 				}
 			}
 		});
@@ -186,28 +193,31 @@ public class CreateAppManFilesPanel extends UtilFieldsPanel implements PlotEvent
 		FileRunner.runScript(file, log, msg);
 	}
 	
-	private void runScriptwArray(final String file, final String chosenCrops) {
-		String log = file + ".log";
+	private void runBatchScript(final String batchFile, final String jobFile, final String chosenCrops) {
+		String log = jobFile + ".log";
 
-		outMessages += "Script file: " + file + ls;
+		outMessages += "Batch Script file: " + batchFile + ls;
+		outMessages += "Job Script file: " + jobFile + ls;
 		outMessages += "Log file: " + log + ls;
 		runMessages.setText(outMessages);
 		runMessages.validate();
-		
+
 		String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg).toLowerCase();
 		StringBuilder sb = new StringBuilder();
 		String qManApp = Constants.getProperty(Constants.QUEUE_MAN_APP, msg);
-		if (qcmd.contains("sbatch")){
-			sb.append(qcmd + " --job-name=EPICManAppArrayJob --output=submitEPICManApp_JobArray_%A_%a.out --array=" + chosenCrops + " " + qManApp + " " + file +ls);
-		} else if (qcmd.contains("qsub")){
-			//PBS
-			sb.append(qcmd + " -N EPICManAppArrayJob -t " + chosenCrops + " " + qManApp + " " + file + ls);
-		} else if (qcmd.contains("bsub")){
-			//LSF
-			sb.append(qcmd + " -J EPICManAppArrayJob[" + chosenCrops + "] " + qManApp + " " + file + ls);
+		if (qcmd.contains("sbatch")) {
+			// SLURM
+			sb.append("sbatch --job-name=EPICManAppArrayJob --output=runEpicManApp_JobArray_%A_%a.out --array="
+					+ chosenCrops + " " + qManApp + " " + batchFile + ls);
+		} else if (qcmd.contains("qsub")) {
+			// PBS
+			sb.append("qsub -N EPICManAppArrayJob -t " + chosenCrops + " " + qManApp + " " + batchFile + ls);
+		} else if (qcmd.contains("bsub")) {
+			// LSF
+			sb.append("bsub -J EPICManAppArrayJob[" + chosenCrops + "] " + qManApp + " " + batchFile + ls);
 		}
-		
-		FileRunner.runScriptwCmd(file, log, msg, sb.toString());
+
+		FileRunner.runScriptwCmd(batchFile, log, msg, sb.toString());
 	}
 	
 	protected String writeRunScript( 
@@ -326,6 +336,46 @@ public class CreateAppManFilesPanel extends UtilFieldsPanel implements PlotEvent
 		
 	   app.showMessage("Write script", mesg);
 	}
+	
+	protected String writeBatchFile(String jobFile, String scenarioDir) throws Exception {
+
+		Date now = new Date(); // java.util.Date, NOT java.sql.Date or
+								// java.sql.Timestamp!
+		String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(now);
+		String batchFile = scenarioDir.trim() + "/scripts";
+		if (!batchFile.endsWith(System.getProperty("file.separator")))
+			batchFile += System.getProperty("file.separator");
+		batchFile += "submitEpicManApp" + timeStamp + ".csh";
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("#!/bin/csh" + ls + ls);
+
+		// TODO - add #SBATCH options here
+
+		String qSingModule = Constants.getProperty(Constants.QUEUE_SINGULARITY_MODULE, msg);
+		if (qSingModule != null && !qSingModule.trim().isEmpty()) {
+			sb.append("module load " + qSingModule + ls);
+
+			String qSingImage = Constants.getProperty(Constants.QUEUE_SINGULARITY_IMAGE, msg);
+			String qSingBind = Constants.getProperty(Constants.QUEUE_SINGULARITY_BIND, msg);
+			if (qSingImage == null || qSingModule.trim().isEmpty()) {
+				throw new Exception("Singularity image path must be specified");
+			}
+			sb.append("set CONTAINER = " + qSingImage + ls);
+			sb.append("singularity exec");
+			if (qSingBind != null && !qSingBind.trim().isEmpty()) {
+				sb.append(" -B " + qSingBind);
+			}
+			sb.append(" $CONTAINER " + jobFile);
+		} else {
+			sb.append(jobFile);
+		}
+
+		writeScriptFile(batchFile, sb.toString());
+
+		return batchFile;
+	}
+	
 	
 	private String createArrayTaskScript(String baseDir, String scenarioDir, 
 			String fYear){

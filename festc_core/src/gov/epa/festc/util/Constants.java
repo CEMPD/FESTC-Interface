@@ -24,6 +24,9 @@ public class Constants {
 	//public static final String QUEUE_PRELOG = "queue.prelog";
 	public static final String QUEUE_OPT = "queue.option";
 	public static final String QUEUE_CMD = "queue.cmd";
+	public static final String QUEUE_SINGULARITY_MODULE = "queue.singularitymodule";
+	public static final String QUEUE_SINGULARITY_IMAGE = "queue.singularityimage";
+	public static final String QUEUE_SINGULARITY_BIND = "queue.singularitybind";
 	
 	public static final String QUEUE_BELD4_CMD = "queue.beld4";
 	public static final String QUEUE_SITE_INFO = "queue.siteinfo";

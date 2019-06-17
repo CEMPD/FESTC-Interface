@@ -215,18 +215,25 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		outMessages += "Epic base: " + baseDir + ls;
 		outMessages += "Scen directory: " + scenarioDir + ls;
 		
-		final String file = writeRunScript(baseDir, scenarioDir, seCropsString, cropIDs, 
+		final String jobFile = writeRunScript(baseDir, scenarioDir, seCropsString, cropIDs, 
 				simY, ndepValue);
 		
 		String cropNums = getChosenCropNums();
 		String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg);
 		
+		final String batchFile;
+		if (qcmd != null && !qcmd.trim().isEmpty()) {
+			batchFile = writeBatchFile(jobFile, scenarioDir);
+		} else {
+			batchFile = null;
+		}
+		
 		Thread populateThread = new Thread(new Runnable() {
 			public void run() {
 				if (qcmd == null || qcmd.trim().isEmpty()) {
-					runScript(file);
+					runScript(jobFile);
 				} else {
-					runScriptwArray(file, cropNums);
+					runBatchScript(batchFile, jobFile, cropNums);
 				}
 			}
 		});
@@ -289,6 +296,45 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 	    } 
 		
 	    app.showMessage("Write script", mesg);
+	}
+	
+	protected String writeBatchFile(String jobFile, String scenarioDir) throws Exception {
+
+		Date now = new Date(); // java.util.Date, NOT java.sql.Date or
+								// java.sql.Timestamp!
+		String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(now);
+		String batchFile = scenarioDir.trim() + "/scripts";
+		if (!batchFile.endsWith(System.getProperty("file.separator")))
+			batchFile += System.getProperty("file.separator");
+		batchFile += "submitEpicApp" + timeStamp + ".csh";
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("#!/bin/csh" + ls + ls);
+
+		// TODO - add #SBATCH options here
+
+		String qSingModule = Constants.getProperty(Constants.QUEUE_SINGULARITY_MODULE, msg);
+		if (qSingModule != null && !qSingModule.trim().isEmpty()) {
+			sb.append("module load " + qSingModule + ls);
+
+			String qSingImage = Constants.getProperty(Constants.QUEUE_SINGULARITY_IMAGE, msg);
+			String qSingBind = Constants.getProperty(Constants.QUEUE_SINGULARITY_BIND, msg);
+			if (qSingImage == null || qSingModule.trim().isEmpty()) {
+				throw new Exception("Singularity image path must be specified");
+			}
+			sb.append("set CONTAINER = " + qSingImage + ls);
+			sb.append("singularity exec");
+			if (qSingBind != null && !qSingBind.trim().isEmpty()) {
+				sb.append(" -B " + qSingBind);
+			}
+			sb.append(" $CONTAINER " + jobFile);
+		} else {
+			sb.append(jobFile);
+		}
+
+		writeScriptFile(batchFile, sb.toString());
+
+		return batchFile;
 	}
 	
 	// returns comma separated list of chosen crop numbers to run
@@ -559,32 +605,33 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		FileRunner.runScript(file, log, msg);
 	}
 	
-	private void runScriptwArray(final String file, final String chosenCrops) {
-		String log = file + ".log";
+	private void runBatchScript(final String batchFile, final String jobFile, final String chosenCrops) {
+		String log = jobFile + ".log";
 
-		outMessages += "Script file: " + file + ls;
+		outMessages += "Batch Script file: " + batchFile + ls;
+		outMessages += "Job Script file: " + jobFile + ls;
 		outMessages += "Log file: " + log + ls;
 		runMessages.setText(outMessages);
 		runMessages.validate();
-		
+
 		String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg).toLowerCase();
 		StringBuilder sb = new StringBuilder();
 		String qEpicApp = Constants.getProperty(Constants.QUEUE_EPIC_APP, msg);
-		
-		if (qcmd.contains("sbatch")){
-			//SLURM
-			sb.append("sbatch --job-name=EPICAppArrayJob --output=submitEPICApp_JobArray_%A_%a.out --array=" + chosenCrops + " " + qEpicApp + " " + file +ls);
-		} else if (qcmd.contains("qsub")){
-			//PBS
-			sb.append("qsub -N EPICAppArrayJob -t " + chosenCrops + " " + qEpicApp + " " + file +ls);
-		} else if (qcmd.contains("bsub")){
-			//LSF
-			sb.append("bsub -J EPICAppArrayJob[" + chosenCrops + "] " + qEpicApp + " " + file + ls);
+		if (qcmd.contains("sbatch")) {
+			// SLURM
+			sb.append("sbatch --job-name=EPICAppArrayJob --output=runEpicApp_JobArray_%A_%a.out --array="
+					+ chosenCrops + " " + qEpicApp + " " + batchFile + ls);
+		} else if (qcmd.contains("qsub")) {
+			// PBS
+			sb.append("qsub -N EPICAppArrayJob -t " + chosenCrops + " " + qEpicApp + " " + batchFile + ls);
+		} else if (qcmd.contains("bsub")) {
+			// LSF
+			sb.append("bsub -J EPICAppArrayJob[" + chosenCrops + "] " + qEpicApp + " " + batchFile + ls);
 		}
-		
-		FileRunner.runScriptwCmd(file, log, msg, sb.toString());
-	}
 
+		FileRunner.runScriptwCmd(batchFile, log, msg, sb.toString());
+	}
+	
 	public void projectLoaded() {
 		fields = (EpicAppFields) app.getProject().getPage(fields.getName());
 		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
