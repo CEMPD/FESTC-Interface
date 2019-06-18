@@ -287,7 +287,7 @@ public class Beld4DataGenPanel extends UtilFieldsPanel implements PlotEventListe
         sb.append("   setenv OUTFILE   ${OUTDIR}/beld4_"+ gridN +"_"+ dYear + ".ncf " + ls ); 		
 		
         sb.append("   if ( ! -e $INFILE ) then	" + ls ); 	
-        sb.append("      echo  $INFILE ' doesn't exist! '	" + ls ); 	
+        sb.append("      echo  $INFILE ' does not exist! '	" + ls ); 	
         sb.append("      exit(1)	" + ls ); 
         sb.append("   endif		    " + ls + ls ); 
         //sb.append("   echo 'Output file name: ' $OUTFILE " + ls + ls ); 		

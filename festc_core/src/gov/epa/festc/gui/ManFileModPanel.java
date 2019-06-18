@@ -161,7 +161,7 @@ public class ManFileModPanel extends UtilFieldsPanel implements PlotEventListene
 		rainPanel.add(erainButton);
 		
 		layout.addLabelWidgetPair("EPICCONT.DAT", contPanel, rightPanel);
-		layout.addLabelWidgetPair("PARM0509.DAT", paramPanel, rightPanel);
+		layout.addLabelWidgetPair("PARM1102.DAT", paramPanel, rightPanel);
 		layout.addLabelWidgetPair("EPICFILE.DAT", filePanel, rightPanel);
 		 
 		layout.addLabelWidgetPair("RAINFED EPICRUNFILE", rainPanel, rightPanel);
@@ -261,7 +261,7 @@ public class ManFileModPanel extends UtilFieldsPanel implements PlotEventListene
 			contFile = scenDir + "/share_data/EPICCONT.DAT"; 
 		
 		
-		paramFile = baseDir + "/common_data/EPIC_model/" + type + "/PARM0509.DAT";
+		paramFile = baseDir + "/common_data/EPIC_model/" + type + "/PARM1102.DAT";
 		fileFile = baseDir + "/common_data/EPIC_model/" + type + "/EPICFILE.DAT";
 		if  (type.equalsIgnoreCase("spinup")) {
 			irrFile = scenDir + "/" + selCrop + "/" + type + "/manage/EPICRUNFILEIRR.DAT";

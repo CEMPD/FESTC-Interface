@@ -264,7 +264,7 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		sb.append("# Written by: Fortran by Benson, Script by IE. 2012" + ls);
 		sb.append("# Modified by: IE " + ls); 
 		sb.append("#" + ls);
-		sb.append("# Program: EPICsu.exe" + ls);
+		sb.append("# Program: EPIC1102.exe" + ls);
 		sb.append("#       Needed environment variables included in the script file to run." + ls);        
 		sb.append("# " + ls);
 		sb.append("#***************************************************************************************" + ls + ls);
@@ -342,7 +342,7 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		sb.append("      foreach out ( \"NCM\" \"NCS\" \"DFA\" \"OUT\" \"SOL\" \"TNA\" \"TNS\" )" + ls); 
 		sb.append("        if ( ! -e $WORK_DIR/$out  ) mkdir -p $WORK_DIR/$out" + ls); 
 		sb.append("      end " + ls);
-		sb.append("      time $EXEC_DIR/EPICsu.exe " + ls);
+		sb.append("      time $EXEC_DIR/EPIC1102.exe " + ls);
 		sb.append("      if ( $status == 0 ) then " + ls);
 		sb.append("         echo  ==== Finished EPIC spinup run of CROP: $CROP_NAME, rainf $cropN" + ls);
 		sb.append("      else " + ls);
@@ -363,7 +363,7 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		sb.append("      foreach out ( \"NCM\" \"NCS\" \"DFA\" \"OUT\" \"SOL\" \"TNA\" \"TNS\" )" + ls); 
 		sb.append("        if ( ! -e $WORK_DIR/$out  ) mkdir -p $WORK_DIR/$out" + ls); 
 		sb.append("      end" + ls); 
-		sb.append("      time $EXEC_DIR/EPICsu.exe" + ls); 
+		sb.append("      time $EXEC_DIR/EPIC1102.exe" + ls); 
 		sb.append("      if ( $status == 0 ) then " + ls);
 		sb.append("         echo  ==== Finished EPIC spinup run of CROP: $CROP_NAME, irr $cropN" + ls);
 		sb.append("      else " + ls);

@@ -10,6 +10,7 @@
 	<property name="bootstrap.dir" value="${basedir}/../festc_bootstrap"/>
 	<property name="saf.dir" value="${basedir}/../festc_saf_ui"/>
 	<property name="versiondir" value="../festc_core/src/gov/epa/festc/core" />
+	<property name="srcdir" value="../festc_core/src" />
 	<property name="versionbuild.dir" value="../festc_core/bin/gov/epa/festc/core" />
 	
 	<path id="classpath">
@@ -187,7 +188,10 @@
     	<exec executable="cp">
     		<arg line="-p -R ${jre.home} ${dist.dir}/jre"/>
     	</exec>
-    	<exec executable="pwd">
+    	<exec executable="cp">
+    	    <arg line="-p -R ${srcdir} ${dist.dir}/src"/>
+    	</exec>
+     	<exec executable="pwd">
     	    <arg line=""/>
     	</exec>
     	<exec executable="tar">
