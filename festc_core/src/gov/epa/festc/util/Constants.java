@@ -21,7 +21,6 @@ public class Constants {
 	public static final String EPIC_HOME = "epic.home";
 	public static final String QUEUE_NAME = "queue.name";
 	public static final String QUEUE_BMEM = "queue.bigmem";
-	//public static final String QUEUE_PRELOG = "queue.prelog";
 	public static final String QUEUE_OPT = "queue.option";
 	public static final String QUEUE_CMD = "queue.cmd";
 	public static final String WORK_DIR = "work.dir";

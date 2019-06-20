@@ -49,7 +49,7 @@ public class FileRunner { // TODO: change this to a cross-platform launcher
 //		}
 
 		if (useBigMem) 
-			cmd = cmd + " " + qbigmem + " -o " + log + " " + script.getAbsolutePath();
+			cmd = cmd + " " + qbigmem + " "+ log + " " + script.getAbsolutePath();
 		else
 			cmd = cmd + " " +qopt + " " + log + " " + script.getAbsolutePath();
 
