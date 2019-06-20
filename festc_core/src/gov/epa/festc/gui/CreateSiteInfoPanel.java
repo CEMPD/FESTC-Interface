@@ -97,7 +97,7 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 
 		JPanel minAcrePanel = new JPanel();
 		minAcreas = new JTextField(20);
-		minAcreas.setToolTipText("Default value is 40.0");
+		minAcreas.setToolTipText("Default value is 0.0");
 		minAcrePanel.add(minAcreas);
 
 		// JPanel scenPanel = new JPanel();
@@ -462,7 +462,7 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 		// else
 		// this.beld4Dir.setText(scenDir);
 		runMessages.setText("");
-		minAcreas.setText("40.0");
+		minAcreas.setText("0.0");
 		if (fields == null) {
 			fields = new SiteInfoGenFields();
 			app.getProject().addPage(fields);
@@ -496,7 +496,7 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 			ySize.setValue(domain.getYcellSize());
 			proj4proj.setText(domain.getProj());
 			gridName.setText(gridNames);
-			minAcreas.setText(fields.getMinAcres() == null ? "40.0" : fields.getMinAcres());
+			minAcreas.setText(fields.getMinAcres() == null ? "0.0" : fields.getMinAcres());
 			domain.setCMinAcres(domain.getCMinAcres());
 		} else {
 			newProjectCreated();

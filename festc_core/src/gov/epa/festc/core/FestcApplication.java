@@ -383,7 +383,7 @@ public class FestcApplication implements ListSelectionListener,
 			domain.setYmin(panel.getYmin());
 			domain.setSimYear(panel.getSimuYear());
 			domain.setNlcdYear(panel.getNlcdYear());
-			domain.setCMinAcres("40.0");
+			domain.setCMinAcres("0.0");
 			domain.setScenarioDir(workdir + "/scenarios/" + newScenario);	 
 			 
 			project.setName(newScenario);		 	

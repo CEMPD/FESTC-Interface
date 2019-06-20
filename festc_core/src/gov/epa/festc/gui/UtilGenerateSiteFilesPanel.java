@@ -55,7 +55,7 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
 		//this.scenarioDir = new JTextField(40);	
 		JPanel minAcrePanel = new JPanel();
 		minAcreas = new JTextField(20);
-		minAcreas.setToolTipText("Default value is 40.0");
+		minAcreas.setToolTipText("Default value is 0.0");
 		minAcrePanel.add(minAcreas);
 		 
 		JPanel buttonPanel = new JPanel();
@@ -408,7 +408,7 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
 			else 
 				this.scenarioDir.setText(fields.getScenarioDir());
 			runMessages.setText(fields.getMessage());
-			minAcreas.setText(fields.getMinAcres()==null? "40.0":fields.getMinAcres());
+			minAcreas.setText(fields.getMinAcres()==null? "0.0":fields.getMinAcres());
 		} else{
 			newProjectCreated();
 		}
@@ -430,7 +430,7 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
 		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		scenarioDir.setText(domain.getScenarioDir());	
 		runMessages.setText("");
-		minAcreas.setText("40.0");
+		minAcreas.setText("0.0");
 		 
 		if ( fields == null ) {
 			fields = new SiteFilesFields();
