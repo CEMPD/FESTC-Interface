@@ -1,3 +1,9 @@
+Version 2.0 Updates:
+1) Use EPIC1102 modular code instead of EPIC0409
+2) Update soil match utility
+3) Update manageCreate utility
+3) Update festc interface
+
 Version 1.4 Updates:
 1) Added "EPIC to SWAT" in festc java codes, including EPIC daily, nitrogen deposition, daily weather file
 processing, and SWAT input preparing parts.
