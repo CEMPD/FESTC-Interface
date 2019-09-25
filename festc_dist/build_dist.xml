@@ -201,6 +201,23 @@
     		</fileset>
     	</delete>
     </target>
+	
+	<target name="build.windows.dist" depends="prep.dist">
+	    <echoproperties/> 
+	    <unzip src="./distfiles/licenses.zip" dest="${dist.dir}"/>
+	    <copy todir="${dist.dir}">
+	        <fileset file="./distfiles/config.properties"/>
+	    </copy>
+	    <copy todir="${dist.dir}">
+	        <fileset file="./distfiles/README"/>
+	    </copy>   
+		<copy todir="${dist.dir}/festc">
+			<fileset file="./distfiles/festc"/>
+		</copy>
+		<copy toDir="${dist.dir}/jre">
+			<fileset file="${jre.home}"/>
+		</copy>
+	</target>
 
 
 </project>

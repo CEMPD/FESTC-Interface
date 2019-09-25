@@ -383,7 +383,7 @@ public class FestcApplication implements ListSelectionListener,
 			domain.setYmin(panel.getYmin());
 			domain.setSimYear(panel.getSimuYear());
 			domain.setNlcdYear(panel.getNlcdYear());
-			domain.setCMinAcres("40.0");
+			domain.setCMinAcres("0.0");
 			domain.setScenarioDir(workdir + "/scenarios/" + newScenario);	 
 			 
 			project.setName(newScenario);		 	
@@ -563,7 +563,7 @@ public class FestcApplication implements ListSelectionListener,
 		
 		StringBuilder sb = new StringBuilder();
 		String ls = "\n";
-		sb.append("#!/bin/csh -f" + ls);
+		sb.append("#!/bin/csh " + ls);
 		sb.append("#**************************************************************************************" + ls);
 		sb.append("# Purpose:  to copy all files from an existing scenario" + ls); 
 		sb.append("#" + ls);
@@ -581,7 +581,25 @@ public class FestcApplication implements ListSelectionListener,
 		sb.append("mkdir -p  $SCEN_DIR/share_data"   +ls ); 
 		sb.append("mkdir -p  $SCEN_DIR/scripts"   +ls ); 
 		sb.append("mkdir -p  $SCEN_DIR/work_dir"   +ls ); 
-		sb.append("cp $COMM_DIR/EPIC_model/app/EPICCONT.DAT $SCEN_DIR/share_data/."   +ls ); 
+		
+		String copyCmd = "cp $COMM_DIR/EPIC_model/app/EPICCONT.DAT $SCEN_DIR/share_data/."   +ls;
+		
+		String qSingModule = Constants.getProperty(Constants.QUEUE_SINGULARITY_MODULE, msg);
+		if (qSingModule != null && !qSingModule.trim().isEmpty()) {
+			sb.append("module load " + qSingModule + ls);
+		}
+		String qSingImage = Constants.getProperty(Constants.QUEUE_SINGULARITY_IMAGE, msg);
+		String qSingBind = Constants.getProperty(Constants.QUEUE_SINGULARITY_BIND, msg);
+		if (qSingImage != null && !qSingModule.trim().isEmpty()) {
+			sb.append("set CONTAINER = " + qSingImage + ls);
+			sb.append("singularity exec");
+			if (qSingBind != null && !qSingBind.trim().isEmpty()) {
+				sb.append(" -B " + qSingBind);
+			}
+			sb.append(" $CONTAINER " + copyCmd);
+		} else {
+			sb.append(copyCmd);
+		}
 		sb.append("sed -i '1s/^.\\{,8\\}/   " + year+ "/' $SCEN_DIR/share_data/EPICCONT.DAT"  +ls ) ;
 
 		try {
@@ -596,7 +614,10 @@ public class FestcApplication implements ListSelectionListener,
 	    }
 		
 		String log = file + ".log";
+			
 		FileRunner.runScript(file, log, msg);
+		
+		
 //		msg.warn("Please modify " + newScenDir + "/share_data/EPICCONT.DAT ", "");
 	}
 

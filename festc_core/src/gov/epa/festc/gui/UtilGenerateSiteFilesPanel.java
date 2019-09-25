@@ -55,7 +55,7 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
 		//this.scenarioDir = new JTextField(40);	
 		JPanel minAcrePanel = new JPanel();
 		minAcreas = new JTextField(20);
-		minAcreas.setToolTipText("Default value is 40.0");
+		minAcreas.setToolTipText("Default value is 0.0");
 		minAcrePanel.add(minAcreas);
 		 
 		JPanel buttonPanel = new JPanel();
@@ -123,16 +123,56 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
 		
 		outMessages += "Epic base: " + baseDir + ls;
 		outMessages += "Scen directory: " + scenarioDir + ls;
-
-		final String file = writeRunScriptScript(baseDir, scenarioDir);
 		
+		String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg);
+
+		final String jobFile = writeRunScriptScript(baseDir, scenarioDir);
+		final String batchFile;
+		if (qcmd != null && !qcmd.trim().isEmpty()) {
+			batchFile = writeBatchFile(jobFile, scenarioDir);
+		} else {
+			batchFile = null;
+		}
 		Thread populateThread = new Thread(new Runnable() {
 			public void run() {
-				runScript(file);
+				if (qcmd == null || qcmd.trim().isEmpty()) {
+					runScript(jobFile);
+				} else {
+					// final String batchFile = writeBatchFile(jobFile,
+					// scenarioDir);
+					runBatchScript(batchFile, jobFile);
+				}
+
 			}
 		});
 		populateThread.start();
 	}
+	
+	// This is legacy code that has been moved to it's own method
+		protected void writeScriptFile(String file, String content) {
+
+			String mesg = "";
+
+			try {
+				File script = new File(file);
+
+				BufferedWriter out = new BufferedWriter(new FileWriter(script));
+				out.write(content);
+				out.close();
+
+				mesg += "Script file: " + file + ls;
+				boolean ok = script.setExecutable(true, false);
+				mesg += "Set the script file to be executable: ";
+				mesg += ok ? "ok." : "failed.";
+
+			} catch (IOException e) {
+				// printStackTrace();
+				// g.error("Error generating EPIC script file", e);
+				app.showMessage("Write script", e.getMessage());
+			}
+
+			app.showMessage("Write script", mesg);
+		}
 	
 	private void runScript(final String file) {
 		String log = file + ".log";
@@ -143,6 +183,66 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
 		runMessages.validate();
 		FileRunner.runScript(file, log, msg);
 	}
+	
+	private void runBatchScript(final String batchFile, final String jobFile) {
+		String log = jobFile + ".log";
+
+		outMessages += "Batch Script file: " + batchFile + ls;
+		outMessages += "Job Script file: " + jobFile + ls;
+		outMessages += "Log file: " + log + ls;
+		runMessages.setText(outMessages);
+		runMessages.validate();
+
+		String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg).toLowerCase();
+		StringBuilder sb = new StringBuilder();
+		String qEpicSite = Constants.getProperty(Constants.QUEUE_EPIC_SITE, msg);
+
+		File script = new File(batchFile.replaceAll("\\\\", "\\\\\\\\"));
+
+		sb.append(qcmd + " " + qEpicSite + " -o " + log + " " + script.getAbsolutePath());
+
+		FileRunner.runScriptwCmd(batchFile, log, msg, sb.toString());
+	}
+	
+	protected String writeBatchFile(String jobFile, String scenarioDir) throws Exception {
+
+		Date now = new Date(); // java.util.Date, NOT java.sql.Date or
+								// java.sql.Timestamp!
+		String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(now);
+		String batchFile = scenarioDir.trim() + "/scripts";
+		if (!batchFile.endsWith(System.getProperty("file.separator")))
+			batchFile += System.getProperty("file.separator");
+		batchFile += "submitEpicSiteFile_" + timeStamp + ".csh";
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("#!/bin/csh" + ls + ls);
+
+		// TODO - add #SBATCH options here
+
+		String qSingModule = Constants.getProperty(Constants.QUEUE_SINGULARITY_MODULE, msg);
+		if (qSingModule != null && !qSingModule.trim().isEmpty()) {
+			sb.append("module load " + qSingModule + ls);
+
+			String qSingImage = Constants.getProperty(Constants.QUEUE_SINGULARITY_IMAGE, msg);
+			String qSingBind = Constants.getProperty(Constants.QUEUE_SINGULARITY_BIND, msg);
+			if (qSingImage == null || qSingModule.trim().isEmpty()) {
+				throw new Exception("Singularity image path must be specified");
+			}
+			sb.append("set CONTAINER = " + qSingImage + ls);
+			sb.append("singularity exec");
+			if (qSingBind != null && !qSingBind.trim().isEmpty()) {
+				sb.append(" -B " + qSingBind);
+			}
+			sb.append(" $CONTAINER " + jobFile);
+		} else {
+			sb.append(jobFile);
+		}
+		
+		writeScriptFile(batchFile, sb.toString());
+
+		return batchFile;
+	}
+
 	
 	private String writeRunScriptScript( 
 			String baseDir, 
@@ -308,7 +408,7 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
 			else 
 				this.scenarioDir.setText(fields.getScenarioDir());
 			runMessages.setText(fields.getMessage());
-			minAcreas.setText(fields.getMinAcres()==null? "40.0":fields.getMinAcres());
+			minAcreas.setText(fields.getMinAcres()==null? "0.0":fields.getMinAcres());
 		} else{
 			newProjectCreated();
 		}
@@ -330,7 +430,7 @@ public class UtilGenerateSiteFilesPanel extends UtilFieldsPanel implements PlotE
 		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		scenarioDir.setText(domain.getScenarioDir());	
 		runMessages.setText("");
-		minAcreas.setText("40.0");
+		minAcreas.setText("0.0");
 		 
 		if ( fields == null ) {
 			fields = new SiteFilesFields();

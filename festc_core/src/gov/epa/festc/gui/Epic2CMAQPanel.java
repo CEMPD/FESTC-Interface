@@ -172,11 +172,23 @@ public class Epic2CMAQPanel extends UtilFieldsPanel implements PlotEventListener
 			public void actionPerformed(ActionEvent e) {
 				try {
 					validateFields();
-					final String file = writeScript();
+
+					String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg);
+					final String jobFile = writeScript();
+					final String batchFile;
+					if (qcmd != null && !qcmd.trim().isEmpty()) {
+						batchFile = writeBatchFile(jobFile, scenarioDir.getText());
+					} else {
+						batchFile = null;
+					}
 
 					Thread populateThread = new Thread(new Runnable() {
 						public void run() {
-							runScript(file);
+							if (qcmd == null || qcmd.trim().isEmpty()) {
+								runScript(jobFile);
+							} else {
+								runBatchScript(batchFile, jobFile);
+							}
 						}
 					});
 					populateThread.start();
@@ -190,7 +202,8 @@ public class Epic2CMAQPanel extends UtilFieldsPanel implements PlotEventListener
 	private void validateFields() throws Exception {
 
 		String sahome = Constants.getProperty(Constants.SA_HOME, msg);
-		if (sahome == null || sahome.trim().isEmpty() || !(new File(sahome).exists()))
+//		if (sahome == null || sahome.trim().isEmpty() || !(new File(sahome).exists()))
+		if (sahome == null || sahome.trim().isEmpty())
 			throw new Exception("Error loading spacial allocator home:" + sahome + " doesn't exist");
 
 		String scenarioDir = this.scenarioDir.getText();
@@ -318,6 +331,71 @@ public class Epic2CMAQPanel extends UtilFieldsPanel implements PlotEventListener
 		return file;
 	}
 
+	// This is legacy code that has been moved to it's own method
+	protected void writeScriptFile(String file, String content) {
+
+		String mesg = "";
+
+		try {
+			File script = new File(file);
+
+			BufferedWriter out = new BufferedWriter(new FileWriter(script));
+			out.write(content);
+			out.close();
+
+			mesg += "Script file: " + file + ls;
+			boolean ok = script.setExecutable(true, false);
+			mesg += "Set the script file to be executable: ";
+			mesg += ok ? "ok." : "failed.";
+
+		} catch (IOException e) {
+			// printStackTrace();
+			// g.error("Error generating EPIC script file", e);
+			app.showMessage("Write script", e.getMessage());
+		}
+
+		app.showMessage("Write script", mesg);
+	}
+
+	protected String writeBatchFile(String jobFile, String scenarioDir) throws Exception {
+
+		Date now = new Date(); // java.util.Date, NOT java.sql.Date or
+								// java.sql.Timestamp!
+		String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(now);
+		String batchFile = scenarioDir.trim() + "/scripts";
+		if (!batchFile.endsWith(System.getProperty("file.separator")))
+			batchFile += System.getProperty("file.separator");
+		batchFile += "submitEpic2CMAQ_" + timeStamp + ".csh";
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("#!/bin/csh" + ls + ls);
+
+		// TODO - add #SBATCH options here
+
+		String qSingModule = Constants.getProperty(Constants.QUEUE_SINGULARITY_MODULE, msg);
+		if (qSingModule != null && !qSingModule.trim().isEmpty()) {
+			sb.append("module load " + qSingModule + ls);
+
+			String qSingImage = Constants.getProperty(Constants.QUEUE_SINGULARITY_IMAGE, msg);
+			String qSingBind = Constants.getProperty(Constants.QUEUE_SINGULARITY_BIND, msg);
+			if (qSingImage == null || qSingModule.trim().isEmpty()) {
+				throw new Exception("Singularity image path must be specified");
+			}
+			sb.append("set CONTAINER = " + qSingImage + ls);
+			sb.append("singularity exec");
+			if (qSingBind != null && !qSingBind.trim().isEmpty()) {
+				sb.append(" -B " + qSingBind);
+			}
+			sb.append(" $CONTAINER " + jobFile);
+		} else {
+			sb.append(jobFile);
+		}
+
+		writeScriptFile(batchFile, sb.toString());
+
+		return batchFile;
+	}
+
 	private String getScirptHeader() {
 		StringBuilder sb = new StringBuilder();
 		String ls = "\n";
@@ -348,6 +426,26 @@ public class Epic2CMAQPanel extends UtilFieldsPanel implements PlotEventListener
 		runMessages.setText(outMessages);
 		runMessages.validate();
 		FileRunner.runScript(file, log, msg);
+	}
+
+	private void runBatchScript(final String batchFile, final String jobFile) {
+		String log = jobFile + ".log";
+
+		outMessages += "Batch Script file: " + batchFile + ls;
+		outMessages += "Job Script file: " + jobFile + ls;
+		outMessages += "Log file: " + log + ls;
+		runMessages.setText(outMessages);
+		runMessages.validate();
+
+		String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg).toLowerCase();
+		StringBuilder sb = new StringBuilder();
+		String qEpic2Cmaq = Constants.getProperty(Constants.QUEUE_EPIC2CMAQ, msg);
+
+		File script = new File(batchFile.replaceAll("\\\\", "\\\\\\\\"));
+
+		sb.append(qcmd + " " + qEpic2Cmaq + " -o " + log + " " + script.getAbsolutePath());
+
+		FileRunner.runScriptwCmd(batchFile, log, msg, sb.toString());
 	}
 
 	@Override

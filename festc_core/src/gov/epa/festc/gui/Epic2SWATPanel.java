@@ -187,12 +187,22 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 			public void actionPerformed(ActionEvent e) {
 				try {
 					validateFields();
-					final String file = writeEpicScript();
-					;
+					String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg);
+					final String jobFile = writeEpicScript();
+					final String batchFile;
+					if (qcmd != null && !qcmd.trim().isEmpty()) {
+						batchFile = writeBatchFile(jobFile, scenarioDir.getText(), "EPIC");
+					} else {
+						batchFile = null;
+					}
 
 					Thread populateThread = new Thread(new Runnable() {
 						public void run() {
-							runScript(file);
+							if (qcmd == null || qcmd.trim().isEmpty()) {
+								runScript(jobFile);
+							} else {
+								runBatchScript(batchFile, jobFile);
+							}
 						}
 					});
 					populateThread.start();
@@ -210,11 +220,22 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 			public void actionPerformed(ActionEvent e) {
 				try {
 					validateFields();
-					final String file = writeNDepScript();
+					String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg);
+					final String jobFile = writeNDepScript();
+					final String batchFile;
+					if (qcmd != null && !qcmd.trim().isEmpty()) {
+						batchFile = writeBatchFile(jobFile, scenarioDir.getText(), "NDEP");
+					} else {
+						batchFile = null;
+					}
 
 					Thread populateThread = new Thread(new Runnable() {
 						public void run() {
-							runScript(file);
+							if (qcmd == null || qcmd.trim().isEmpty()) {
+								runScript(jobFile);
+							} else {
+								runBatchScript(batchFile, jobFile);
+							}
 						}
 					});
 					populateThread.start();
@@ -232,11 +253,22 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 			public void actionPerformed(ActionEvent e) {
 				try {
 					validateFields();
-					final String file = writeWeatScript();
+					String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg);
+					final String jobFile = writeWeatScript();
+					final String batchFile;
+					if (qcmd != null && !qcmd.trim().isEmpty()) {
+						batchFile = writeBatchFile(jobFile, scenarioDir.getText(), "WETH");
+					} else {
+						batchFile = null;
+					}
 
 					Thread populateThread = new Thread(new Runnable() {
 						public void run() {
-							runScript(file);
+							if (qcmd == null || qcmd.trim().isEmpty()) {
+								runScript(jobFile);
+							} else {
+								runBatchScript(batchFile, jobFile);
+							}
 						}
 					});
 					populateThread.start();
@@ -254,11 +286,22 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 			public void actionPerformed(ActionEvent e) {
 				try {
 					validateFields();
-					final String file = writeSWATScript();
+					String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg);
+					final String jobFile = writeSWATScript();
+					final String batchFile;
+					if (qcmd != null && !qcmd.trim().isEmpty()) {
+						batchFile = writeBatchFile(jobFile, scenarioDir.getText(), "SWAT");
+					} else {
+						batchFile = null;
+					}
 
 					Thread populateThread = new Thread(new Runnable() {
 						public void run() {
-							runScript(file);
+							if (qcmd == null || qcmd.trim().isEmpty()) {
+								runScript(jobFile);
+							} else {
+								runBatchScript(batchFile, jobFile);
+							}
 						}
 					});
 					populateThread.start();
@@ -282,6 +325,71 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 		String sYear = simYear.getText();
 		if (sYear == null || sYear.trim().isEmpty())
 			throw new Exception("Simulation Year field is empty.");
+	}
+
+	// This is legacy code that has been moved to it's own method
+	protected void writeScriptFile(String file, String content) {
+
+		String mesg = "";
+
+		try {
+			File script = new File(file);
+
+			BufferedWriter out = new BufferedWriter(new FileWriter(script));
+			out.write(content);
+			out.close();
+
+			mesg += "Script file: " + file + ls;
+			boolean ok = script.setExecutable(true, false);
+			mesg += "Set the script file to be executable: ";
+			mesg += ok ? "ok." : "failed.";
+
+		} catch (IOException e) {
+			// printStackTrace();
+			// g.error("Error generating EPIC script file", e);
+			app.showMessage("Write script", e.getMessage());
+		}
+
+		app.showMessage("Write script", mesg);
+	}
+
+	protected String writeBatchFile(String jobFile, String scenarioDir, String desc) throws Exception {
+
+		Date now = new Date(); // java.util.Date, NOT java.sql.Date or
+								// java.sql.Timestamp!
+		String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(now);
+		String batchFile = scenarioDir.trim() + "/scripts";
+		if (!batchFile.endsWith(System.getProperty("file.separator")))
+			batchFile += System.getProperty("file.separator");
+		batchFile += "submitEpic2CMAQ_" + desc + "_" + timeStamp + ".csh";
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("#!/bin/csh" + ls + ls);
+
+		// TODO - add #SBATCH options here
+
+		String qSingModule = Constants.getProperty(Constants.QUEUE_SINGULARITY_MODULE, msg);
+		if (qSingModule != null && !qSingModule.trim().isEmpty()) {
+			sb.append("module load " + qSingModule + ls);
+
+			String qSingImage = Constants.getProperty(Constants.QUEUE_SINGULARITY_IMAGE, msg);
+			String qSingBind = Constants.getProperty(Constants.QUEUE_SINGULARITY_BIND, msg);
+			if (qSingImage == null || qSingModule.trim().isEmpty()) {
+				throw new Exception("Singularity image path must be specified");
+			}
+			sb.append("set CONTAINER = " + qSingImage + ls);
+			sb.append("singularity exec");
+			if (qSingBind != null && !qSingBind.trim().isEmpty()) {
+				sb.append(" -B " + qSingBind);
+			}
+			sb.append(" $CONTAINER " + jobFile);
+		} else {
+			sb.append(jobFile);
+		}
+
+		writeScriptFile(batchFile, sb.toString());
+
+		return batchFile;
 	}
 
 	private String writeEpicScript() throws Exception {
@@ -504,7 +612,7 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 
 		sb.append("echo  'Extract swat inputs:  ' $SCEN_DIR" + ls);
 		sb.append("R CMD BATCH --no-save --slave " + "$EPIC_DIR/util/swat/extract_swatInputs.R "
-				+ "${SCEN_DIR}/scripts/extract_swatInputs_"+ ndepType + ".log" + ls + ls);
+				+ "${SCEN_DIR}/scripts/extract_swatInputs_" + ndepType + ".log" + ls + ls);
 
 		String mesg = "";
 		try {
@@ -689,9 +797,29 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 		FileRunner.runScript(file, log, msg);
 	}
 
+	private void runBatchScript(final String batchFile, final String jobFile) {
+		String log = jobFile + ".log";
+
+		outMessages += "Batch Script file: " + batchFile + ls;
+		outMessages += "Job Script file: " + jobFile + ls;
+		outMessages += "Log file: " + log + ls;
+		runMessages.setText(outMessages);
+		runMessages.validate();
+
+		String qcmd = Constants.getProperty(Constants.QUEUE_CMD, msg).toLowerCase();
+		StringBuilder sb = new StringBuilder();
+		String qEpic2Swat = Constants.getProperty(Constants.QUEUE_EPIC2SWAT, msg);
+
+		File script = new File(batchFile.replaceAll("\\\\", "\\\\\\\\"));
+
+		sb.append(qcmd + " " + qEpic2Swat + " -o " + log + " " + script.getAbsolutePath());
+
+		FileRunner.runScriptwCmd(batchFile, log, msg, sb.toString());
+	}
+
 	@Override
 	public void projectLoaded() {
-		fields = (Epic2SWATFields)app.getProject().getPage(fields.getName());
+		fields = (Epic2SWATFields) app.getProject().getPage(fields.getName());
 		domain = (DomainFields) app.getProject().getPage(DomainFields.class.getCanonicalName());
 		if (fields != null) {
 			fields = (Epic2SWATFields) app.getProject().getPage(fields.getName());
@@ -717,7 +845,7 @@ public class Epic2SWATPanel extends UtilFieldsPanel implements PlotEventListener
 				this.metdepFile.setText(fields.getMetdep());
 			beld4Dir.setText(fields.getBeld4ncf());
 			hucSel.setSelectedItem(fields.getHucSelection());
-			nDepSel.setSelectedItem(fields.getNDepSelection() );
+			nDepSel.setSelectedItem(fields.getNDepSelection());
 			ratioFile.setText(fields.getRatioFile());
 			// filesPrefix.setText(fields.getOutfileprefix());
 			runMessages.setText(fields.getMessage());
