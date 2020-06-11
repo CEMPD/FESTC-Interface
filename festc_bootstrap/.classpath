@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="lib" path="lib/jpf-boot.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jpf.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="lib" path="lib/xstream-1.4.7.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2-api-2.0-rc1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/log4j-api-2.0-rc1.jar"/>

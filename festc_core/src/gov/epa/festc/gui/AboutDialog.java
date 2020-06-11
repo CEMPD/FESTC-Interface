@@ -1,7 +1,5 @@
 package gov.epa.festc.gui;
 
-import gov.epa.festc.core.VersionInfo;
-
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dialog;
@@ -23,6 +21,8 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
+
+import gov.epa.festc.core.VersionInfo;
 
 /**
  * @author IE, UNC

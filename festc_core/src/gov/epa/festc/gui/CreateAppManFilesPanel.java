@@ -190,7 +190,7 @@ public class CreateAppManFilesPanel extends UtilFieldsPanel implements PlotEvent
 			StringBuilder sb = new StringBuilder();
 			sb.append(getScriptHeader());
 			sb.append(getEnvironmentDef(baseDir, scenarioDir, fYear));
-			sb.append(getManSu(cropNames, cropIDs));	
+			sb.append(getManSu(cropNames, cropIDs, fYear));	
 			//tile drain script
 			sb.append(getRunTD());
 
@@ -252,7 +252,7 @@ public class CreateAppManFilesPanel extends UtilFieldsPanel implements PlotEvent
 		return sb.toString();
 	}
 	
-	private String getManSu(String cropNames, String cropIDs){
+	private String getManSu(String cropNames, String cropIDs, String fYear){
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append(ls + "#" + ls);
@@ -273,7 +273,10 @@ public class CreateAppManFilesPanel extends UtilFieldsPanel implements PlotEvent
 		sb.append(ls + "#" + ls);
 		sb.append("#  echo ==== Begin EPIC management app run of CROP $CROP_NAME" + ls);
 		sb.append("#" + ls );
-		sb.append("   time $EXEC_DIR/ManGenFERT.exe " + ls ); 
+		if ( fYear.contains("2011") )
+			sb.append("   time $EXEC_DIR/ManGenFERT2011.exe " + ls ); 
+		else 
+			sb.append("   time $EXEC_DIR/ManGenFERT2006.exe " + ls ); 
 		sb.append("   if ( $status == 0 ) then " + ls);
 		sb.append("      echo  ==== Finished EPIC management app run of CROP: $CROP_NAME" + ls);
 		sb.append("   else " + ls);
