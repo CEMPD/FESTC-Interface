@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class DomainFields extends PageFields {
 
 	protected String simYear;
+	protected String simEndYear;
 	protected String nlcdYear;
 	protected String cfertYear;
 	protected String cminAcres;
@@ -24,6 +25,10 @@ public class DomainFields extends PageFields {
 		return simYear;
 	}
 	
+	public String getSimEndYear() {
+		return simEndYear;
+	}
+	
 	public String getNlcdYear() {
 		return nlcdYear;
 	}
@@ -39,6 +44,10 @@ public class DomainFields extends PageFields {
 
 	public void setSimYear(String year) {
 		this.simYear = year;
+	}
+	
+	public void setSimEndYear(String year) {
+		this.simEndYear = year;
 	}
 	
 	public void setNlcdYear(String year) {
