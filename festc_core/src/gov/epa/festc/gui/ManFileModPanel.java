@@ -45,6 +45,7 @@ public class ManFileModPanel extends UtilFieldsPanel implements PlotEventListene
 	private String fileFile;
 	private String irrFile;
 	private String rainFile;
+	private String epicVer;
 	
 	private FestcGUI parent;
 	private FestcApplication app;
@@ -56,6 +57,7 @@ public class ManFileModPanel extends UtilFieldsPanel implements PlotEventListene
 	public ManFileModPanel(FestcApplication application) {
 		app = application;
 		msg = app.getMessageCenter();
+		epicVer = Constants.getProperty(Constants.EPIC_VER, msg).trim();
 		fields = new ManFileModFields();
 		app.getProject().addPage(fields);
 		app.addPlotListener(this);
@@ -161,7 +163,10 @@ public class ManFileModPanel extends UtilFieldsPanel implements PlotEventListene
 		rainPanel.add(erainButton);
 		
 		layout.addLabelWidgetPair("EPICCONT.DAT", contPanel, rightPanel);
-		layout.addLabelWidgetPair("PARM0509.DAT", paramPanel, rightPanel);
+		if ( epicVer.equalsIgnoreCase("1102") ) 
+			layout.addLabelWidgetPair("PARM1102.DAT", paramPanel, rightPanel);
+		else 
+			layout.addLabelWidgetPair("PARM0509.DAT", paramPanel, rightPanel);
 		layout.addLabelWidgetPair("EPICFILE.DAT", filePanel, rightPanel);
 		 
 		layout.addLabelWidgetPair("RAINFED EPICRUNFILE", rainPanel, rightPanel);
@@ -260,8 +265,11 @@ public class ManFileModPanel extends UtilFieldsPanel implements PlotEventListene
 		else
 			contFile = scenDir + "/share_data/EPICCONT.DAT"; 
 		
+		if ( epicVer.equalsIgnoreCase("1102"))
+			paramFile = baseDir + "/compmon_data/EPIC_model/" + type + "/PARM1102.DAT";
+		else
+			paramFile = baseDir + "/compmon_data/EPIC_model/" + type + "/PARM0509.DAT";
 		
-		paramFile = baseDir + "/common_data/EPIC_model/" + type + "/PARM0509.DAT";
 		fileFile = baseDir + "/common_data/EPIC_model/" + type + "/EPICFILE.DAT";
 		if  (type.equalsIgnoreCase("spinup")) {
 			irrFile = scenDir + "/" + selCrop + "/" + type + "/manage/EPICRUNFILEIRR.DAT";

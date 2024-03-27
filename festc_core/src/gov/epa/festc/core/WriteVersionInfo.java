@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.sql.Date;
 
 public class WriteVersionInfo {
-	private static String version = "1.3";
+	private static String version = "2.1";
 	private static String timestamp = new Date(new java.util.Date().getTime()).toString(); //in the yyyy-mm-dd format
 	private static String ls = System.getProperty("line.separator");
 	

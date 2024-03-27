@@ -44,6 +44,7 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 	private MessageCenter msg;
 	
 	private String baseDir = null;
+	private String epicVer = null;
 
 	private EpicSpinupFields fields;
 	//private DomainFields domain;
@@ -58,6 +59,7 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		app.getProject().addPage(fields);
 		msg = app.getMessageCenter();
 		baseDir = Constants.getProperty(Constants.EPIC_HOME, msg);
+		epicVer = Constants.getProperty(Constants.EPIC_VER, msg).trim();
 		app.addPlotListener(this);
 		add(createPanel());
 	}
@@ -537,7 +539,9 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		sb.append("      foreach out ( \"NCM\" \"NCS\" \"DFA\" \"OUT\" \"SOL\" \"TNA\" \"TNS\" )" + ls); 
 		sb.append("        if ( ! -e $WORK_DIR/$out  ) mkdir -p $WORK_DIR/$out" + ls); 
 		sb.append("      end " + ls);
-		sb.append("      time $EXEC_DIR/EPICsu.exe " + ls);
+		if (epicVer.equalsIgnoreCase("1102")) sb.append("      time $EXEC_DIR/EPIC1102.exe " + ls);
+		else   sb.append("      time $EXEC_DIR/EPICsu.exe " + ls);
+		//sb.append("      time $EXEC_DIR/EPICsu.exe " + ls);
 		sb.append("      if ( $status == 0 ) then " + ls);
 		sb.append("         echo  ==== Finished launching EPIC spinup run of CROP: $CROP_NAME, rainf $cropN" + ls);
 		sb.append("      else " + ls);
@@ -558,7 +562,8 @@ public class EpicSpinupPanel  extends UtilFieldsPanel implements PlotEventListen
 		sb.append("      foreach out ( \"NCM\" \"NCS\" \"DFA\" \"OUT\" \"SOL\" \"TNA\" \"TNS\" )" + ls); 
 		sb.append("        if ( ! -e $WORK_DIR/$out  ) mkdir -p $WORK_DIR/$out" + ls); 
 		sb.append("      end" + ls); 
-		sb.append("      time $EXEC_DIR/EPICsu.exe" + ls); 
+		if (epicVer.equalsIgnoreCase("1102")) sb.append("      time $EXEC_DIR/EPIC1102.exe " + ls);
+		else sb.append("      time $EXEC_DIR/EPICsu.exe " + ls);
 		sb.append("      if ( $status == 0 ) then " + ls);
 		sb.append("         echo  ==== Finished launching EPIC spinup run of CROP: $CROP_NAME, irr $cropN" + ls);
 		sb.append("      else " + ls);

@@ -45,6 +45,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 	private MessageCenter msg;
 	
 	String baseDir = null;
+	String epicVer = null;
 
 	private EpicAppFields fields;
 	//private DomainFields domain;
@@ -59,6 +60,7 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		app.getProject().addPage(fields);
 		msg = app.getMessageCenter();
 		baseDir = Constants.getProperty(Constants.EPIC_HOME, msg);
+		epicVer = Constants.getProperty(Constants.EPIC_VER, msg).trim();
 		app.addPlotListener(this);
 		add(createPanel());
 	}
@@ -556,7 +558,9 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		sb.append("      foreach out ( \"NCM\" \"NCS\" \"DFA\" \"OUT\" \"SOL\" \"TNA\" \"TNS\" )" + ls); 
 		sb.append("        if ( ! -e $WORK_DIR/$out  ) mkdir -p $WORK_DIR/$out" + ls); 
 		sb.append("      end " + ls);
-		sb.append("      time $EXEC_DIR/EPICapp.exe " + ls);
+		if (epicVer.equalsIgnoreCase("1102")) sb.append("      time $EXEC_DIR/EPIC1102.exe " + ls);
+		else sb.append("      time $EXEC_DIR/EPICapp.exe " + ls);
+		//sb.append("      time $EXEC_DIR/EPICapp.exe " + ls);
 		sb.append("      if ( $status == 0 ) then " + ls);
 		sb.append("         echo  ==== Finished launching EPIC app run of CROP: $CROP_NAME, rainf $cropN" + ls);
 		sb.append("      else " + ls);
@@ -577,8 +581,10 @@ public class EpicRunAppPanel extends UtilFieldsPanel implements PlotEventListene
 		sb.append("      setenv SOIL_DIR   $SCEN_DIR/${CROP_NAME}/spinup/irr/SOL " +ls );
 		sb.append("      foreach out ( \"NCM\" \"NCS\" \"DFA\" \"OUT\" \"SOL\" \"TNA\" \"TNS\" )" + ls); 
 		sb.append("        if ( ! -e $WORK_DIR/$out  ) mkdir -p $WORK_DIR/$out" + ls); 
-		sb.append("      end" + ls); 
-		sb.append("      time $EXEC_DIR/EPICapp.exe" + ls);
+		sb.append("      end" + ls);
+		if (epicVer.equalsIgnoreCase("1102")) sb.append("      time $EXEC_DIR/EPIC1102.exe " + ls);
+		else sb.append("      time $EXEC_DIR/EPICapp.exe " + ls);
+		//sb.append("      time $EXEC_DIR/EPICapp.exe" + ls);
 		sb.append("      sleep 5s" + ls);
 		sb.append("      if ( $status == 0 ) then " + ls);
 		sb.append("         echo  ==== Finished launching EPIC app run of CROP: $CROP_NAME, irr $cropN" + ls);

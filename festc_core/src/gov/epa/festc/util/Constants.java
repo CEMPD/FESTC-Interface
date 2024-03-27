@@ -42,6 +42,7 @@ public class Constants {
 	public static final String QUEUE_EPIC2SWAT = "queue.epic2swat";
 	
 	public static final String WORK_DIR = "work.dir";
+	public static final String EPIC_VER = "epic.ver";
 	public static final String USER_HOME = "user.home";
 	public static final String LINE_SEPARATOR = "line.separator";
 	public static final String NEW_SCENARIO = "Create";
@@ -61,7 +62,7 @@ public class Constants {
 	public static final String SOIL_MATCH = "Soil Match for EPIC Spinup";
 	public static final String MAN_SPINUP = "Management File Generation for Spinup";
 	public static final String EDIT_INFILES = "View/Edit EPIC Inputs";
-	public static final String[] FERTYEARS = new String[] {"2001", "2006"};
+	public static final String[] FERTYEARS = new String[] {"2001", "2006", "2011"};
 	public static final String[] NLCDYEARS = new String[] {"2001", "2006", "2011"};
 	public static final String[] NDEPS = new String[] {"CMAQ", "EPIC parameter input file", 
 		                               "2002-2006 5-year CMAQ average",

@@ -433,7 +433,8 @@ public class CreateSiteInfoPanel extends UtilFieldsPanel implements PlotEventLis
 
 		File script = new File(batchFile.replaceAll("\\\\", "\\\\\\\\"));
 
-		sb.append(qcmd + " " + qSiteInfo + " -o " + log + " " + script.getAbsolutePath());
+//		sb.append(qcmd + " " + qSiteInfo + " -o " + log + " " + script.getAbsolutePath());
+		sb.append(script.getAbsolutePath() + " >& " + log);
 
 		FileRunner.runScriptwCmd(batchFile, log, msg, sb.toString());
 	}

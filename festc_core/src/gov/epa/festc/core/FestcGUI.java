@@ -9,7 +9,9 @@ import java.util.Date;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import com.sun.glass.events.ViewEvent;
+import javafx.event.Event;
+
+//import com.sun.glass.events.ViewEvent;
 
 import saf.core.ui.dock.DefaultDockingManager;
 import saf.core.ui.dock.DockableFrame;
@@ -90,7 +92,7 @@ public class FestcGUI implements DockableFrameListener  {
 	 * @param evt
 	 */
 
-	public void viewClosed(ViewEvent evt) {
+	public void viewClosed(Event evt) {
 		ctr.info("View closed at: ", new Date());
 	}
 
@@ -101,7 +103,7 @@ public class FestcGUI implements DockableFrameListener  {
 	 * @param evt
 	 *            details the float request
 	 */
-	public void floatRequested(ViewEvent evt) {
+	public void floatRequested(Event evt) {
 	}
 
 	/**
@@ -111,7 +113,7 @@ public class FestcGUI implements DockableFrameListener  {
 	 * @param evt
 	 *            details the restore request
 	 */
-	public void restoreRequested(ViewEvent evt) {
+	public void restoreRequested(Event evt) {
 	}
 
 	/**
@@ -121,7 +123,7 @@ public class FestcGUI implements DockableFrameListener  {
 	 * @param evt
 	 *            the event describing the view etc.
 	 */
-	public void closeRequested(ViewEvent evt) {
+	public void closeRequested(Event evt) {
 	}
 
 	/**
@@ -129,7 +131,7 @@ public class FestcGUI implements DockableFrameListener  {
 	 * 
 	 * @param evt
 	 */
-	public void viewFloated(ViewEvent evt) {
+	public void viewFloated(Event evt) {
 		//
 	}
 
@@ -138,7 +140,7 @@ public class FestcGUI implements DockableFrameListener  {
 	 * 
 	 * @param evt
 	 */
-	public void viewMaximized(ViewEvent evt) {
+	public void viewMaximized(Event evt) {
 		// todo implement method
 	}
 
@@ -147,7 +149,7 @@ public class FestcGUI implements DockableFrameListener  {
 	 * 
 	 * @param evt
 	 */
-	public void viewMinimized(ViewEvent evt) {
+	public void viewMinimized(Event evt) {
 		// todo implement method
 	}
 
@@ -157,7 +159,7 @@ public class FestcGUI implements DockableFrameListener  {
 	 * 
 	 * @param evt
 	 */
-	public void viewRestored(ViewEvent evt) {
+	public void viewRestored(Event evt) {
 	}
 
 	/**
